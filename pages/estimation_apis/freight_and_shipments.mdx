@@ -1,0 +1,59 @@
+# Emissions from Freight Shipping
+
+Returns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for freight shipments through Road, Rail, Air and Sea (categorized into Short Sea and Deep Sea).
+
+Two additional calculations for Intermodal shipping are available: 1) Road with Rail and 2) Road with Short Sea. In both cases, the road distance is assumed to be 10% of the entire journey.
+
+operationId: calculate_emissions_from_shipment_of_freight
+
+## Payload Specification
+
+| Field          | Type   | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Example                  |
+| -------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| transport_mode | String | Yes      | The mode of shipment of freight. Deep sea (value: DeepSea) shipping refers to the maritime transport of goods on intercontinental routes, crossing oceans as opposed to short sea (value: ShortSea) shipping over relatively short distances. For Intermodal shipping of 1) Road with Rail and 2) Road with Short Sea, the road distance is assumed to be 10% of the entire journey. Values allowed: \[Air,Rail,Road, ShortSea, DeepSea, Road-Rail, Road-ShortSea\] | DeepSea                  |
+| freight_weight | Number | Yes      | Weight of freight in kilograms. If a NULL or \<1 is entered, it is set to 1.00                                                                                                                                                                                                                                                                                                                                                                                      | 7500                     |
+| distance_value | Number | Yes      | Distance of journey in kilometers (KM). If a NULL or \<1 is entered, it is set to 1.00                                                                                                                                                                                                                                                                                                                                                                              | 1250                     |
+| cluster_name   | String | No       | Identifier to log and aggregate these results under using the Cluster Data API                                                                                                                                                                                                                                                                                                                                                                                      | KrugerBrent_Order54_2026 |
+
+## Example
+
+### Request Payload
+
+```
+import http.client
+conn = http.client.HTTPSConnection("carbonsutra1.p.rapidapi.com")
+payload = "transport_mode=ShortSea&freight_weight=50000&distance_value=1200"
+headers = {
+    'content-type': "application/x-www-form-urlencoded",
+    'Authorization': "Bearer <AUTHORIZATION_TOKEN>",
+    'X-RapidAPI-Key': "<AUTHORIZATION_KEY>",
+    'X-RapidAPI-Host': "carbonsutra1.p.rapidapi.com"
+    }
+conn.request("POST", "/freight_estimate", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+```
+
+### Response Payload
+
+```
+{
+  "data": {
+    "type": "estimate-freight",
+    "distance_value": "1200",
+    "transport_mode": "ShortSea",
+    "freight_weight": "50000",
+    "co2e_gm": 960000,
+    "co2e_kg": 960,
+    "co2e_mt": 0.96,
+    "co2e_lb": 2116.42
+  },
+  "success": true,
+  "status": 200
+}
+```
+
+## Notes
+
+If the freight journey has two parts in different transport modes which are not covered in Intermodal shipping options, we suggest that the API is called for each leg. For example, if a journey has a road distance of 500km and international shipping leg of 4,000km then call the API for 1) Road (500km) and then 2) DeepSea (4,000km) for the same weight.

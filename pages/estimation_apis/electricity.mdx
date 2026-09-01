@@ -1,0 +1,57 @@
+# Emissions from Electricity Usage
+
+Returns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) from electricity usage based on coutnry name and units of electricity consumed.
+
+Data from nearly 90 countries for years 2020, 2024 and 2026, from multiple sources has been compiled.
+
+operationId: calculate_emissions_from_electricity_usage
+
+## Payload Specification
+
+| Field | Type | Required | Description | Example |
+| --- | --- | --- | --- | --- |
+| country_name | String | Yes | Name of the country for which the emission is being measured. Allowed values: \[Afghanistan, Australia, Austria, Bangladesh, Belgium, Bhutan, Brunei, Bulgaria, Cambodia, Canada, China, Croatia, Cyprus, Czechia, Denmark, Estonia, EU-27, Finland, France, Germany, Greece, Hong Kong, Hungary, Iceland, India, Indonesia, Ireland, Italy, Japan, Laos, Latvia, Lithuania, Luxembourg, Macao, Malaysia, Maldives, Malta, Mongolia, Myanmar, Nepal, Netherlands, New Zealand, North Korea, Norway, Pakistan, Papua New Guinea, Philippines, Poland, Portugal, Qatar, Romania, Singapore, Slovakia, Slovenia, South Korea, Spain, Sri Lanka, Sweden, Taiwan, Thailand, Turkey, UK, USA, Vietnam\] | Japan |
+| electricity_unit | String | No | Electricity unit of consumption. Allowed values: \[KWh, MWh\]. Default: MWh | KWh |
+| electricity_value | Number | No | Number of units of electricity consumed. If an undefined value is passed, it will be set to 1.00 | 1855 |
+| cluster_name | String | No | Identifier to log and aggregate these results under using the Cluster Data API | KrugerBrent_Office3A_2025 |
+
+## Example
+
+### Request Payload
+
+
+```
+import http.client
+conn = http.client.HTTPSConnection("carbonsutra1.p.rapidapi.com")
+payload = "country_name=UK&electricity_value=5045&electricity_unit=kWh&cluster_name="
+headers = {
+    'x-rapidapi-key': "37db609019mshdc94f05512b7a5dp1fe7f5jsned8090189a51",
+    'x-rapidapi-host': "carbonsutra1.p.rapidapi.com",
+    'Content-Type': "application/x-www-form-urlencoded",
+    'Authorization': "Bearer fQ98oU704xFvsnXcQLVDbpeCJHPglG1DcxiMLKfpeNEMGumlbzVf1lCI6ZBx"
+}
+conn.request("POST", "/electricity_estimate", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+```
+### Response Payload
+```
+{
+  "data": {
+    "type": "estimate-electricity",
+    "electricity_unit": "kWh",
+    "electricity_value": "5045",
+    "country_name": "UK",
+    "co2e_gm": 660693,
+    "co2e_kg": 660.69,
+    "co2e_mt": 0.66,
+    "co2e_lb": 1456.57
+  },
+  "success": true,
+  "status": 200
+}
+```
+## Supported Countries (field: COUNTRY_NAME)
+
+Australia, Austria, Bangladesh, Belgium, Bhutan, Brunei, Bulgaria, Cambodia, Canada, China, Croatia, Cyprus, Czechia, Denmark, Estonia, EU-27, Finland, France, Germany, Greece, Hong Kong, Hungary, Iceland, India, Indonesia, Ireland, Italy, Japan, Laos, Latvia, Lithuania, Luxembourg, Macao, Malaysia, Maldives, Malta, Mongolia, Myanmar, Nepal, Netherlands, New Zealand, North Korea, Norway, Pakistan, Papua New Guinea, Philippines, Poland, Portugal, Qatar, Romania, Singapore, Slovakia, Slovenia, South Korea, Spain, Sri Lanka, Sweden, Taiwan, Thailand, Turkey, UK, USA and Vietnam.

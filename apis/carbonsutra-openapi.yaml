@@ -1,0 +1,1380 @@
+openapi: 3.0.3
+info:
+  title: CarbonSutra Carbon Emissions API
+  version: 1.0.0
+  summary: API platform for carbon-emission estimation and consolidation.
+  description: "# CarbonSutra API
+
+
+    CarbonSutra provides developer APIs for estimating and consolidating **carbon dioxide equivalent (CO₂e)** emissions across
+    business activities.
+
+
+    The platform is designed for applications supporting **carbon accounting, ESG and sustainability reporting, compliance
+    workflows, environmental analysis, mitigation, offsetting, and decarbonization programs**.
+
+
+    ## Core capabilities
+
+
+    - **Business travel** — Flight emissions using airports, cabin class, passengers, round-trip travel, radiative forcing,
+    and Well-to-Tank (WTT) options.
+
+    - **Accommodation** — Hotel emissions using country, city, hotel rating, nights, and rooms.
+
+    - **Transportation** — Vehicle emissions by vehicle type or specific make and model.
+
+    - **Electricity** — Electricity-consumption emissions by country and consumption unit.
+
+    - **Fuel** — Emissions from gas, liquid, and solid fuel consumption.
+
+    - **Freight** — Road, rail, air, sea, and intermodal shipment estimates.
+
+    - **eCommerce** — Shipment estimates using origin/destination countries and postal codes.
+
+    - **Developer utilities** — Vehicle catalogs and airport search/distance utilities.
+
+    - **Emission clusters** — Optional server-side grouping and retrieval of calculated emissions.
+
+
+    ## Authentication
+
+
+    Protected endpoints use a CarbonSutra API key as a Bearer token:
+
+
+    ```http
+
+    Authorization: Bearer YOUR_API_KEY
+
+    ```
+
+
+    Some utility endpoints are public and do not require authentication.
+
+
+    ## Emission units
+
+
+    Calculation results may include:
+
+
+    - `co2e_gm` — grams of CO₂e
+
+    - `co2e_kg` — kilograms of CO₂e
+
+    - `co2e_mt` — metric tonnes of CO₂e
+
+    - `co2e_lb` — pounds of CO₂e
+
+
+    ## API conventions
+
+
+    All endpoints are versioned under `/api/v1/`. The supplied API collection exposes calculation inputs as query parameters,
+    including for `POST` operations.
+
+
+    A `cluster_name` can be supplied when an authenticated calculation should be associated with an emission cluster.
+
+
+    ## Specification scope
+
+
+    This specification reflects the supplied CarbonSutra Postman collection. Where the collection did not define a complete
+    response structure, this document uses a generic JSON response rather than inventing unsupported fields.
+
+    "
+  termsOfService: https://www.carbonsutra.com
+  contact:
+    name: CarbonSutra
+    url: https://www.carbonsutra.com
+  license:
+    name: Proprietary
+    url: https://www.carbonsutra.com
+servers:
+  - url: ${API_URL}
+    description: CarbonSutra Production API
+    variables:
+      API_URL:
+        default: ""
+        description: API base URL
+tags:
+  - name: Emission Calculators
+    description: Calculate CO₂e emissions for business and operational activities.
+  - name: Vehicles
+    description: Discover supported vehicle manufacturers and models.
+  - name: Airports
+    description: Search airports and calculate airport proximity, distance, and estimated flight time.
+  - name: Emission Clusters
+    description: Register API keys and retrieve emissions grouped under custom cluster names.
+  - name: Special APIs
+    description: Specialized CarbonSutra estimation APIs.
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/flight_estimate:
+    post:
+      tags:
+        - Emission Calculators
+      summary: Calculate business flight emissions
+      operationId: calculate_emissions_from_business_flight_travel
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IataAirportFrom"
+        - $ref: "#/components/parameters/IataAirportTo"
+        - name: flight_class
+          in: query
+          description: Cabin class. If omitted, the API may use its average factor.
+          schema:
+            type: string
+            enum:
+              - Economy
+              - Premium
+              - Business
+              - First
+            default: Economy
+          example: Business
+        - $ref: "#/components/parameters/RoundTrip"
+        - name: number_of_passengers
+          in: query
+          description: Number of passengers. Values below 1/default are treated as 1.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          example: 1
+        - $ref: "#/components/parameters/AddRf"
+        - $ref: "#/components/parameters/IncludeWtt"
+        - $ref: "#/components/parameters/ClusterName"
+      responses:
+        "200":
+          description: Estimated flight emissions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmissionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        "Calculates estimated CO₂e emissions for business air travel using departure and arrival airports, cabin
+        class, passenger count, and trip type. Optional radiative-forcing (RF) and Well-to-Tank (WTT) factors can be included.
+
+
+        **Request format:** The supplied CarbonSutra API collection defines the calculation inputs as query parameters for
+        this `POST` endpoint."
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-flights-travel
+  /api/v1/sefr_estimation:
+    post:
+      tags:
+        - Special APIs
+      summary: Calculate SEFR emissions
+      operationId: calculate_sefr_emissions
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - category
+                - activity
+                - value
+              properties:
+                category:
+                  type: string
+                  description: SEFR emission category.
+                  example: Land Transport
+                activity:
+                  type: string
+                  description: SEFR activity.
+                  example: Hybrid Car
+                value:
+                  type: number
+                  format: double
+                  description: Activity quantity/value used for the SEFR calculation.
+                  example: 8
+      responses:
+        "200":
+          description: SEFR emission estimation result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericJsonResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        "Calculates estimated CO₂e emissions using the CarbonSutra SEFR
+        estimation API. The request accepts category, activity, and value
+        as multipart form-data fields."
+  /api/v1/hotel_estimate:
+    post:
+      tags:
+        - Emission Calculators
+      summary: Calculate hotel-stay emissions
+      operationId: calculate_emissions_from_hotel_stay
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: country_code
+          in: query
+          description: Two-digit ISO 3166-1 alpha-2 country code.
+          required: true
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 2
+          example: JP
+        - name: city_name
+          in: query
+          description: City of hotel within the country.
+          schema:
+            type: string
+          example: Tokyo
+        - name: hotel_rating
+          in: query
+          description: Expedia star classification. Default is 4.
+          schema:
+            type: integer
+            enum:
+              - 2
+              - 3
+              - 4
+              - 5
+            default: 4
+          example: 4
+        - name: number_of_nights
+          in: query
+          description: Length of stay in nights. Default is 1.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          example: 2
+        - name: number_of_rooms
+          in: query
+          description: Number of rooms booked. Default is 1.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          example: 1
+        - $ref: "#/components/parameters/ClusterName"
+      responses:
+        "200":
+          description: Estimated hotel-stay emissions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmissionResponse"
+              example:
+                data:
+                  type: estimate-hotel-stay
+                  country: Japan
+                  city_name: ""
+                  hotel_rating: "4"
+                  number_of_nights: "2"
+                  number_of_rooms: "1"
+                  co2e_gm: 83540
+                  co2e_kg: 83.54
+                  co2e_mt: 0.08
+                  co2e_lb: 184.17
+                  explanation: CarbonSutra calculation explanation.
+                success: true
+                status: 200
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        "Calculates estimated CO₂e emissions for hotel accommodation using country, optional city, hotel rating,
+        number of nights, and number of rooms.
+
+
+        **Request format:** The supplied CarbonSutra API collection defines the calculation inputs as query parameters for
+        this `POST` endpoint."
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-hotel-stay
+  /api/v1/vehicle_estimate_by_type:
+    post:
+      tags:
+        - Vehicles
+      summary: Calculate vehicle emissions by type
+      operationId: calculate_emissions_from_vehicle_usage_based_on_type
+      security: []
+      parameters:
+        - name: vehicle_type
+          in: query
+          required: true
+          description: Type of vehicle.
+          schema:
+            type: string
+          example: Car-Type-Supermini
+        - name: distance_unit
+          in: query
+          description: Distance unit. Default is km.
+          schema:
+            type: string
+            enum:
+              - km
+              - mi
+            default: km
+          example: km
+        - name: distance_value
+          in: query
+          description: Distance travelled. Undefined values are treated as 1.00.
+          schema:
+            type: number
+            format: double
+            minimum: 0
+            default: 1
+          example: 8800
+        - name: fuel_type
+          in: query
+          description: Fuel type for cars.
+          schema:
+            type: string
+            enum:
+              - Diesel
+              - Petrol
+              - PHEV
+              - BEV
+              - Unknown
+            default: Unknown
+          example: Petrol
+        - $ref: "#/components/parameters/IncludeWtt"
+        - $ref: "#/components/parameters/ClusterName"
+      responses:
+        "200":
+          description: Estimated vehicle emissions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmissionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        "Calculates estimated CO₂e emissions for vehicle travel when the vehicle is identified by type rather than
+        by a specific make and model.
+
+
+        **Request format:** The supplied CarbonSutra API collection defines the calculation inputs as query parameters for
+        this `POST` endpoint."
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-vehicles-type
+  /api/v1/vehicle_estimate_by_model:
+    post:
+      tags:
+        - Vehicles
+      summary: Calculate vehicle emissions by make and model
+      operationId: calculate_emissions_from_vehicle_usage_based_on_make_and_model
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: vehicle_make
+          in: query
+          required: true
+          description: Vehicle make.
+          schema:
+            type: string
+          example: Lexus
+        - name: vehicle_model
+          in: query
+          required: true
+          description: Vehicle model.
+          schema:
+            type: string
+          example: RX 300
+        - name: distance_unit
+          in: query
+          description: Distance unit. The collection documents mi as the default.
+          schema:
+            type: string
+            enum:
+              - km
+              - mi
+            default: mi
+          example: km
+        - name: distance_value
+          in: query
+          description: Distance travelled. Undefined values are treated as 1.00.
+          schema:
+            type: number
+            format: double
+            minimum: 0
+            default: 1
+          example: 9500
+        - $ref: "#/components/parameters/ClusterName"
+      responses:
+        "200":
+          description: Estimated vehicle emissions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmissionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        "Calculates estimated CO₂e emissions using a supported vehicle manufacturer and model. Use the vehicle
+        catalog endpoints to discover supported makes and models.
+
+
+        **Request format:** The supplied CarbonSutra API collection defines the calculation inputs as query parameters for
+        this `POST` endpoint."
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-vehicles-model
+  /api/v1/electricity_estimate:
+    post:
+      tags:
+        - Emission Calculators
+      summary: Calculate electricity-consumption emissions
+      operationId: calculate_emissions_from_electricity_usage
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: country_name
+          in: query
+          required: true
+          description: Country for which emissions are measured.
+          schema:
+            type: string
+          example: Germany
+        - name: electricity_unit
+          in: query
+          description: Electricity consumption unit. Default is MWh.
+          schema:
+            type: string
+            enum:
+              - KWh
+              - MWh
+              - kwh
+              - mwh
+            default: MWh
+          example: MWh
+        - name: electricity_value
+          in: query
+          description: Electricity consumed. Undefined values are treated as 1.00.
+          schema:
+            type: number
+            format: double
+            minimum: 0
+            default: 1
+          example: 1100
+        - $ref: "#/components/parameters/ClusterName"
+      responses:
+        "200":
+          description: Estimated electricity emissions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmissionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        "Calculates estimated CO₂e emissions from electricity consumption using the selected country, consumption
+        unit, and quantity.
+
+
+        **Request format:** The supplied CarbonSutra API collection defines the calculation inputs as query parameters for
+        this `POST` endpoint."
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-electricity
+  /api/v1/fuel_estimate:
+    post:
+      tags:
+        - Emission Calculators
+      summary: Calculate fuel-consumption emissions
+      operationId: calculate_emissions_from_fuel_consumption
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fuel_usage
+          in: query
+          required: true
+          description: Fuel usage/activity category.
+          schema:
+            type: string
+            enum:
+              - gas
+              - liquid
+              - solid
+          example: liquid
+        - name: fuel_name
+          in: query
+          required: true
+          description: "Fuel name. Allowed values depend on fuel_usage:
+
+            gas: Butane, CNG, LNG, LPG, Natural gas, Natural gas (100% mineral blend),
+
+            Other petroleum gas, Propane.
+
+            liquid: Aviation spirit, Aviation turbine fuel, Burning oil, Diesel (100% mineral diesel),
+
+            Diesel (average biofuel blend), Fuel oil, Gas oil, Lubricants, Marine fuel oil,
+
+            Marine gas oil, Naphtha, Petrol (100% mineral petrol), Petrol (average biofuel blend),
+
+            Processed fuel oils - distillate oil, Processed fuel oils - residual oil,
+
+            Refinery miscellaneous, Waste oils.
+
+            solid: Coal (domestic), Coal (electricity generation - home produced coal only),
+
+            Coal (electricity generation), Coal (industrial), Coking coal, Petroleum coke.
+
+            "
+          schema:
+            type: string
+          example: Gas oil
+        - name: fuel_value
+          in: query
+          required: true
+          description: Amount of fuel consumed, in tonnes.
+          schema:
+            type: number
+            format: double
+            minimum: 0
+          example: 7800
+        - $ref: "#/components/parameters/ClusterName"
+      responses:
+        "200":
+          description: Estimated fuel emissions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmissionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        "Calculates estimated CO₂e emissions from fuel consumption. The permitted fuel names depend on whether
+        the activity is classified as gas, liquid, or solid fuel.
+
+
+        **Request format:** The supplied CarbonSutra API collection defines the calculation inputs as query parameters for
+        this `POST` endpoint."
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-fuel
+  /api/v1/freight_estimate:
+    post:
+      tags:
+        - Emission Calculators
+      summary: Calculate freight-shipment emissions
+      operationId: calculate_emissions_from_shipment_of_freight
+      security: []
+      parameters:
+        - name: transport_mode
+          in: query
+          required: true
+          description: Freight transport mode, including Road, Rail, Air, ShortSea, DeepSea and intermodal options.
+          schema:
+            type: string
+          example: Rail
+        - name: freight_weight
+          in: query
+          required: true
+          description: Freight weight in kilograms.
+          schema:
+            type: number
+            format: double
+            minimum: 0
+          example: 19000
+        - name: distance_value
+          in: query
+          required: true
+          description: Journey distance in kilometres.
+          schema:
+            type: number
+            format: double
+            minimum: 0
+          example: 1500
+        - $ref: "#/components/parameters/ClusterName"
+      responses:
+        "200":
+          description: Estimated freight emissions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmissionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        "Calculates estimated CO₂e emissions for freight transportation using transport mode, freight weight, and
+        journey distance. Road, rail, air, sea, and intermodal calculations are supported.
+
+
+        **Request format:** The supplied CarbonSutra API collection defines the calculation inputs as query parameters for
+        this `POST` endpoint."
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-freight-shipping
+  /api/v1/ecommerce_estimate:
+    post:
+      tags:
+        - Emission Calculators
+      summary: Calculate eCommerce shipment emissions
+      operationId: calculate_emissions_from_ecommerce_shipment
+      security: []
+      parameters:
+        - name: origin_country_code
+          in: query
+          required: true
+          description: Two-letter ISO country code of origin.
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 2
+          example: IN
+        - name: origin_postal_code
+          in: query
+          required: true
+          description: Origin postal code.
+          schema:
+            type: string
+          example: "604407"
+        - name: destination_country_code
+          in: query
+          required: true
+          description: Two-letter ISO country code of destination.
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 2
+          example: SG
+        - name: destination_postal_code
+          in: query
+          required: true
+          description: Destination postal code.
+          schema:
+            type: string
+          example: "436915"
+        - name: package_weight
+          in: query
+          required: true
+          description: Package weight in kilograms.
+          schema:
+            type: number
+            format: double
+            minimum: 0
+          example: 24.4
+        - $ref: "#/components/parameters/AddRf"
+        - $ref: "#/components/parameters/IncludeWtt"
+        - $ref: "#/components/parameters/ClusterName"
+      responses:
+        "200":
+          description: Estimated eCommerce shipment emissions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmissionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        "Calculates estimated CO₂e emissions for an eCommerce package journey using origin and destination countries
+        and postal codes, package weight, and optional RF/WTT factors.
+
+
+        **Request format:** The supplied CarbonSutra API collection defines the calculation inputs as query parameters for
+        this `POST` endpoint."
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-freight-ecommerce-shipments
+  /api/v1/vehicle_makes:
+    get:
+      tags:
+        - Vehicles
+      summary: List supported vehicle makes
+      operationId: list_all_vehicle_makers
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Vehicle makes and model counts.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericJsonResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        Returns supported vehicle manufacturers and their model counts. This endpoint is intended for applications
+        that need to populate vehicle-selection interfaces.
+  /api/v1/vehicle_makes/{vehicle_make}/vehicle_models:
+    get:
+      tags:
+        - Vehicles
+      summary: List models for a vehicle make
+      operationId: list_all_models_for_a_specific_vehicle_make
+      security: []
+      parameters:
+        - name: vehicle_make
+          in: path
+          required: true
+          description: Name of the vehicle make.
+          schema:
+            type: string
+          example: Lexus
+      responses:
+        "200":
+          description: Vehicle models for the selected make.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericJsonResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description: Returns supported vehicle models for the specified vehicle manufacturer.
+  /api/v1/nearest-airport-from-another-airport:
+    get:
+      tags:
+        - Airports
+      summary: Find the nearest airport from an airport
+      operationId: find_nearest_airport_from_another_airport
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/IataAirportCode"
+        - name: same_country
+          in: query
+          description: If Y, restrict the nearest-airport search to the same country.
+          schema:
+            type: string
+            enum:
+              - Y
+              - N
+          example: Y
+      responses:
+        "200":
+          description: Nearest airport and distance in kilometres.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericJsonResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        Finds the closest airport to a supplied IATA airport code and returns the distance in kilometres. The optional
+        same-country flag can restrict the search to the same country.
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-supplementary-api
+  /api/v1/nearest-airport:
+    get:
+      tags:
+        - Airports
+      summary: Find the nearest airport from a postal code
+      operationId: find_nearest_airport_from_postal_code
+      security: []
+      parameters:
+        - name: country_code
+          in: query
+          required: true
+          description: Two-digit ISO 3166-1 alpha-2 country code.
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 2
+          example: IN
+        - name: postal_code
+          in: query
+          required: true
+          description: Valid postal code.
+          schema:
+            type: string
+          example: "604407"
+      responses:
+        "200":
+          description: Nearest airport information and distance in kilometres.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericJsonResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        Finds the nearest airport for a postal code and country code. Multiple geographic matches may be returned
+        when the same postal code has multiple coordinate records.
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-supplementary-api
+  /api/v1/distance-between-airports:
+    get:
+      tags:
+        - Airports
+      summary: Calculate distance between two airports
+      operationId: find_distance_between_two_airports
+      security: []
+      parameters:
+        - name: iata_airport_from
+          in: query
+          required: true
+          description: First IATA airport code.
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 3
+          example: DXB
+        - name: iata_airport_to
+          in: query
+          required: true
+          description: Second IATA airport code.
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 3
+          example: LAX
+      responses:
+        "200":
+          description: Distance in kilometres.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericJsonResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description: Calculates the distance between two IATA airports in kilometres.
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-supplementary-api
+  /api/v1/airports-by-keyword:
+    get:
+      tags:
+        - Airports
+      summary: Search airports by keyword
+      operationId: search_airports_based_on_keywords
+      security: []
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          description: Keyword used to search airport records.
+          schema:
+            type: string
+          example: Singapore
+      responses:
+        "200":
+          description: Matching airport names and IATA codes.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericJsonResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        Searches airport records using a keyword. The supplied collection states that airport names, IATA codes,
+        state names, and related information may be considered.
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-supplementary-api
+  /api/v1/estimated-flight-time:
+    get:
+      tags:
+        - Airports
+      summary: Estimate flight time between airports
+      operationId: estimate_flight_time_between_airports
+      security: []
+      parameters:
+        - name: iata_airport_from
+          in: query
+          required: true
+          description: Departing IATA airport code.
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 3
+          example: DXB
+        - name: iata_airport_to
+          in: query
+          required: true
+          description: Destination IATA airport code.
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 3
+          example: LAX
+      responses:
+        "200":
+          description: Estimated flight travel time.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericJsonResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description: Returns an estimated travel time for a flight between two IATA airports.
+      externalDocs:
+        description: CarbonSutra methodology and API reference
+        url: https://www.carbonsutra.com/api-carbon-emission-supplementary-api
+  /api/v1/register_key:
+    post:
+      tags:
+        - Emission Clusters
+      summary: Register for a CarbonSutra API key
+      operationId: register_key
+      security: []
+      parameters:
+        - name: email
+          in: query
+          required: true
+          description: Email address used for registration.
+          schema:
+            type: string
+            format: email
+          example: developer@example.com
+        - name: password
+          in: query
+          required: true
+          description: Passphrase used to create the token.
+          schema:
+            type: string
+            format: password
+            minLength: 1
+        - name: company
+          in: query
+          required: true
+          description: Organization name.
+          schema:
+            type: string
+          example: Acme Corporation
+      responses:
+        "200":
+          description: API key registration result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        Registers an organization and creates a CarbonSutra API key. The returned key is a secret credential and
+        should be stored securely.
+  /api/v1/retrieve_key:
+    post:
+      tags:
+        - Emission Clusters
+      summary: Retrieve an existing API key
+      operationId: retrieve_key
+      security: []
+      parameters:
+        - name: email
+          in: query
+          required: true
+          description: Registered email address.
+          schema:
+            type: string
+            format: email
+          example: developer@example.com
+        - name: password
+          in: query
+          required: true
+          description: Passphrase used when the key was created.
+          schema:
+            type: string
+            format: password
+            minLength: 1
+      responses:
+        "200":
+          description: Existing API key.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description:
+        Retrieves an existing CarbonSutra API key for a registered email address when the correct passphrase is
+        supplied.
+  /api/v1/cluster_data:
+    get:
+      tags:
+        - Emission Clusters
+      summary: Retrieve emission cluster data
+      operationId: cluster_data
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cluster_name
+          in: query
+          required: true
+          description: Self-defined cluster name.
+          schema:
+            type: string
+          example: Acme-Q2-Travel
+      responses:
+        "200":
+          description: Emission records belonging to the cluster.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClusterDataResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      description: Returns emission calculations associated with a developer-defined cluster name. Authentication is required.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API_KEY
+      description: CarbonSutra API key supplied as a Bearer token in the Authorization header.
+  parameters:
+    IataAirportFrom:
+      name: iata_airport_from
+      in: query
+      required: true
+      description: Three-letter IATA code of the departure airport.
+      schema:
+        type: string
+        minLength: 3
+        maxLength: 3
+        pattern: ^[A-Za-z]{3}$
+      example: DXB
+    IataAirportTo:
+      name: iata_airport_to
+      in: query
+      required: true
+      description: Three-letter IATA code of the arrival airport.
+      schema:
+        type: string
+        minLength: 3
+        maxLength: 3
+        pattern: ^[A-Za-z]{3}$
+      example: LAX
+    IataAirportCode:
+      name: iata_airport_code
+      in: query
+      required: true
+      description: Three-letter IATA airport code used as the reference airport.
+      schema:
+        type: string
+        minLength: 3
+        maxLength: 3
+        pattern: ^[A-Za-z]{3}$
+      example: DXB
+    RoundTrip:
+      name: round_trip
+      in: query
+      description: "Set to `Y` for a round trip and `N` for a one-way trip. Default: `Y`."
+      schema:
+        type: string
+        enum:
+          - Y
+          - N
+        default: Y
+      example: Y
+    AddRf:
+      name: add_rf
+      in: query
+      description: "Controls inclusion of the radiative-forcing multiplier. Default: `Y`."
+      schema:
+        type: string
+        enum:
+          - Y
+          - N
+        default: Y
+      example: Y
+    IncludeWtt:
+      name: include_wtt
+      in: query
+      description: "Controls inclusion of Well-to-Tank (WTT) emissions. Default: `Y`."
+      schema:
+        type: string
+        enum:
+          - Y
+          - N
+        default: Y
+      example: Y
+    ClusterName:
+      name: cluster_name
+      in: query
+      description: Optional developer-defined label used to associate the calculation with an emission cluster.
+      schema:
+        type: string
+        minLength: 1
+      example: Acme-Q2-Travel
+  schemas:
+    EmissionMetrics:
+      type: object
+      description: CO₂e result returned by an emission calculator.
+      properties:
+        type:
+          type: string
+          description: CarbonSutra calculation type.
+        co2e_gm:
+          type: number
+          format: double
+          description: Estimated emissions in grams of CO₂e.
+          example: 83540
+        co2e_kg:
+          type: number
+          format: double
+          description: Estimated emissions in kilograms of CO₂e.
+          example: 83.54
+        co2e_mt:
+          type: number
+          format: double
+          description: Estimated emissions in metric tonnes of CO₂e.
+          example: 0.08
+        co2e_lb:
+          type: number
+          format: double
+          description: Estimated emissions in pounds of CO₂e.
+          example: 184.17
+        explanation:
+          type: string
+          description: Human-readable calculation explanation when provided.
+      required:
+        - type
+      additionalProperties: true
+    EmissionResponse:
+      type: object
+      description: Standard CarbonSutra emission-calculation response.
+      properties:
+        data:
+          $ref: "#/components/schemas/EmissionMetrics"
+        success:
+          type: boolean
+          description: Whether the request completed successfully.
+        status:
+          type: integer
+          format: int32
+          description: API status value.
+      required:
+        - data
+        - success
+        - status
+    GenericJsonResponse:
+      type: object
+      description: Generic JSON response because the supplied collection does not define the exact response fields.
+      additionalProperties: true
+    ApiKeyResponse:
+      type: object
+      description: API-key registration or retrieval response.
+      properties:
+        data:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+            CarbonSutra_API_KEY:
+              type: string
+              description: Secret CarbonSutra API key. Store securely.
+              writeOnly: true
+          additionalProperties: true
+        CarbonSutra_API_KEY:
+          type: string
+          description: Secret CarbonSutra API key. Store securely.
+          writeOnly: true
+        success:
+          type: boolean
+        status:
+          type: integer
+          format: int32
+      additionalProperties: true
+    ClusterRecord:
+      type: object
+      description: A calculation stored under an emission cluster.
+      properties:
+        id:
+          type: string
+          description: Unique record identifier.
+        type:
+          type: string
+          description: Calculation type.
+        cluster_name:
+          type: string
+          description: Developer-defined cluster name.
+        attributes:
+          type: object
+          description: Calculation-specific attributes.
+          additionalProperties: true
+        estimated_at:
+          type: string
+          description: Estimate timestamp.
+      additionalProperties: true
+    ClusterDataResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClusterRecord"
+        success:
+          type: boolean
+        status:
+          type: integer
+          format: int32
+      required:
+        - data
+        - success
+        - status
+    ErrorResponse:
+      type: object
+      description: Generic API error payload.
+      properties:
+        message:
+          type: string
+          description: Human-readable error message.
+        success:
+          type: boolean
+        status:
+          type: integer
+          format: int32
+      additionalProperties: true
+  responses:
+    BadRequest:
+      description: The request parameters are invalid or incomplete.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Authentication is required or the supplied Bearer token is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: The requested resource could not be found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    TooManyRequests:
+      description: The API rate limit has been exceeded.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    ServerError:
+      description: Unexpected server-side error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  examples:
+    HotelEstimate:
+      summary: Example hotel calculation
+      value:
+        data:
+          type: estimate-hotel-stay
+          country: Japan
+          city_name: ""
+          hotel_rating: "4"
+          number_of_nights: "2"
+          number_of_rooms: "1"
+          co2e_gm: 83540
+          co2e_kg: 83.54
+          co2e_mt: 0.08
+          co2e_lb: 184.17
+          explanation: CarbonSutra calculation explanation.
+        success: true
+        status: 200
+    Error:
+      summary: Generic API error
+      value:
+        message: Invalid request.
+        success: false
+        status: 400
+externalDocs:
+  description: CarbonSutra website
+  url: https://www.carbonsutra.com

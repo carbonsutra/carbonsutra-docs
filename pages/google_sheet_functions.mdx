@@ -1,0 +1,90 @@
+# Emission Calculation on Google Sheets.
+
+Eight easy to use functions to calculate emission factors within Google Sheets. They use the same logic of API and always return CO2 equivalent in grams. These functions are designed for non-technical users who are calculating their footprint using their own spreadsheets. 
+
+## Function: CO2ELECTRICITY
+
+**Calculate emissions from electricity usage in grams of CO2 equivalent**
+
+**Syntax**: CO2ELECTRICITY(country_name, electricity_value, electricity_unit)
+
+**Example**: CO2ELECTRICITY("indonesia","8230","MWH")
+
+## Function: CO2FUEL
+
+**Calculate emissions from fuel consumption in grams of CO2 equivalent**
+
+
+**Syntax**: CO2FUEL(fuel_usage, fuel_name, fuel_value)
+
+**Example**: CO2FUEL("industrial", "Coal - Bituminous", "2800")
+
+## Function: CO2HOTEL
+
+**Calculate emissions from a hotel stay in grams of CO2 equivalent**
+
+**Syntax**: CO2HOTEL(country_code, [city_name], [hotel_rating], [number_of_nights], [number_of_rooms])
+
+**Example**: CO2HOTEL("IN","MUMBAI","4","2","1")
+
+## Function: CO2FLIGHT
+
+**Calculate emissions from flight travel in grams of CO2 equivalent**
+
+**Syntax**: CO2FLIGHT(iata_airport_from, iata_airport_to, [flight_class], [round_trip], [add_rf], [include_wtt], [number_of_passengers])
+
+**Example**: CO2FLIGHT("LAX","SIN","economy","Y","N","N","1")
+
+## Function: CO2FREIGHT
+
+**Calculate emissions from freight or shipping in grams of CO2 equivalent**
+
+**Syntax**: CO2FREIGHT(transport_mode, freight_weight, distance_value)
+
+**Example**: CO2FREIGHT("ShortSea","50000","1200")
+
+## Function: CO2ECOMMERCE
+
+**Calculate emissions from eCommerce Shipments in grams of CO2 equivalent**
+
+**Syntax**: CO2ECOMMERCE(origin_country_code, origin_postal_code, destination_country_code, destination_postal_code, package_weight, [add_rf], [include_wtt])
+
+**Example**: CO2ECOMMERCE("IN","248001","IN","603104","3","N","N")
+
+## Function: CO2VEHICLEMODEL
+
+**Calculate emissions from vehicles by their model in grams of CO2 equivalent**
+
+**Syntax**: CO2VEHICLEMODEL(vehicle_make, vehicle_model, distance_value, distance_unit)
+
+**Example**: CO2VEHICLEMODEL("Lexus","RX 300","19000","km")
+
+## Function: CO2VEHICLETYPE
+
+**Calculate emissions from vehicles by their type in grams of CO2 equivalent**
+
+**Syntax**: CO2VEHICLETYPE(vehicle_type, distance_value, distance_unit, [fuel_type], [include_wtt])
+
+**Example**: CO2VEHICLETYPE("Car-Type-Executive","11250","km","Unknown","Y")
+
+## Frequently Asked Questions.
+
+**Which spreadsheets are currently supported?**
+
+> Currently, only Google Sheets are supported. During a poll, majority of our users voted for Google Sheets and we created the functions on it. If Microsoft Excel is of interest to you then let us know.
+
+**Is clustering feature available on spreadsheet functions?**
+
+> Clustering is only available in API. Due to nature of spreadsheets, it is actually easy for the user to incorporate clustering by oneself.
+
+**How do I pass values in spreadsheet functions?**
+
+> The easy way is to pass the reference of a cell (eg, A2, B3). For absolute values like "Taxi" or "3.2", they all must be passed within double quotes.
+
+**Your output is always in grammes but I want in metric tonnes. How can I get that?**
+
+> Yes, for consistency, the output of all functions is in grammes of CO2 equivalent. To convert to other units, you can use the conversion formulas like:
+
+- 1 kg = 0.001 mt
+- 1 kg = 1000 gm
+- 1 kg = 2.2046 lb

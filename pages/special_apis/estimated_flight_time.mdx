@@ -1,0 +1,29 @@
+# Estimated Flight Times between Airports
+
+The flight time estimator calculates the travel time of a flight between two airports. This is an approximate value as it cannot account for all variables such as weather conditions, wind patterns, and exact flight routes. The algorithm and assumptions are transparently explained here.
+
+First we determine the types of departing and landing airports. These could be Small / Regional Airports, or Medium-Size Airports (Standard International / Major Domestic hubs) as small, medium or Large / Mega-Hub Airports (e.g., SIN, JFK, LHR, DXB). We use this to assign values to Taxi-Out (moving from the terminal gate to the takeoff runway) and Taxi-In (moving from the landing runway back to the arrival gate). Taxi-out times are almost universally longer across all airport sizes because aircraft must wait in line for Air Traffic Control (ATC) takeoff clearances.
+
+Smaller airports usually feature a compact footprint with a single active runway situated very close to a centralized terminal building. Planes experience minimal ground traffic and rarely queue at the runway threshold, allowing them to depart almost immediately after engine start and pushback. The medium sized facilities typically operate 2 to 3 intersecting or parallel runways. Aircraft must navigate active taxiway intersections and hold short lines. The large ones are sprawling multi-terminal complexes with heavily segregated parallel peripheral runways. For safety and noise mitigation, incoming flights often land on far outer runways and must slowly cross several active inner runways to reach the terminal.
+
+Sprawling multi-terminal complexes with heavily segregated parallel peripheral runways. For safety and noise mitigation, incoming flights often land on far outer runways and must slowly cross several active inner runways to reach the terminal.
+
+The physical size of an airfield sets the baseline transit time, but operational bottlenecks drive the variance led by Airport Layout, Runway Separation, ATC Wake Turbulence Separation and Ground Traffic Management.
+
+Based on these types of airports and whether the plane is landing or taking off, an average taxi-in and taxi-out value is assigned.
+
+Next, we calculate the distance between two airports based on the "haversine formula" which is explained at https://en.wikipedia.org/wiki/Haversine_formula
+
+Based on the distance, we assume the type of aircraft to assign a True Airspeed to it. For example, for short-haul flights a turboprop or regional jet would be used. A narrow-body mainline jet for medium-haul flight and a wide wide-body aircraft cruising at higher altitudes for long-haul flights is assumed. Based on it, an average value of True Airspeed is assigned.
+
+Then we estimate the Climb & Descent Penalty which accounts for the time "lost" because an airplane travels at a much lower speed near the ground than it does at cruise speed. On short routes, planes rarely reach maximum cruising altitudes. They often top out at lower levels (22,000 to 25,000 feet) and immediately prepare for descent. Because they spend less time transitioning through high altitudes, the time penalty relative to a flat cruise calculation is lower. A similar calculation is for medium-haul flights. Long-haul aircraft take off carrying massive, heavy fuel loads. Because of this weight, they cannot climb directly to their final cruise altitude right away. Instead, they perform a "step climb"—flying at a lower altitude (31,000 feet) for a few hours to burn off fuel weight before climbing higher (39,000 feet). This extended, heavy climbing phase increases the overall time penalty.
+
+Real flights rarely travel in a perfectly straight line due to strictly regulated airways, weather, and jet streams. In aviation, this variable is often referred to as the Route Inefficiency Factor (RIF) or Airway Circuitry Factor. Best industry-standard values are assigned based flight distance and following considerations:
+
+Short flights spend a disproportionate amount of their time navigating complex Standard Instrument Departures (SIDs) and Standard Terminal Arrival Routes (STARs). They also frequently deal with heavy Air Traffic Control (ATC) vectoring and holding patterns around busy city airports. This is different for a long-haul aircraft which reaching its cruising altitude, transitions to high-altitude jet airways or oceanic tracks (like the North Atlantic Tracks). On these long stretches, ATC optimizes the routing to be as close to a straight line (Great Circle path) as possible to save fuel. The winding departure and arrival phases make up only a tiny fraction of the total distance.
+
+## INGESTED FIELDS:
+
+**IATA_AIRPORT_FROM**: Mandatory
+
+**IATA_AIRPORT_TO**: Mandatory

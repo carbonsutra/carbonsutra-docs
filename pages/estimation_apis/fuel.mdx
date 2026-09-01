@@ -1,0 +1,58 @@
+# Emissions from Fuel Combustion
+
+Returns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) based on usage, fuel name and its value in tonnes.
+
+CarbonSutra computes the emissions from stationary combustion of fuels which are burnt in a fixed unit or asset owned or controlled by the reporting organization, and usually reported as a Scope 1 direct emission. The source of data and methodology of emission factor calculation are from UK government's GHG conversion factors of 2026.
+
+operationId: calculate_emissions_from_fuel_consumption
+
+## Payload Specification
+
+| Field | Type | Required | Default | Description | Example |
+| --- | --- | --- | --- | --- | --- |
+| fuel_usage | String | Yes | \- | Fuel usage or activity. Allowed: \[gas, liquid, solid\] | liquid |
+| fuel_name | String | Yes | \- | The fuel name is based on value of fuel usage field. Only the following values are allowed: - For fuel_usage = "gas", the allowed values for fuel_name are: \[Butane, CNG, LNG, LPG, Natural gas, Natural gas (100% mineral blend), Other petroleum gas, Propane\] - For fuel_usage = "liquid", the allowed values for fuel_name are: \[Aviation spirit, Aviation turbine fuel, Burning oil, Diesel (100% mineral diesel), Diesel (average biofuel blend), Fuel oil, Gas oil, Lubricants, Marine fuel oil, Marine gas oil, Naphtha, Petrol (100% mineral petrol), Petrol (average biofuel blend), Processed fuel oils - distillate oil, Processed fuel oils - residual oil, Refinery miscellaneous, Waste oils\] - For fuel_usage = "solid", the allowed values for fuel_name are: \[Coal (domestic), Coal (electricity generation - home produced coal only), Coal (electricity generation), Coal (industrial), Coking coal, Petroleum coke\] | Fuel oil |
+| fuel_value | Number | Yes | \- | The amount of fuel that is consumed in number of tonnes. | 2360 |
+| cluster_name | String | No | \- | Identifier to log and aggregate these results under using the Cluster Data API | KrugerBrent_Entity3_2026 |
+
+## Example
+
+### Request Payload
+
+```
+import http.client
+conn = http.client.HTTPSConnection("carbonsutra1.p.rapidapi.com")
+payload = "fuel_usage=gas&fuel_name=lpg&fuel_value=2235&cluster_name="
+headers = {
+    'x-rapidapi-key': "37db609019mshdc94f05512b7a5dp1fe7f5jsned8090189a51",
+    'x-rapidapi-host': "carbonsutra1.p.rapidapi.com",
+    'Content-Type': "application/x-www-form-urlencoded",
+    'Authorization': "Bearer fQ98oU704xFvsnXcQLVDbpeCJHPglG1DcxiMLKfpeNEMGumlbzVf1lCI6ZBx"
+}
+conn.request("POST", "/fuel_estimate", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+```
+### Response Payload
+```
+{
+  "data": {
+    "type": "estimate-fuel",
+    "fuel_usage": "gas",
+    "fuel_name": "lpg",
+    "fuel_unit": "tonnes",
+    "fuel_value": "2235",
+    "co2e_gm": 6569471723,
+    "co2e_kg": 6569471.72,
+    "co2e_mt": 6569.47,
+    "co2e_lb": 14483188.74
+  },
+  "success": true,
+  "status": 200
+}
+```
+## Notes
+
+1. These emissions could be reported as Scope 3 indirect emissions if the organization does not own or control the asset (eg, a boiler) where the combustion takes place.
+2. Fuels conversion factors should be used for primary fuel sources combusted at a site or in an asset owned or controlled by the reporting organisation.

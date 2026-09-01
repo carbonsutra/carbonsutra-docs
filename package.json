@@ -1,0 +1,25 @@
+{
+  "name": "carbonsutradocs",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "generate:openapi": "node scripts/generate-openapi.mjs",
+    "dev": "npm run generate:openapi && zudoku dev",
+    "build": "npm run generate:openapi && zudoku build",
+    "preview": "zudoku preview",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "react": ">=19.2.0",
+    "react-dom": ">=19.2.0",
+    "zudoku": "^0.86.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^6"
+  }
+}

@@ -1,0 +1,46 @@
+# Clustering 
+
+Clustering the results of APIs within CarbonSutra eliminates the need to store the emission calculation results on developer's side. Let's say, a company calculates emissions for business travel (air and land), electricity consumption, hotel stays and their vehicle fleet, once every quarter, Using only a self-defined label as a input parameter, these calculations can be clustered into sets and retrieved in future. This feature is heavily used by programmers who use clusters to monitor emission trends, compare data across periods and offset. 
+
+## Clustering Emissions.
+
+This API is designed to help developers to eliminate the need to store emission calculations. Emissions can be grouped using self-defined labels and retrieved in clusters. A key will need to be generated which is then passed as a Bearer Token in all calculations, along with a label or cluster name.
+
+## The Advantage
+
+This is an optional but highly useful feature of CarbonSutra, essentially designed to help developers and simplify their programs. It eliminates the need to store the results of any emission API and developers can retrieve the collated results later. The following two parameters need to be used:
+
+**BEARER TOKEN** : The API below will help you to generate a token unique to your email address and passphrase. No registration is required. This token will need to be passed under Authorization section for ever API call, the results of which need to be clustered. 
+
+**CLUSTER NAME** : The self-defined label is passed as a API parameter. Examples are strings like "IBM-UK-Apr25" and "KrugerBrent-MFG-Plant7-2026". This is an optional field and clustering is activated only when a non-NULL value is passed in the emissions API call. The entire cluster results for a specific label can retrieved using the API below. 
+
+## API: Register Key
+
+
+**INGESTED FIELDS:**
+
+**EMAIL**: Mandatory. Your email address.
+
+**PASSWORD**: Mandatory. The passphrase used to create the token for the above email address
+
+**COMPANY**: Optional. Your organization's name.
+
+## API: Retrieve Key
+
+
+**INGESTED FIELDS:**
+
+**PASSWORD**: Mandatory. The same passphrase used earlier to create the token.
+
+## API: Cluster Data
+
+
+**INGESTED FIELD:**
+
+**CLUSTER_NAME**: Mandatory.
+
+## Quick Trial: Steps
+
+1. Get your unique token using Register Key API. You can get it directly from the free trial site.
+2. Using this as a "BEARER TOKEN" under Authorization parameters of API and using a unique label for CLUSTER NAME parameter, call other emission APIs of business travel, hotel stays, electricity consumption and others .
+3. Call the Cluster Data API to get all the records for a specific CLUSTER NAME value, using your token.

@@ -1,0 +1,59 @@
+# CarbonSutra
+
+> CarbonSutra provides production-ready APIs for calculating organizational carbon emissions across Scope 1, Scope 2, and Scope 3 activities.
+
+CarbonSutra simplifies carbon footprint estimation by providing programmatic APIs, Google Sheets functions, API clustering, dynamic calculation explanations, and an MCP server for AI-native integrations.
+
+## Documentation
+
+- [Getting Started](/getting_started): Introduction to using CarbonSutra APIs.
+- [Audience and Intent](/audience_and_intent): CarbonSutra's purpose, capabilities, and target users.
+- [API Reference](/api): Complete OpenAPI reference for CarbonSutra APIs.
+- [API Playground](/api-playground): Explore and test CarbonSutra APIs interactively.
+
+## Estimation APIs
+
+- [Flights](/estimation_apis/flights): Estimate emissions from air travel.
+- [Hotels](/estimation_apis/hotels): Estimate emissions from hotel stays.
+- [Vehicles by Type](/estimation_apis/vehicle/vehicle_by_type): Estimate vehicle emissions by vehicle type.
+- [Vehicles by Model](/estimation_apis/vehicle/vehicles_by_model): Estimate vehicle emissions by vehicle model.
+- [Freight and Shipments](/estimation_apis/freight_and_shipments): Estimate freight and shipment emissions.
+- [eCommerce](/estimation_apis/ecommerce): Estimate emissions associated with eCommerce shipments.
+- [Fuel](/estimation_apis/fuel): Estimate emissions from fuel consumption.
+- [Electricity](/estimation_apis/electricity): Estimate emissions from electricity consumption.
+
+## Supplementary APIs
+
+- [Airport Search by Keyword](/supplementary_apis/Airports/airport_search_by_keyword): Search for airports using keywords.
+- [Distance Between Two Airports](/supplementary_apis/Airports/distance_between_two_airports): Calculate distance between airports.
+- [Nearest Airport from Another Airport](/supplementary_apis/Airports/nearest_airport_from_another_airport): Find the nearest airport to another airport.
+- [Nearest Airport from Postal Code](/supplementary_apis/Airports/nearest_airport_from_postal_code): Find the nearest airport using a postal code.
+- [List of Models by Vehicle Maker](/supplementary_apis/Vehicles/list_of_models_of_vehicle_maker): Retrieve vehicle models by manufacturer.
+- [List of Vehicle Makers](/supplementary_apis/Vehicles/list_of_vehicle_makers): Retrieve supported vehicle manufacturers.
+
+## Special APIs
+
+- [Singapore Emission Factors Registry](/special_apis/singapore_emission_factor_registry): Access Singapore emission factor data.
+- [GHG Equivalencies](/special_apis/ghg_equivalencies): Convert emissions into common GHG equivalencies.
+- [Estimated Flight Time](/special_apis/estimated_flight_time): Estimate flight time between airports.
+
+## Integrations
+
+- [Google Sheet Functions](/google_sheet_functions): Calculate emissions directly from Google Sheets.
+- [MCP Server](/mcp_server): Integrate CarbonSutra with AI assistants and autonomous agents.
+
+## Additional Documentation
+
+- [Pricing](/pricing): CarbonSutra pricing information.
+- [Updates and Roadmap](/updates_and_roadmap): Product updates and roadmap.
+- [About](/about): About CarbonSutra.
+
+## API Access
+
+CarbonSutra APIs are also available through RapidAPI:
+
+- [CarbonSutra on RapidAPI](https://rapidapi.com/carbonsutra/api/carbonsutra1)
+
+## Full Documentation
+
+For the comprehensive AI-readable documentation, see [llms-full.txt](/llms-full.txt).

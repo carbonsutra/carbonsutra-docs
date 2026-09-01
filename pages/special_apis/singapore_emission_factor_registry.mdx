@@ -1,0 +1,366 @@
+# Singapore Emission Factors Registry API
+
+<OpenPlaygroundButton
+  server="https://web.contactous.com/carbonsutra/public"
+  url="/api/v1/sefr_estimation"
+  method="POST"
+>
+  Try SEFR API
+</OpenPlaygroundButton>
+
+Singapore Emission Factors Registry (SEFR) is Singapore's single reference point for localised emission factors data. It is a part of NetZeroHub.SG, which helps local businesses on their decarbonisation journey.
+
+This API calculates the carbon footprint based on SEFR's database. The list of activities and their units of measures are listed below.
+
+Two smart features have been added:
+
+1. Explanations - This is what has made CarbonSutra a hit with Auditors - We explain the calculation transparently in English. See the Payload Response example below. This field is also picked up by AI agents which access our API sets.
+
+2. We reduce the chances of wrong inputs using a fuzzy logic module in which a partial incorrect input gets mapped to correct one. For example, if the category is just 'fuel" or "compute", it will map to the right category of "Fuel Combustion" or "Information and Communications Technology".
+
+## Payload Specification
+
+| Field    | Type   | Required | Description                                                                                        |
+| -------- | ------ | -------- | -------------------------------------------------------------------------------------------------- |
+| category | String | Yes      | The category of emission. See the documentation for acceptable values                              |
+| activity | String | Yes      | The activity within the category. See the documentation for acceptable values and unit of measures |
+| value    | Number | Yes      | The measure of activity. If a NULL or \<0 is entered, it is set to 1.00                            |
+
+## Example of Response Payload
+
+```
+    {
+      "data": {
+        "type": "SEFR Estimation",
+        "category": "Fuel Combustion",
+        "activity": "Biodiesel",
+        "value": 4,
+        "unit": "metric ton",
+        "co2e_gm": 26244,
+        "co2e_kg": 26.24,
+        "co2e_mt": 0.03,
+        "co2e_lb": 57.85,
+        "explanation": "An emission factor of 6.561 kg CO2e per metric ton is used for Biodiesel within the category of Fuel Combustion. The values are dated 2024 from National Environment Agency (NEA), Singapore. The applicable standard mentioned as 2006 IPCC Guidelines for National Greenhouse Gas Inventories. According to SEFR description, This datapoint references default CO2, CH4 and N2O emission factors in net calorific values from the 2006 IPCC Guidelines (unless stated otherwise) and the IPCC Fifth Assessment Report (AR5). This datapoint is also referenced in NEA's Carbon Tax Calculator for companies under the Carbon Pricing Act (CPA). For CPA companies who wish to do the Carbon Tax calculation, please refer to NEA website directly. (https://www.nea.gov.sg/our-services/climate-change-energy-efficiency/climate-change/carbon-tax). The IPCC version is AR5. Only includes emissions from the combustion of the fuel. For the value of 4, the total footprint evaluates to 26,244 grams of CO2e. Standardized metric conversions render this as 26.24 kg (rounded to two decimal places) or 0.03 metric tons. Scaled against imperial baselines using the conversion factor of 2.20462 (source: GHG conversion factors, 2026), the final metric is expressed as 57.85 lbs."
+      },
+      "success": true,
+      "status": 200
+    }
+
+```
+
+## Acceptable values of activities and their units
+
+This table maps the unit to the acticity within the category:
+
+| Category                                        | Unit           | Activity                                                                                                  |
+| ----------------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------- |
+| Building Production                             | kg             | 1 m^2 of 26 Gauge Electrogalvanised Steel Air Ducts                                                       |
+|                                                 |                | 1m^3 of Recycled Aluminium Cable Truncking                                                                |
+|                                                 |                | Carpet Tiles                                                                                              |
+|                                                 |                | Cement (OPC)                                                                                              |
+|                                                 |                | Ceramic Tiles                                                                                             |
+|                                                 |                | Coarse Aggregates                                                                                         |
+|                                                 |                | Concrete (Natural) Grade 30                                                                               |
+|                                                 |                | Concrete (Natural) Grade 40                                                                               |
+|                                                 |                | Concrete (Natural) Grade 50                                                                               |
+|                                                 |                | Copper Pipe                                                                                               |
+|                                                 |                | Cross Lamininated Timber                                                                                  |
+|                                                 |                | Double Glazed Glass                                                                                       |
+|                                                 |                | Eco Concrete (15% Fly Ash Replacement) Grade 30                                                           |
+|                                                 |                | Eco Concrete (15% Fly Ash Replacement) Grade 40                                                           |
+|                                                 |                | Eco Concrete (15% Fly Ash Replacement) Grade 50                                                           |
+|                                                 |                | Eco Concrete (25% GGBS Replacement) Grade 30                                                              |
+|                                                 |                | Eco Concrete (25% GGBS Replacement) Grade 40                                                              |
+|                                                 |                | Eco Concrete (25% GGBS Replacement) Grade 50                                                              |
+|                                                 |                | Eco Concrete (30% Fly Ash Replacement) Grade 30                                                           |
+|                                                 |                | Eco Concrete (30% Fly Ash Replacement) Grade 40                                                           |
+|                                                 |                | Eco Concrete (30% Fly Ash Replacement) Grade 50                                                           |
+|                                                 |                | Eco Concrete (50% GGBS Replacement) Grade 30                                                              |
+|                                                 |                | Eco Concrete (50% GGBS Replacement) Grade 40                                                              |
+|                                                 |                | Eco Concrete (50% GGBS Replacement) Grade 50                                                              |
+|                                                 |                | General Clay Bricks                                                                                       |
+|                                                 |                | Glue Laminated Timber                                                                                     |
+|                                                 |                | HDPE Pipe                                                                                                 |
+|                                                 |                | Laminated Glass                                                                                           |
+|                                                 |                | Lightning Protection Systems                                                                              |
+|                                                 |                | Mineral Fiber Board                                                                                       |
+|                                                 |                | Polyvinyl Chloride (PVC) Waterproofing                                                                    |
+|                                                 |                | Precast Concrete (Natural) Grade 30                                                                       |
+|                                                 |                | Precast Concrete (Natural) Grade 40                                                                       |
+|                                                 |                | Precast Concrete (Natural) Grade 50                                                                       |
+|                                                 |                | Precast Eco Concrete (15% Fly Ash Replacement) Grade 30                                                   |
+|                                                 |                | Precast Eco Concrete (15% Fly Ash Replacement) Grade 40                                                   |
+|                                                 |                | Precast Eco Concrete (15% Fly Ash Replacement) Grade 50                                                   |
+|                                                 |                | Precast Eco Concrete (25% GGBS Replacement) Grade 30                                                      |
+|                                                 |                | Precast Eco Concrete (25% GGBS Replacement) Grade 40                                                      |
+|                                                 |                | Precast Eco Concrete (25% GGBS Replacement) Grade 50                                                      |
+|                                                 |                | Precast Eco Concrete (30% Fly Ash Replacement) Grade 30                                                   |
+|                                                 |                | Precast Eco Concrete (30% Fly Ash Replacement) Grade 40                                                   |
+|                                                 |                | Precast Eco Concrete (30% Fly Ash Replacement) Grade 50                                                   |
+|                                                 |                | Precast Eco Concrete (50% GGBS Replacement) Grade 30                                                      |
+|                                                 |                | Precast Eco Concrete (50% GGBS Replacement) Grade 40                                                      |
+|                                                 |                | Precast Eco Concrete (50% GGBS Replacement) Grade 50                                                      |
+|                                                 |                | Primary Steel                                                                                             |
+|                                                 |                | Primary Steel Section                                                                                     |
+|                                                 |                | PVC Pipe                                                                                                  |
+|                                                 |                | Recycled Concrete Aggregates (RCA)                                                                        |
+|                                                 |                | Recycled Steel                                                                                            |
+|                                                 |                | Recycled Steel Section                                                                                    |
+|                                                 |                | Sand                                                                                                      |
+|                                                 |                | Sheet Aluminium Recycled                                                                                  |
+|                                                 |                | Sheet Aluminium Virgin                                                                                    |
+|                                                 |                | Tempered Glass                                                                                            |
+|                                                 |                | Washed Copper Slag (WCS)                                                                                  |
+|                                                 |                | Waterborne Paint                                                                                          |
+|                                                 | kW             | Pumps                                                                                                     |
+|                                                 |                | Split Unit Air-Conditioning System                                                                        |
+|                                                 | m              | 450/750 V CU/PVC, Non-sheathed Cables                                                                     |
+|                                                 | m3/hr          | Air Handling Units                                                                                        |
+|                                                 | metric ton\*km | Passenger Lifts                                                                                           |
+|                                                 | TR             | Water-Cooled Chillers                                                                                     |
+|                                                 | unit           | 1 Escalator with 10m Vertical Rise and 30° inclination angle                                              |
+|                                                 |                | 1 Travellator with 10m Horizontal Run                                                                     |
+|                                                 |                | 10kW Thermal Capacity Air-Water (Monoblock) Heat Pumps with Single Fan                                    |
+|                                                 |                | 1kg of Insulations                                                                                        |
+|                                                 |                | a 50kW Variable Refrigerant Flow (VRF) Condenser Unit with R410A Refrigerant                              |
+|                                                 |                | Cassette Fan Coil Units                                                                                   |
+|                                                 |                | Cooling Towers                                                                                            |
+|                                                 |                | Distribution Mineral Oil Transformers                                                                     |
+|                                                 |                | Distribution Synthetic/Mineral Ester Transformers                                                         |
+|                                                 |                | LED Lighting Fixtures                                                                                     |
+|                                                 |                | Power Distribution Mineral Oil Transformers                                                               |
+|                                                 |                | Power Distribution Synthetic/Mineral Ester Transformers                                                   |
+|                                                 |                | Switchboards                                                                                              |
+|                                                 |                | Switchgears                                                                                               |
+|                                                 |                | Uninterruptible Power Supplies (UPS) with Energy Storage System of Wattage > 10000W                       |
+|                                                 |                | Uninterruptible Power Supplies (UPS) with Energy Storage System of Wattage > 1500W and ≤ 5000W            |
+|                                                 |                | Uninterruptible Power Supplies (UPS) with Energy Storage System of Wattage > 5000W and ≤ 10000W           |
+|                                                 |                | Uninterruptible Power Supplies (UPS) with Energy Storage System of Wattage ≤ 1500W                        |
+|                                                 |                | Uninterruptible Power Supplies (UPS) without Energy Storage System of Wattage > 10000W                    |
+|                                                 |                | Uninterruptible Power Supplies (UPS) without Energy Storage System of Wattage > 1500W and ≤ 5000W         |
+|                                                 |                | Uninterruptible Power Supplies (UPS) without Energy Storage System of Wattage > 5000W and ≤ 10000W        |
+|                                                 |                | Uninterruptible Power Supplies (UPS) without Energy Storage System of Wattage ≤ 1500W                     |
+|                                                 |                | Variable Air Volume (VAV) Boxes                                                                           |
+|                                                 | Wp             | Solar PhotoVoltaics (PV)                                                                                  |
+| Fuel Combustion                                 | metric ton     | Anthracite                                                                                                |
+|                                                 |                | Aviation Gasoline                                                                                         |
+|                                                 |                | Biodiesel                                                                                                 |
+|                                                 |                | Biogasoline                                                                                               |
+|                                                 |                | Bitumen                                                                                                   |
+|                                                 |                | Blast Furnace Gas                                                                                         |
+|                                                 |                | Brown Coal Briquettes                                                                                     |
+|                                                 |                | Charcoal                                                                                                  |
+|                                                 |                | Coal Tar                                                                                                  |
+|                                                 |                | Coke Oven Coke / Lignite Coke                                                                             |
+|                                                 |                | Coke Oven Gas                                                                                             |
+|                                                 |                | Coking Coal                                                                                               |
+|                                                 |                | Crude Oil                                                                                                 |
+|                                                 |                | Ethane                                                                                                    |
+|                                                 |                | Gas / Diesel Oil                                                                                          |
+|                                                 |                | Gas / Diesel Oil (high sulphur)                                                                           |
+|                                                 |                | Gas Coke                                                                                                  |
+|                                                 |                | Industrial Waste                                                                                          |
+|                                                 |                | Jet Gasoline                                                                                              |
+|                                                 |                | Jet Kerosene                                                                                              |
+|                                                 |                | Landfill Gas                                                                                              |
+|                                                 |                | Lignite                                                                                                   |
+|                                                 |                | Liquefied Petroleum Gas                                                                                   |
+|                                                 |                | Lubricants                                                                                                |
+|                                                 |                | Motor Gasoline                                                                                            |
+|                                                 |                | Naphtha                                                                                                   |
+|                                                 |                | Natural Gas                                                                                               |
+|                                                 |                | Natural Gas Liquids                                                                                       |
+|                                                 |                | Oil Shale and Tar Sands                                                                                   |
+|                                                 |                | Orimulsion                                                                                                |
+|                                                 |                | Other Biogas                                                                                              |
+|                                                 |                | Other Bituminous Coal                                                                                     |
+|                                                 |                | Other Kerosene                                                                                            |
+|                                                 |                | Other Liquid Biofuel                                                                                      |
+|                                                 |                | Other Petroleum Products                                                                                  |
+|                                                 |                | Other Primary Solid Biomass                                                                               |
+|                                                 |                | Oxygen Steel Furnace Gas                                                                                  |
+|                                                 |                | Paraffin Waxes                                                                                            |
+|                                                 |                | Patent Fuel                                                                                               |
+|                                                 |                | Peat                                                                                                      |
+|                                                 |                | Petroleum Coke                                                                                            |
+|                                                 |                | Refinery Feedstocks                                                                                       |
+|                                                 |                | Refinery Gas                                                                                              |
+|                                                 |                | Residual Fuel Oil                                                                                         |
+|                                                 |                | Shale Oil                                                                                                 |
+|                                                 |                | Sludge Gas                                                                                                |
+|                                                 |                | Sub-bituminous coal                                                                                       |
+|                                                 |                | Sulphite Lyes (Black Liquor)                                                                              |
+|                                                 |                | Town Gas (Gas Work Gas)                                                                                   |
+|                                                 |                | Waste Oils                                                                                                |
+|                                                 |                | White Spirit and Special Boiling Point Spirit                                                             |
+|                                                 |                | Wood / Wood waste                                                                                         |
+|                                                 | mmBTU          | Natural Gas (in Gross Calorific Value)                                                                    |
+| Greenhouse Gases                                | kg             | (E)-HFC-1225ye (CF3CF=CHF(E))                                                                             |
+|                                                 |                | (E)-HFC-1234ze (trans-CF3CH=CHF)                                                                          |
+|                                                 |                | (Z)-HFC-1225ye (CF3CF=CHF(Z))                                                                             |
+|                                                 |                | (Z)-HFC-1234ze (CF3CH=CHF(Z))                                                                             |
+|                                                 |                | (Z)-HFC-1336 (CF3CH=CHCF3(Z))                                                                             |
+|                                                 |                | 3,3,4,4,5,5,6,6,6-Nonafluorohex-1-ene (C4F9CH=CH2)                                                        |
+|                                                 |                | 3,3,4,4,5,5,6,6,7,7,8,8,8-Tridecafluorooct-1-ene (C6F13CH=CH2)                                            |
+|                                                 |                | 3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,10-Heptadecafluorodec-1-ene  (C8F17CH=CH2)                              |
+|                                                 |                | Carbon dioxide (CO2)                                                                                      |
+|                                                 |                | Hexafluoro-1,3-butadiene (C4F6)                                                                           |
+|                                                 |                | HFC-1132a (CH2=CF2)                                                                                       |
+|                                                 |                | HFC-1141 (CH2=CHF)                                                                                        |
+|                                                 |                | HFC-1234yf (CF3CF=CH2)                                                                                    |
+|                                                 |                | HFC-1243zf (CF3CH=CH2)                                                                                    |
+|                                                 |                | HFC-125 (CHF2CF3)                                                                                         |
+|                                                 |                | HFC-134 (CHF2CHF2)                                                                                        |
+|                                                 |                | HFC-1345zfc (C2F5CH=CH2)                                                                                  |
+|                                                 |                | HFC-134a (CH2FCF3)                                                                                        |
+|                                                 |                | HFC-143 (CH2FCHF2)                                                                                        |
+|                                                 |                | HFC-143a (CH3CF3)                                                                                         |
+|                                                 |                | HFC-152 (CH2FCH2F)                                                                                        |
+|                                                 |                | HFC-152a (CH3CHF2)                                                                                        |
+|                                                 |                | HFC-161 (CH3CH2F)                                                                                         |
+|                                                 |                | HFC-227ca (CF3CF2CHF2)                                                                                    |
+|                                                 |                | HFC-227ea (CF3CHFCF3)                                                                                     |
+|                                                 |                | HFC-23 (CHF3)                                                                                             |
+|                                                 |                | HFC-236cb (CH2FCF2CF3)                                                                                    |
+|                                                 |                | HFC-236ea (CHF2CHFCF3)                                                                                    |
+|                                                 |                | HFC-236fa (CF3CH2CF3)                                                                                     |
+|                                                 |                | HFC-245ca (CH2FCF2CHF2)                                                                                   |
+|                                                 |                | HFC-245cb (CF3CF2CH3)                                                                                     |
+|                                                 |                | HFC-245ea (CHF2CHFCHF2)                                                                                   |
+|                                                 |                | HFC-245eb (CH2FCHFCF3)                                                                                    |
+|                                                 |                | HFC-245fa (CHF2CH2CF3)                                                                                    |
+|                                                 |                | HFC-263fb (CH3CH2CF3)                                                                                     |
+|                                                 |                | HFC-272ca (CH3CF2CH3)                                                                                     |
+|                                                 |                | HFC-32 (CH2F2)                                                                                            |
+|                                                 |                | HFC-329p (CHF2CF2CF2CF3)                                                                                  |
+|                                                 |                | HFC-365mfc (CH3CF2CH2CF3)                                                                                 |
+|                                                 |                | HFC-41 (CH3F)                                                                                             |
+|                                                 |                | HFC-43-10mee (CF3CHFCHFCF2CF3)                                                                            |
+|                                                 |                | Methane (CH4)                                                                                             |
+|                                                 |                | Nitrogen trifluoride (NF3)                                                                                |
+|                                                 |                | Nitrous oxide (N2O)                                                                                       |
+|                                                 |                | Octafluorocyclopentene (C5F8)                                                                             |
+|                                                 |                | Perfluorobut-1-ene (CF3CF2CF=CF2)                                                                         |
+|                                                 |                | Perfluorobut-2-ene (CF3CF=CFCF3)                                                                          |
+|                                                 |                | Perfluorobuta-1,3-diene (CF2=CFCF=CF2)                                                                    |
+|                                                 |                | Perfluorocyclopentene (c-C5F8)                                                                            |
+|                                                 |                | Perfluorodecalin (cis) (Z-C10F18)                                                                         |
+|                                                 |                | Perfluorodecalin (trans) (E-C10F18)                                                                       |
+|                                                 |                | PFC-1114 (CF2=CF2)                                                                                        |
+|                                                 |                | PFC-116 (C2F6)                                                                                            |
+|                                                 |                | PFC-1216 (CF3CF=CF2)                                                                                      |
+|                                                 |                | PFC-14 (CF4)                                                                                              |
+|                                                 |                | PFC-218 (C3F8)                                                                                            |
+|                                                 |                | PFC-31-10 (C4F10)                                                                                         |
+|                                                 |                | PFC-318 (c-C4F8)                                                                                          |
+|                                                 |                | PFC-41-12 (n-C5F12)                                                                                       |
+|                                                 |                | PFC-51-14 (n-C6F14)                                                                                       |
+|                                                 |                | PFC-61-16 (n-C7F16)                                                                                       |
+|                                                 |                | PFC-71-18 (C8F18)                                                                                         |
+|                                                 |                | PFC-91-18 (C10F18)                                                                                        |
+|                                                 |                | PFC-c216 (c-C3F6)                                                                                         |
+|                                                 |                | R-401A (13% HFC-152a)                                                                                     |
+|                                                 |                | R-401B (11% HFC-152a)                                                                                     |
+|                                                 |                | R-401C (15% HFC-152a)                                                                                     |
+|                                                 |                | R-402A (60% HFC125)                                                                                       |
+|                                                 |                | R-402B (38% HFC125)                                                                                       |
+|                                                 |                | R-403A (20% PFC-218)                                                                                      |
+|                                                 |                | R-403B (39% PFC-218)                                                                                      |
+|                                                 |                | R-404A (44% HFC-125; 52% HFC -143a; 4% HFC-134a)                                                          |
+|                                                 |                | R-405A (7% HFC-152a; 42.5% PFC-318)                                                                       |
+|                                                 |                | R-407A (20% HFC-32; 40% HFC-125; 40% HFC-134a)                                                            |
+|                                                 |                | R-407B (10% HFC-32; 70% HFC-125; 20% HFC-134a)                                                            |
+|                                                 |                | R-407C (23% HFC-32; 25% HFC-125; 52% HFC-134a)                                                            |
+|                                                 |                | R-407D (15% HFC-32; 15% HFC-125; 70% HFC-134a)                                                            |
+|                                                 |                | R-407E (25% HFC-32; 15% HFC-125; 60% HFC-134a)                                                            |
+|                                                 |                | R-407F  (30% HFC-32; 30% HFC-125 40% HFC-134a)                                                            |
+|                                                 |                | R-408A (7%  HFC-125; 46% HFC-143a)                                                                        |
+|                                                 |                | R-410A (50% HFC-32; 50% HFC-125)                                                                          |
+|                                                 |                | R-410B (45% HFC-32; 55% HFC-125)                                                                          |
+|                                                 |                | R-411A (11% HFC-152a)                                                                                     |
+|                                                 |                | R-411B (3% HFC-152a)                                                                                      |
+|                                                 |                | R-411C (1.5% HFC-152a)                                                                                    |
+|                                                 |                | R-412A (5% PFC-218)                                                                                       |
+|                                                 |                | R-413A (9% PFC-218; 88% HFC-134a)                                                                         |
+|                                                 |                | R-415A (18% HFC-152a)                                                                                     |
+|                                                 |                | R-415B (75% HFC-152a)                                                                                     |
+|                                                 |                | R-416A (59% HFC-134a)                                                                                     |
+|                                                 |                | R-417A (46.6% HFC-125; 50% HFC-134a)                                                                      |
+|                                                 |                | R-418A (2.5% HFC-152a)                                                                                    |
+|                                                 |                | R-419A (77% HFC-125; 19% HFC-134a)                                                                        |
+|                                                 |                | R-420A (88% HFC-134a)                                                                                     |
+|                                                 |                | R-421A (58% HFC-125; 42% HFC-134a)                                                                        |
+|                                                 |                | R-421B (85% HFC-125; 15% HFC-134a)                                                                        |
+|                                                 |                | R-422A (85.1% HFC-125; 11.5% HFC-134a)                                                                    |
+|                                                 |                | R-422B (55% HFC-125; 42% HFC-134a)                                                                        |
+|                                                 |                | R-422C (82% HFC-125; 15% HFC-134a)                                                                        |
+|                                                 |                | R-422D (65.1% HFC-125; 31.5% HFC-134a)                                                                    |
+|                                                 |                | R-427A (15% HFC-32; 25% HFC-125; 10% HFC-143a; 50% HFC-134a)                                              |
+|                                                 |                | R-438A (8.5% HFC-32; 45% HFC-125; 44.2% HFC-134a)                                                         |
+|                                                 |                | R-442A (31% HFC-32; 31% HFC-125; 30% HFC-134a; 3% HFC-152a; 5% HFC-227ea)                                 |
+|                                                 |                | R-448A (26% HFC-32; 26% HFC-125; 21% HFC-134a; 20% HFC-1234yf; 7% (E)-HFC-1234ze)                         |
+|                                                 |                | R-449A (24.3% HFC-32; 24.7% HFC-125; 25.7% HFC-134a; 25.3% HFC-1234yf)                                    |
+|                                                 |                | R-452A (11% HFC-32; 59% HFC-125; 30% HFC-1234yf)                                                          |
+|                                                 |                | R-500 (26.2% HFC-152a)                                                                                    |
+|                                                 |                | R-503 (40.1% HFC-23)                                                                                      |
+|                                                 |                | R-504 (48.2% HFC-32)                                                                                      |
+|                                                 |                | R-507A  (50% HFC-125; 50% HFC-143a)                                                                       |
+|                                                 |                | R-508A (39% HFC-23; 61% PFC-116)                                                                          |
+|                                                 |                | R-508B (46% HFC-23; 54% PFC-116)                                                                          |
+|                                                 |                | R-509A (56% PFC-218)                                                                                      |
+|                                                 |                | Sulphur hexafluoride (SF6)                                                                                |
+| Industrial Processes And Product Use            | m3             | Flaring in Conventional Oil Production                                                                    |
+|                                                 |                | Flaring in Gas Production                                                                                 |
+|                                                 |                | Flaring in Heavy Oil /Cold Bitumen Production                                                             |
+|                                                 |                | Flaring in Sour Gas Production                                                                            |
+|                                                 |                | Flaring in Sweet Gas Production                                                                           |
+|                                                 |                | Flaring in Thermal Oil Production                                                                         |
+|                                                 | metric ton     | Ethylene Oxide Production, Air Process with thermal Abatement, Catalyst Selectivity (70 %, Default)       |
+|                                                 |                | Ethylene Oxide Production, Air Process with thermal Abatement, Catalyst Selectivity (75 %)                |
+|                                                 |                | Ethylene Oxide Production, Air Process with thermal Abatement, Catalyst Selectivity (80 %)                |
+|                                                 |                | Ethylene Oxide Production, Air Process without thermal Abatement, Catalyst Selectivity (70 %, Default)    |
+|                                                 |                | Ethylene Oxide Production, Air Process without thermal Abatement, Catalyst Selectivity (75 %)             |
+|                                                 |                | Ethylene Oxide Production, Air Process without thermal Abatement, Catalyst Selectivity (80 %)             |
+|                                                 |                | Ethylene Oxide Production, Oxygen Process with thermal Abatement, Catalyst Selectivity (75 %, Default)    |
+|                                                 |                | Ethylene Oxide Production, Oxygen Process with thermal Abatement, Catalyst Selectivity (80 %)             |
+|                                                 |                | Ethylene Oxide Production, Oxygen Process with thermal Abatement, Catalyst Selectivity (85 %)             |
+|                                                 |                | Ethylene Oxide Production, Oxygen Process without thermal Abatement, Catalyst Selectivity (75 %, Default) |
+|                                                 |                | Ethylene Oxide Production, Oxygen Process without thermal Abatement, Catalyst Selectivity (80 %)          |
+|                                                 |                | Ethylene Oxide Production, Oxygen Process without thermal Abatement, Catalyst Selectivity (85 %)          |
+|                                                 |                | Ethylene Production, Butane feedstock                                                                     |
+|                                                 |                | Ethylene Production, Ethane feedstock                                                                     |
+|                                                 |                | Ethylene Production, Gas Oil feedstock                                                                    |
+|                                                 |                | Ethylene Production, Naphtha feedstock                                                                    |
+|                                                 |                | Ethylene Production, Propane feedstock                                                                    |
+|                                                 |                | Operation af Electric Arc Furnance (EAF)                                                                  |
+|                                                 |                | Operation hf Open Hearth Furnace (OHF)                                                                    |
+|                                                 |                | Operation of Basic Oxygen Furnace (BOF)                                                                   |
+|                                                 |                | Operation of Coke Oven                                                                                    |
+|                                                 |                | Production of Direct Reduced Iron                                                                         |
+|                                                 |                | Production of Iron                                                                                        |
+|                                                 |                | Production of Pellet                                                                                      |
+|                                                 |                | Production of Sinter                                                                                      |
+| Information And Communications Technology (Ict) | copy-GB-month  | Cloud Storage - Cold Tier                                                                                 |
+|                                                 |                | Cloud Storage - Hot Tier                                                                                  |
+|                                                 | Instance-hour  | Virtual Machine - Compute Optimized                                                                       |
+|                                                 |                | Virtual Machine - General Purpose                                                                         |
+|                                                 |                | Virtual Machine - Memory Optimized                                                                        |
+| Land Transport                                  | person\*km     | Battery Electric Car                                                                                      |
+|                                                 |                | Hybrid Car                                                                                                |
+|                                                 |                | Internal Combustion Engine (ICE) Car                                                                      |
+|                                                 |                | Public Bus                                                                                                |
+|                                                 |                | Train                                                                                                     |
+| Purchased Energy                                | kWh            | Operating Margin Grid Emissions Factor                                                                    |
+|                                                 |                | Upstream Fugitive Methane Emissions Factor                                                                |
+| Waste Inceration                                | kg             | Food                                                                                                      |
+|                                                 |                | Garden And Park                                                                                           |
+|                                                 |                | Glass                                                                                                     |
+|                                                 |                | Metal                                                                                                     |
+|                                                 |                | Nappies                                                                                                   |
+|                                                 |                | Other                                                                                                     |
+|                                                 |                | Paper/Cardboard                                                                                           |
+|                                                 |                | Plastics                                                                                                  |
+|                                                 |                | Rubber And Leather                                                                                        |
+|                                                 |                | Textile                                                                                                   |
+|                                                 |                | Wood Products                                                                                             |
+| Water                                           | m3             | Potable Water and NEWater                                                                                 |

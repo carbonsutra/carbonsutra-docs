@@ -1,0 +1,70 @@
+# Emissions from Hotel Stay
+
+Returns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) based on country of hotel, length of stay, room count, and hotel star rating.
+
+CarbonSutra's approach for calculating the carbon footprint of hotel stays is based on Cornell Hotel Sustainability Benchmark Index and UK government's GHG conversion factors published in 2026.
+
+operationId: calculate_emissions_from_hotel_stay
+
+## Payload Specification
+
+| Field | Type | Required | Default | Description | Example |
+| --- | --- | --- | --- | --- | --- |
+| country_code | String | Yes | \- | Two digit ISO 3166-1 alpha-2 country code. Allowed: \[ae , ar , at , au , be , ca , ch , cn , co , cr , cz , de , do , eg , es , fr , gb , gr , hk , id , in , it , jp , kr , mx , my , nl , pa , pl , pr , pt , qa , sa , sg , th , tr , tw , us , vn , za\] | us |
+| city_name | String | No | \- | City of hotel within the country | Chicago |
+| hotel_rating | Number | No | 4 | Expedia star rating classification of the hotel. Allowed: \[2-5\] | 5 |
+| number_of_nights | Number | No | 1 | Length of stay in nights | 3 |
+| number_of_rooms | Number | No | 1 | Number of rooms booked, irrespective of count of persons per room | 1 |
+| cluster_name | String | No | \- | Identifier to log and aggregate these results under using the Cluster Data API | KrugerBrent_ID701_Jun26 |
+
+## Example
+
+### Request Payload
+```
+import http.client
+conn = http.client.HTTPSConnection("carbonsutra1.p.rapidapi.com")
+payload = "country_code=IN&city_name=MUMBAI&hotel_rating=4&number_of_nights=3&number_of_rooms=1"
+headers = {
+    'content-type': "application/x-www-form-urlencoded",
+    'Authorization': "Bearer <AUTHORIZATION_TOKEN>",
+    'X-RapidAPI-Key': "<AUTHORIZATION_KEY>",
+    'X-RapidAPI-Host': "carbonsutra1.p.rapidapi.com"
+    }
+conn.request("POST", "/hotel_estimate", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+```
+### Response Payload
+```
+{
+  "data": {
+    "type": "estimate-hotel-stay",
+    "country": "India",
+    "city_name": "Mumbai",
+    "hotel_rating": "4",
+    "number_of_nights": "3",
+    "number_of_rooms": "1",
+    "co2e_gm": 182160,
+    "co2e_kg": 182.16,
+    "co2e_mt": 0.18,
+    "co2e_lb": 401.59,
+    "explanation": "CarbonSutra uses the Cornell Hotel Sustainability Benchmarking Index 2026 (CHSB2026) for this calculation, specifically leveraging the mean value from the CHSB validity test for Measure 1 - HCMI Room Night Emission (Carbon Category). Because specific emission factors for Mumbai are unlisted in CHSB2026, fallback data for India has been applied to this calculation of one room and 3 nights. This methodology relies on the Expedia Star Rating classification system. Where regional data gaps exist, proxy assignments are made according to the transparent governance rules published on carbonsutra.com. For the hotel rating of four stars, an emission factor of 60.72 kgCO2e per room night is used. This footprint evaluates to 182,160 grams of CO2e. Standardized unit conversions render this as 182.16 kg (rounded to two decimal places) or 0.18 metric tons. Scaled against imperial baselines using the conversion factor of 2.20462 (source: GHG conversion factors, 2026), the final metric is expressed as 401.59 lbs. "
+  },
+  "success": true,
+  "status": 200
+}
+```
+## Countries (and COUNTRY_CODE) supported by API:
+
+Argentina(AR), Australia(AU), Austria(AT), Belgium(BE), Canada(CA), China(CN), Colombia(CO), Costa Rica(CR), Czech Republic(CZ), Dominican Republic(DO), Egypt(EG), France(FR), Germany(DE), Greece(GR), Hong Kong(HK), India(IN), Indonesia(ID), Italy(IT),Japan(JP), Korea(KR), Malaysia(MY), Mexico(MX), Netherlands(NL), Panama(PA), Poland(PL), Portugal(PT), Puerto Rico(PR), Qatar(QA), Saudi Arabia(SA), Singapore(SG), South Africa(ZA), Spain(ES), Switzerland(CH), Taiwan(TW), Thailand(TH), Turkey(TR), United Arab Emirates(AE), United Kingdom(GB), United States of America(US) and Vietnam(VN).
+
+## Notes on Star Ratings:
+
+From CHSB 2026 Index, only the star classification is used. It refers to the Expedia star rating. Not all countries have all stars. CarbonSutra transparently uses the following set of rules:
+
+- If 5 star is selected but is absent in database for that country, then the maximum value of any other star category for that country is used.
+- If 4 star is selected but it is absent in database, it is considered as 5 star.
+- If 3 star is selected but it is absent in database, it is considered as 4 star.
+- If 2 star is selected but it is absent in database, it is considered as 4 star.
+- If no star is selected (as it is optional), the average emission factor of all other stars for that country is used.

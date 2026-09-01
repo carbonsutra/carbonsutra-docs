@@ -1,0 +1,65 @@
+## Emissions from Vehicles (by Model)
+
+Returns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for travel in vehicles based on its make and model.
+
+145 Makes and 5,000+ models are covered. To get the specific name of make and model, use the supplementary APIs or access the database in this documentation.  
+
+operationId: calculate_emissions_from_vehicle_usage_based_on_make_and_model
+
+## Payload Specification
+
+| Field | Type | Required | Description | Example |
+| --- | --- | --- | --- | --- |
+| vehicle_make | String | Yes | Name of Vehicle Make. Retrieve it from Supplementary API or shared link | Lexus |
+| vehicle_model | String | Yes | Name of Vehicle Model. Retrieve it from Supplementary API or shared link | RX 300 |
+| distance_unit | String | Yes | Enter "km" for kilometers and "mi" for miles. Default is "mi". Allowed values: \["km", "mi"\] | km |
+| distance_value | Number | Yes | Distance travelled. If an undefined value is passed, it will be set to 1.00 | 850 |
+| cluster_name | String | No | Identifier to log and aggregate these results under using the Cluster Data API | KrugerBrent_ProjectTwo_2026 |
+
+## Approach
+
+We use emission factors, data, guidelines from sources like US Department of Energy, US Environmental Protection Agency and UK Society of Motor Manufacturers and Traders. To simplify the usage we have made two minor modifications in our algorithm: First, for dual fuel vehicles, the average of emissions from its conventional and alternative fuels is used. Second, if a model is released across multiple years by the same maker, then the emissions for that model are averaged.
+
+The API to calculate the emission is simple: it just takes the Make and Model of a vehicle along with the distance travelled to calculate the emission. As our database contains over 145 Makes which cover 5,000+ models of vehicles, we are providing two more APIs to get these values. In case there are specific models that you are calculating the emissions, the use of these two APIs is optional as the value of Make and Model can be picked from the database that is provided in Notes.
+
+## Example
+
+### Request Payload
+
+```
+import http.client
+conn = http.client.HTTPSConnection("carbonsutra1.p.rapidapi.com")
+payload = "vehicle_make=Lexus&vehicle_model=RX%20300&distance_value=19000&distance_unit=km"
+headers = {
+    'content-type': "application/x-www-form-urlencoded",
+    'Authorization': "Bearer <AUTHORIZATION_TOKEN>",
+    'X-RapidAPI-Key': "<AUTHORIZATION_KEY>",
+    'X-RapidAPI-Host': "carbonsutra1.p.rapidapi.com"
+    }
+conn.request("POST", "/vehicle_estimate_by_model", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+```
+### Response Payload
+```
+{
+  "data": {
+    "type": "estimate-vehicle",
+    "distance_unit": "km",
+    "distance_value": "19000",
+    "vehicle_make": "Lexus",
+    "vehicle_model": "RX 300",
+    "co2e_gm": 5706197,
+    "co2e_kg": 5706.2,
+    "co2e_mt": 5.71,
+    "co2e_lb": 12579.89
+  },
+  "success": true,
+  "status": 200
+}
+```
+## Notes
+
+1. If you do not know the make and model of vehicle, we suggest to use the API which calculates emissions by Vehicle Type.
+2. The use of two APIs to get Make and Model is optional, esp if you know the Model for which you are estimating the emissions. We have made the entire database available here, which is structured by an alphabetical list of Models for every Make used by the API.

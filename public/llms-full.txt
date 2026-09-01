@@ -1,0 +1,392 @@
+# CarbonSutra
+
+> CarbonSutra is an API-first carbon emissions estimation platform designed to simplify greenhouse gas emissions calculations for organizations, developers, sustainability teams, and AI applications.
+
+## Overview
+
+CarbonSutra provides programmatic tools for estimating carbon emissions across common business activities.
+
+The platform supports calculations covering:
+
+- Scope 1 emissions
+- Scope 2 emissions
+- Scope 3 emissions
+- Business air travel
+- Hotel stays
+- Vehicle usage
+- Freight and shipments
+- eCommerce shipments
+- Fuel consumption
+- Electricity consumption
+
+CarbonSutra is designed to remove the complexity of manually implementing emissions calculations, sourcing conversion factors, resolving logistics information, and maintaining calculation methodologies.
+
+## Core Capabilities
+
+### Production-Ready APIs
+
+CarbonSutra exposes REST APIs for calculating emissions from operational activity data.
+
+The APIs can be integrated into:
+
+- Enterprise applications
+- ESG platforms
+- Sustainability dashboards
+- Travel management systems
+- Logistics platforms
+- Procurement systems
+- ERP systems
+- eCommerce applications
+- Internal carbon accounting tools
+- AI agents and assistants
+
+The complete API specification is available in the API Reference.
+
+[API Reference](/api)
+
+## Estimation APIs
+
+### Flights
+
+The Flights API calculates carbon emissions associated with air travel.
+
+It can be used for:
+
+- Business travel
+- Employee travel
+- Corporate travel reporting
+- Travel management platforms
+- Scope 3 business travel calculations
+
+[Flights API](/estimation_apis/flights)
+
+### Hotels
+
+The Hotels API estimates emissions associated with hotel stays.
+
+[Hotels API](/estimation_apis/hotels)
+
+### Vehicles
+
+CarbonSutra provides vehicle emission estimation APIs based on vehicle characteristics.
+
+Vehicle APIs include:
+
+- Vehicle emissions by type
+- Vehicle emissions by model
+
+[Vehicle by Type](/estimation_apis/vehicle/vehicle_by_type)
+
+[Vehicle by Model](/estimation_apis/vehicle/vehicles_by_model)
+
+### Freight and Shipments
+
+The Freight and Shipments API supports carbon estimation for logistics and transportation activities.
+
+It can be integrated into:
+
+- Supply chain systems
+- Procurement systems
+- Logistics platforms
+- Shipment tracking systems
+- Enterprise reporting systems
+
+[Freight and Shipments](/estimation_apis/freight_and_shipments)
+
+### eCommerce
+
+The eCommerce API provides emissions estimation for eCommerce shipments and related activities.
+
+[eCommerce API](/estimation_apis/ecommerce)
+
+### Fuel
+
+The Fuel API estimates emissions associated with fuel consumption.
+
+It can be used for:
+
+- Fleet fuel
+- Facility fuel
+- Operational fuel consumption
+- Carbon accounting workflows
+
+[Fuel API](/estimation_apis/fuel)
+
+### Electricity
+
+The Electricity API estimates emissions associated with electricity consumption.
+
+[Electricity API](/estimation_apis/electricity)
+
+# Supplementary APIs
+
+Supplementary APIs provide supporting data and calculations that can be used together with the primary emissions estimation APIs.
+
+## Airport APIs
+
+### Airport Search by Keyword
+
+Search for airports using a keyword or airport-related identifier.
+
+[Airport Search by Keyword](/supplementary_apis/Airports/airport_search_by_keyword)
+
+### Distance Between Two Airports
+
+Calculate the distance between two airports.
+
+[Distance Between Two Airports](/supplementary_apis/Airports/distance_between_two_airports)
+
+### Nearest Airport from Another Airport
+
+Find the nearest airport relative to another airport.
+
+[Nearest Airport from Another Airport](/supplementary_apis/Airports/nearest_airport_from_another_airport)
+
+### Nearest Airport from Postal Code
+
+Find the nearest airport associated with a postal code.
+
+[Nearest Airport from Postal Code](/supplementary_apis/Airports/nearest_airport_from_postal_code)
+
+## Vehicle Data APIs
+
+### List of Models by Vehicle Maker
+
+Retrieve vehicle models associated with a vehicle manufacturer.
+
+[List of Models by Vehicle Maker](/supplementary_apis/Vehicles/list_of_models_of_vehicle_maker)
+
+### List of Vehicle Makers
+
+Retrieve the supported vehicle manufacturers.
+
+[List of Vehicle Makers](/supplementary_apis/Vehicles/list_of_vehicle_makers)
+
+# Special APIs
+
+## Singapore Emission Factors Registry
+
+Provides access to Singapore emission factor registry information for emissions calculations.
+
+[Singapore Emission Factors Registry](/special_apis/singapore_emission_factor_registry)
+
+## GHG Equivalencies
+
+Provides GHG equivalency calculations for interpreting emissions in commonly understood equivalents.
+
+[GHG Equivalencies](/special_apis/ghg_equivalencies)
+
+## Estimated Flight Time Between Airports
+
+Provides estimated flight time information between airports.
+
+[Estimated Flight Time](/special_apis/estimated_flight_time)
+
+# Smart Features
+
+## Clustering
+
+CarbonSutra supports clustering and consolidation of emissions data.
+
+Clustering allows applications to organize calculated emissions under custom labels and retrieve grouped results.
+
+Typical uses include:
+
+- Department-level emissions
+- Project-level emissions
+- Location-level emissions
+- Quarterly reporting
+- Business-unit reporting
+- Carbon offsetting analysis
+
+[Clustering](/special_features/clustering)
+
+## Dynamic Explanations
+
+CarbonSutra can provide explanations alongside emissions calculations.
+
+These explanations help users understand:
+
+- Input interpretation
+- Calculation methodology
+- Conversion factors
+- Intermediate calculations
+- Final emissions values
+
+Dynamic explanations are useful when calculations need to be reviewed or audited.
+
+[Dynamic Explanations](/special_features/dynamic_explanations)
+
+## Smart Match
+
+Smart Match helps resolve and normalize user-provided information against supported data sources.
+
+This reduces the need for users to provide perfectly standardized input values.
+
+[Smart Match](/special_features/smart_match)
+
+# Google Sheets
+
+CarbonSutra provides custom Google Sheets functions for users who want to perform emissions calculations without directly integrating REST APIs.
+
+Examples include:
+
+- CO2FLIGHT
+- CO2HOTEL
+- CO2VEHICLEMODEL
+
+Google Sheets functions are useful for:
+
+- Bulk calculations
+- Operational data analysis
+- Sustainability reporting
+- Spreadsheet-based carbon accounting
+- Teams without development resources
+
+[Google Sheet Functions](/google_sheet_functions)
+
+# MCP Server
+
+CarbonSutra provides an MCP server for AI-native integrations.
+
+The MCP integration allows compatible AI assistants and agents to invoke CarbonSutra calculation tools using natural language workflows.
+
+Potential use cases include:
+
+- AI-powered carbon audits
+- Automated sustainability analysis
+- Procurement data analysis
+- Logistics emissions analysis
+- Carbon calculations from local files
+- Enterprise AI assistants
+- Agentic sustainability workflows
+
+[MCP Server](/mcp_server)
+
+# Audience
+
+CarbonSutra is designed for several primary audiences.
+
+## Developers and ISVs
+
+Developers can integrate CarbonSutra into:
+
+- ESG platforms
+- Enterprise applications
+- ERP systems
+- Travel platforms
+- Logistics applications
+- eCommerce platforms
+- Procurement systems
+
+The primary interface for developers is the REST API.
+
+## Sustainability Teams
+
+Sustainability professionals can use CarbonSutra to transform operational data into emissions estimates.
+
+Common data sources include:
+
+- Business travel records
+- Hotel records
+- Utility bills
+- Fuel consumption
+- Vehicle records
+- Shipment records
+- Procurement data
+
+Google Sheets functions can be useful for teams that do not want to build a custom API integration.
+
+## AI Engineers
+
+AI engineers can use the CarbonSutra MCP server to provide carbon calculation capabilities to AI assistants and autonomous agents.
+
+This allows users to request calculations through natural language while the underlying agent invokes structured CarbonSutra tools.
+
+[Audience and Intent](/audience_and_intent)
+
+# Getting Started
+
+Start with the Getting Started documentation to understand how to use CarbonSutra.
+
+[Getting Started](/getting_started)
+
+# API Playground
+
+The API Playground provides an interactive environment for exploring and testing API operations.
+
+[API Playground](/api-playground)
+
+# API Reference
+
+The API Reference contains the OpenAPI-based documentation for CarbonSutra's API endpoints.
+
+[API Reference](/api)
+
+# Access
+
+CarbonSutra APIs are available through the documented API interface and through RapidAPI.
+
+[CarbonSutra on RapidAPI](https://rapidapi.com/carbonsutra/api/carbonsutra1)
+
+# Pricing
+
+See the pricing documentation for information about CarbonSutra API usage and available plans.
+
+[Pricing](/pricing)
+
+# Updates and Roadmap
+
+See the Updates and Roadmap documentation for product changes, new capabilities, and planned improvements.
+
+[Updates and Roadmap](/updates_and_roadmap)
+
+# About
+
+Learn more about CarbonSutra and the platform.
+
+[About](/about)
+
+# Documentation Index
+
+The following pages provide the main documentation available on this site:
+
+- [Getting Started](/getting_started)
+- [Audience and Intent](/audience_and_intent)
+- [API Reference](/api)
+- [API Playground](/api-playground)
+
+## Estimation APIs
+
+- [Flights](/estimation_apis/flights)
+- [Hotels](/estimation_apis/hotels)
+- [Vehicle by Type](/estimation_apis/vehicle/vehicle_by_type)
+- [Vehicle by Model](/estimation_apis/vehicle/vehicles_by_model)
+- [Freight and Shipments](/estimation_apis/freight_and_shipments)
+- [eCommerce](/estimation_apis/ecommerce)
+- [Fuel](/estimation_apis/fuel)
+- [Electricity](/estimation_apis/electricity)
+
+
+## Supplementary APIs
+
+- [Airport Search by Keyword](/supplementary_apis/Airports/airport_search_by_keyword)
+- [Distance Between Two Airports](/supplementary_apis/Airports/distance_between_two_airports)
+- [Nearest Airport from Another Airport](/supplementary_apis/Airports/nearest_airport_from_another_airport)
+- [Nearest Airport from Postal Code](/supplementary_apis/Airports/nearest_airport_from_postal_code)
+- [List of Models by Vehicle Maker](/supplementary_apis/Vehicles/list_of_models_of_vehicle_maker)
+- [List of Vehicle Makers](/supplementary_apis/Vehicles/list_of_vehicle_makers)
+
+## Special APIs
+
+- [Singapore Emission Factors Registry](/special_apis/singapore_emission_factor_registry)
+- [GHG Equivalencies](/special_apis/ghg_equivalencies)
+- [Estimated Flight Time](/special_apis/estimated_flight_time)
+
+## Platform Features
+
+- [Clustering](/special_features/clustering)
+- [Dynamic Explanations](/special_features/dynamic_explanations)
+- [Smart Match](/special_features/smart_match)
+- [Google Sheet Functions](/google_sheet_functions)
+- [MCP Server](/mcp_server)

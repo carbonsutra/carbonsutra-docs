@@ -1,0 +1,9 @@
+Nearest Airport from a Postal Code 
+
+This is an advanced algorithm which takes a postal code and country code as input and returns the nearest airport its latitude/longitude value. The distance between the coordinates of postal code and its airport is measured using Haversine function and the returned value is in kilometers. The data has instances of multiple addresses with different values of latitude/longitude associated with the same postal code. For such cases, an array of all addresses and their distance with nearest airport for the same postal code is returned. The source of 1.5 million postal code data is taken as it is from https://public.opendatasoft.com/explore/dataset/geonames-postal-code/. For airports, the publicly available database of IATA codes and airport names is used.
+
+
+## INGESTED FIELDS
+**COUNTRY_CODE**: Mandatory. The 2 letter country code.
+
+**POSTAL_CODE**: Mandatory. The postal code of the above country.

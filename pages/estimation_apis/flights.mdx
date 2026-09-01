@@ -1,0 +1,84 @@
+# Emissions from Business Flight Travel
+
+Returns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for business travel through flights/air, based on airport codes of arrival and departure, class of flight and number of passengers.
+
+This calculation is used for reporting Scope 3 emissions for individuals flying for work purposes. The footprint of a flight travel is calculated based on the distance between airports and the travelling class of the passenger.
+
+operationId: calculate_emissions_from_business_flight_travel
+
+## Payload Specification
+
+| Field                | Type   | Required | Description                                                                                                                                                               | Example                       |
+| -------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| iata_airport_from    | String | Yes      | The departing airport's IATA airport code (The unique 3 digit geocode, also known as IATA location identifier, IATA station code, or location identifier)                 | DXB                           |
+| iata_airport_to      | String | Yes      | The arrival airport's IATA airport code (The unique 3 digit geocode, also known as IATA location identifier, IATA station code, or location identifier)                   | PVG                           |
+| flight_class         | String | No       | The class in which the passenger is travelling. Allowed: \[Economy, Premium, Business, First\]. It is optional. For NULL or undefined values, an Average" factor is used. | Economy                       |
+| round_trip           | String | No       | The default value of "Y" means that the traveller has taken the flight from origin to destination and then back to the same origin in the same class                      | Y                             |
+| number_of_passengers | Number | No       | Default: 1. If a NULL or \<1 is entered, it is set to 1                                                                                                                   | 2                             |
+| add_rf               | String | No       | The default value of "Y" adds the radiative forcing multiplier factor in the footprint calculation; "N" bypasses it                                                       | N                             |
+| include_wtt          | String | No       | The default value of "Y" includes the Well-to-Tank (WTT) factors while "N" bypasses it                                                                                    | N                             |
+| cluster_name         | String | No       | Identifier to log and aggregate these results under using the Cluster Data API                                                                                            | KrugerBrent_Tradeshow23_Apr26 |
+
+## Approach
+
+This algorithm calculates the distance between two airports based on their IATA codes. The database has approx. 9,200 global airports and is regularly updated. Using the principles defined in ICAO methodology, the guidelines from UK BEIS (Department for Business, Energy and Industrial Strategy) and UK DEFRA (Department for Business, Energy and Industrial Strategy) are then applied to arrive at the footprint of that journey per-passenger in a particular class.
+
+As the ICAO does not apply the radiative forcing (RF) multiplier (accounting for the wider climate effect of emissions arising from aircraft transport at altitude) or distance uplift factor to account for delays/circling and non-direct routes (i.e., not along the straight-line/great-circle between destinations), we have added an option for you to factor it in the calculation.
+
+WTT (well-to-tank) emissions consist of all processes between the source of the fuel (the well) through the extraction, processing (refining), storage and delivery phases up until the point of use (the tank) in the plane before take-off. This option has been added to factor the upstream emission associated with this flight in the estimation.
+
+As the ICAO does not apply the radiative forcing (RF) multiplier (accounting for the wider climate effect of emissions arising from aircraft transport at altitude) or distance uplift factor to account for delays/circling and non-direct routes (i.e., not along the straight-line/great-circle between destinations), we have added an option for you to factor it in the calculation.
+
+WTT (well-to-tank) emissions consist of all processes between the source of the fuel (the well) through the extraction, processing (refining), storage and delivery phases up until the point of use (the tank) in the plane before take-off. This option has been added to factor the upstream emission associated with this flight in the estimation.
+
+## Example
+
+### Request Payload
+
+```
+import http.client
+conn = http.client.HTTPSConnection("carbonsutra1.p.rapidapi.com")
+payload = "iata_airport_from=LAX&iata_airport_to=SIN&flight_class=economy&round_trip=Y&add_rf=N&include_wtt=N&number_of_passengers=1"
+headers = {
+    'content-type': "application/x-www-form-urlencoded",
+    'Authorization': "Bearer <AUTHORIZATION_TOKEN>",
+    'X-RapidAPI-Key': "<AUTHORIZATION_KEY>",
+    'X-RapidAPI-Host': "carbonsutra1.p.rapidapi.com"
+    }
+conn.request("POST", "/flight_estimate", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+print(data.decode("utf-8"))
+```
+
+### Response Payload
+
+```
+{
+  "data": {
+    "type": "estimate-travel-flight",
+    "iata_airport_from": "HND",
+    "airport_from": "Tokyo Haneda International Airport",
+    "iata_airport_to": "LAX",
+    "airport_to": "Los Angeles International Airport",
+    "flight_class": "Business",
+    "round_trip": "N",
+    "add_rf": "Y",
+    "include_wtt": "Y",
+    "number_of_passengers": "1",
+    "co2e_gm": 3212668,
+    "co2e_kg": 3212.67,
+    "co2e_mt": 3.21,
+    "co2e_lb": 7082.72,
+    "explanation": "This emission profile is computed using the UK Government's 2026 conversion factors for greenhouse gas (GHG) reporting. The calculation is for a single passenger travelling in Business class between Tokyo Haneda International Airport(HND) and Los Angeles International Airport(LAX). The distance between these airports is estimated at 8,812 km, utilizing the Haversine equation for Great-Circle Distance (GCD). Radiative forcing uplift is included and indirect/WTT factors are added, as per inputs. For this one way journey, the total footprint evaluates to 3,212,668 grams of CO2e. Standardized metric conversions render this as 3212.67 kg (rounded to two decimal places) or 3.21 metric tons. Scaled against imperial baselines using the conversion factor of 2.20462 (source: GHG conversion factors, 2026), the final metric is expressed as 7082.72 lbs. "
+  },
+  "success": true,
+  "status": 200
+}
+```
+
+## Notes
+
+1. The list of 3 character IATA Airport Codes and Names used by this API are listed here.
+2. If there are two passengers in the same flight but sitting in different classes, then two separate API calls are suggested, one for each passenger.

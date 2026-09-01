@@ -1,0 +1,69 @@
+# Emissions from eCommerce Shipments
+
+Returns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for eCommerce shipments.
+
+This is an advanced algorithm to estimate the emissions of a package's journey from its shipment location to the collection point. If the distance between two postal codes is above a threshold, we find the nearest airports from the origin and then from the destination location. The final distance of journey is then a sum of the distance between the origin postal code and nearest airport by land, air travel between the airports closest to the origin and the destination and finally, land travel between destination airport and postal code of collection point by land. The final calculation follows ECTA/Cefic and BEIS/DEFRA's recommended conversion factors and works on a database of over 1.5 million postal codes across 95 countries and 9,000 global airports.
+
+operationId: calculate_emissions_from_ecommerce_shipment
+
+## Payload Specification
+
+| Field                    | Type   | Required | Description                                                                                                         | Example                     |
+| ------------------------ | ------ | -------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| origin_country_code      | String | Yes      | Two letter ISO country code of the origin, ie from where the package is being sent                                  | SG                          |
+| origin_postal_code       | String | Yes      | The postal code within the origin country from where the package is being shipped                                   | 436915                      |
+| destination_country_code | String | Yes      | Two letter ISO country code of the destination, ie to where the package is being sent                               | IN                          |
+| destination_postal_code  | String | Yes      | The postal code within the destination country to where the package is being shipped                                | 248001                      |
+| package_weight           | Number | Yes      | Weight of package in kilograms. If a NULL or \<1 is entered, it is set to 1.00                                      | 12.65                       |
+| add_rf                   | String | No       | The default value of "Y" adds the radiative forcing multiplier factor in the footprint calculation; "N" bypasses it | Y                           |
+| include_wtt              | String | No       | The default value of "Y" includes the Well-to-Tank (WTT) factors while "N" bypasses it                              | Y                           |
+| cluster_name             | String | No       | Identifier to log and aggregate these results under using the Cluster Data API                                      | KrugerBrent_Marketing_Feb26 |
+
+## Example
+
+### Request Payload
+
+```
+import http.client
+conn = http.client.HTTPSConnection("carbonsutra1.p.rapidapi.com")
+payload = "origin_country_code=IN&origin_postal_code=248001&destination_country_code=IN&destination_postal_code=603104&package_weight=3"
+headers = {
+    'content-type': "application/x-www-form-urlencoded",
+    'Authorization': "Bearer <AUTHORIZATION_TOKEN>",
+    'X-RapidAPI-Key': "<AUTHORIZATION_KEY>",
+    'X-RapidAPI-Host': "carbonsutra1.p.rapidapi.com"
+    }
+conn.request("POST", "/ecommerce_estimate", payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))
+```
+
+### Response Payload
+
+```
+{
+  "data": {
+    "type": "estimate-ecommerce",
+    "origin_country_code": "IN",
+    "origin_postal_code": "248001",
+    "destination_country_code": "IN",
+    "destination_postal_code": "603104",
+    "package_weight": "3",
+    "add_rf": "N",
+    "include_wtt": "N",
+    "co2e_gm": 61,
+    "co2e_kg": 0.06,
+    "co2e_mt": 0,
+    "co2e_lb": 0.13
+  },
+  "success": true,
+  "status": 200
+}
+```
+
+## Notes
+
+1. The following countries (for origin and destination) are covered in this API: AD (Andorra), AR (Argentina), AS (American Samoa), AT (Austria), AU (Australia), AX (Åland Islands), AZ (Azerbaijan), BD (Bangladesh), BE (Belgium), BG (Bulgaria), BM (Bermuda), BR (Brazil), BY (Belarus), CA (Canada), CH (Switzerland), CL (Chile), CO (Colombia), CR (Costa Rica), CY (Cyprus), CZ (Czechia), DE (Germany), DK (Denmark), DO (Dominican Republic (the)), DZ (Algeria), EE (Estonia), ES (Spain), FI (Finland), FM (Micronesia (Federated States of)), FO (Faroe Islands (the)), FR (France), GB (United Kingdom of Great Britain and Northern Ireland (the)), GF (French Guiana), GG (Guernsey), GL (Greenland), GP (Guadeloupe), GT (Guatemala), GU (Guam), HR (Croatia), HT (Haiti), HU (Hungary), IE (Ireland), IM (Isle of Man), IN (India), IS (Iceland), IT (Italy), JE (Jersey), JP (Japan), KR (Korea (the Republic of)), LI (Liechtenstein), LK (Sri Lanka), LT (Lithuania), LU (Luxembourg), LV (Latvia), MC (Monaco), MD (Moldova (the Republic of)), MH (Marshall Islands (the)), MK (Republic of North Macedonia), MP (Northern Mariana Islands (the)), MQ (Martinique), MT (Malta), MW (Malawi), MX (Mexico), MY (Malaysia), NC (New Caledonia), NL (Netherlands (the)), NO (Norway), NZ (New Zealand), PE (Peru), PH (Philippines (the)), PK (Pakistan), PL (Poland), PM (Saint Pierre and Miquelon), PR (Puerto Rico), PT (Portugal), PW (Palau), RE (Réunion), RO (Romania), RS (Serbia), RU (Russian Federation (the)), SE (Sweden), SG (Singapore), SI (Slovenia), SJ (Svalbard and Jan Mayen), SK (Slovakia), SM (San Marino), TH (Thailand), TR (Turkey), UA (Ukraine), US (United States of America (the)), UY (Uruguay), VA (Holy See (the)), VI (Virgin Islands (U.S.)), WF (Wallis and Futuna), YT (Mayotte) and ZA (South Africa).
+
+2. If you are interested in the details of algorithm (say the value of threshold used and our approach to calculation of distances between airports), please contact us. We will share our approach with you.
