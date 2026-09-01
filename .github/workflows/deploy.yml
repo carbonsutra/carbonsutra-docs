@@ -43,7 +43,7 @@ jobs:
 
       - name: Add favicon
         run: |
-          cp public/images/favicon.jpeg dist/zudoku-docs/favicon.jpeg
+          cp public/images/favicon.jpeg dist/favicon.jpeg
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -51,7 +51,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/zudoku-docs
+          path: dist
 
   deploy:
     environment:
