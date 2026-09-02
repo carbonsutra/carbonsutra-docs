@@ -515,11 +515,13 @@ export default function ApiPlayground() {
     return finalEndpoint;
   };
 
+  console.log(import.meta.env.ZUDOKU_PUBLIC_API_URL, URL);
+
   const buildUrl = () => {
-    const baseUrl = import.meta.env.VITE_API_URL;
+    const baseUrl = import.meta.env.ZUDOKU_PUBLIC_API_URL;
 
     if (!baseUrl) {
-      throw new Error("VITE_API_URL is not configured.");
+      throw new Error("ZUDOKU_PUBLIC_API_URL is not configured.");
     }
 
     const endpoint = buildEndpoint();

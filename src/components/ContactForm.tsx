@@ -29,7 +29,7 @@ export function ContactForm() {
       return;
     }
 
-    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+    const accessKey = import.meta.env.ZUDOKU_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
     if (!accessKey) {
       setStatus("error");

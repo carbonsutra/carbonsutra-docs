@@ -36,8 +36,8 @@ jobs:
       - name: Build Zudoku
         env:
           API_URL: ${{ secrets.API_URL }}
-          VITE_API_URL: ${{ secrets.API_URL }}
-          VITE_WEB3FORMS_ACCESS_KEY: ${{ secrets.WEB3FORMS_ACCESS_KEY }}
+          ZUDOKU_PUBLIC_API_URL: ${{ secrets.API_URL }}
+          ZUDOKU_PUBLIC_WEB3FORMS_ACCESS_KEY: ${{ secrets.WEB3FORMS_ACCESS_KEY }}
         run: npm run build
 
       - name: Setup GitHub Pages
