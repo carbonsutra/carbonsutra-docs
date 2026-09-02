@@ -10,6 +10,12 @@ const config: ZudokuConfig = {
       MyCustomForm,
     },
   },
+  metadata: {
+    title: "CarbonSutra | Carbon Footprint & Emissions API",
+    description:
+      "CarbonSutra provides APIs for calculating and estimating carbon emissions across business travel, flights, hotels, vehicles, fuel, electricity, freight, eCommerce, and other activities.",
+    favicon: "/favicon.jpeg",
+  },
   site: {
     logo: {
       src: {
@@ -48,9 +54,9 @@ const config: ZudokuConfig = {
         <>
           <LandingPage
             variant="split"
-            eyebrow="Simplified Emissions Management"
-            title="Carbon Footprint Estimation for Organizations"
-            description="CarbonSutra simplifies the calculation of Scope 1/2/3/ emissions for organizations. It calculates carbon emissions through API calls, backed by transparent algorithms and latest data sources. The data results can be directly used to measure the footprint, bypassing the complexity of the calculations. Use it to estimate emissions of business flight travel, hotel stay, fuel combustion, electricity consumption, vehicle usage, freight and eCommerce shipments."
+            eyebrow="Carbon Emissions API Platform"
+            title="Carbon Footprint Estimation APIs for Organizations"
+            description="CarbonSutra provides developer-friendly APIs to calculate carbon emissions for flights, hotels, vehicles, fuel, electricity, freight, eCommerce shipments, and other business activities. Estimate Scope 1, Scope 2, and Scope 3 emissions using transparent algorithms and up-to-date emission factors."
             actions={[
               {
                 label: "Try Now",
