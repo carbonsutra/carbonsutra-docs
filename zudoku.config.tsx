@@ -27,7 +27,7 @@ const config: ZudokuConfig = {
     },
     showPoweredBy: false,
   },
-  basePath: "/carbonsutra-docs",
+  // basePath: "/carbonsutra",
 
   docs: {
     defaultOptions: {
