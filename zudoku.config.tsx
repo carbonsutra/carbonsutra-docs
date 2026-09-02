@@ -1,11 +1,13 @@
 import type { ZudokuConfig } from "zudoku";
 import { LandingPage } from "zudoku/components";
 import ApiPlayground from "./src/components/ApiPlayground";
+import { MyCustomForm } from "./src/components/Test";
 
 const config: ZudokuConfig = {
   mdx: {
     components: {
       ApiPlayground,
+      MyCustomForm,
     },
   },
   site: {
@@ -19,7 +21,7 @@ const config: ZudokuConfig = {
     },
     showPoweredBy: false,
   },
-  // basePath: "/zudoku-docs",
+  basePath: "/carbonsutra-docs",
 
   docs: {
     defaultOptions: {
@@ -275,6 +277,11 @@ const config: ZudokuConfig = {
           type: "doc",
           file: "pricing",
           label: "Pricing",
+        },
+        {
+          type: "doc",
+          file: "test",
+          label: "test",
         },
 
         {
