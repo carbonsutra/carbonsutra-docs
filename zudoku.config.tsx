@@ -1,13 +1,11 @@
 import type { ZudokuConfig } from "zudoku";
 import { LandingPage } from "zudoku/components";
 import ApiPlayground from "./src/components/ApiPlayground";
-import { MyCustomForm } from "./src/components/Test";
 
 const config: ZudokuConfig = {
   mdx: {
     components: {
       ApiPlayground,
-      MyCustomForm,
     },
   },
   metadata: {
@@ -27,7 +25,6 @@ const config: ZudokuConfig = {
     },
     showPoweredBy: false,
   },
-  // basePath: "/carbonsutra",
 
   docs: {
     defaultOptions: {
@@ -284,36 +281,12 @@ const config: ZudokuConfig = {
           file: "pricing",
           label: "Pricing",
         },
-        {
-          type: "doc",
-          file: "test",
-          label: "test",
-        },
 
         {
           type: "doc",
           file: "updates_and_roadmap",
           label: "Updates & Roadmap",
         },
-
-        // {
-        //   type: "doc",
-        //   file: "support",
-        //   label: "Support",
-        // },
-
-        // {
-        //   type: "doc",
-        //   file: "contact",
-        //   label: "Contact",
-        // },
-
-        // {
-        //   type: "doc",
-        //   file: "contact",
-        //   label: "Contact",
-        // },
-
         {
           type: "doc",
           file: "contact",
@@ -329,17 +302,9 @@ const config: ZudokuConfig = {
     },
 
     {
-      type: "category",
+      type: "link",
       label: "Getting Started",
-      link: "/getting_started",
-      collapsible: false,
-      items: [
-        {
-          type: "doc",
-          file: "getting_started",
-          label: "Getting Started",
-        },
-      ],
+      to: "https://rapidapi.com/carbonsutra/api/carbonsutra1",
     },
 
     {

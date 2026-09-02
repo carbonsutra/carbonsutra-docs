@@ -13,10 +13,8 @@ export function ContactForm() {
   const [company, setCompany] = useState("");
   const [message, setMessage] = useState("");
 
-  async function handleSubmit(event: React.MouseEvent<HTMLButtonElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    console.log("CONTACT FORM CLICKED");
 
     if (status === "loading") return;
 
@@ -33,8 +31,6 @@ export function ContactForm() {
 
     const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
-    console.log("Web3Forms key:", accessKey ? "FOUND" : "MISSING");
-
     if (!accessKey) {
       setStatus("error");
       setError("Contact form configuration is missing.");
@@ -45,8 +41,6 @@ export function ContactForm() {
     setError("");
 
     try {
-      console.log("Sending contact form...");
-
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
@@ -67,13 +61,9 @@ export function ContactForm() {
 
       const data = await response.json();
 
-      console.log("Web3Forms response:", data);
-
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Unable to send your message.");
       }
-
-      console.log("CONTACT FORM SUCCESS");
 
       setStatus("success");
 
@@ -223,11 +213,7 @@ export function ContactForm() {
         </p>
 
         <button
-          type="button"
-          // onClick={handleSubmit}
-          onClick={() => {
-            alert("hi");
-          }}
+          type="submit"
           disabled={status === "loading"}
           className="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
