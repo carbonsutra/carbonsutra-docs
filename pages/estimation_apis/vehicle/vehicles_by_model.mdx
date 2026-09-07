@@ -1,20 +1,40 @@
-## Emissions from Vehicles (by Model)
+import { Head } from "zudoku/components";
+
+<Head>
+
+<meta
+  name="keywords"
+  content="Vehicle Emission API, Scope 3 vehicle footprint, CO2e vehicle make model API, CSRD fleet emissions, vehicle carbon calculation REST API"
+/>
+<meta
+  property="og:title"
+  content="Vehicle Emission by Model API | CarbonSutra"
+/>
+<meta
+  property="og:description"
+  content="Calculate greenhouse gas emissions by vehicle make and model across 145+ makes and 5,000+ models with audit-ready accuracy."
+/>
+<meta property="og:type" content="website" />
+
+</Head>
+
+# Emissions from Vehicles (by Model)
 
 Returns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for travel in vehicles based on its make and model.
 
-145 Makes and 5,000+ models are covered. To get the specific name of make and model, use the supplementary APIs or access the database in this documentation.  
+145 Makes and 5,000+ models are covered. To get the specific name of make and model, use the supplementary APIs or access the database in this documentation.
 
 operationId: calculate_emissions_from_vehicle_usage_based_on_make_and_model
 
 ## Payload Specification
 
-| Field | Type | Required | Description | Example |
-| --- | --- | --- | --- | --- |
-| vehicle_make | String | Yes | Name of Vehicle Make. Retrieve it from Supplementary API or shared link | Lexus |
-| vehicle_model | String | Yes | Name of Vehicle Model. Retrieve it from Supplementary API or shared link | RX 300 |
-| distance_unit | String | Yes | Enter "km" for kilometers and "mi" for miles. Default is "mi". Allowed values: \["km", "mi"\] | km |
-| distance_value | Number | Yes | Distance travelled. If an undefined value is passed, it will be set to 1.00 | 850 |
-| cluster_name | String | No | Identifier to log and aggregate these results under using the Cluster Data API | KrugerBrent_ProjectTwo_2026 |
+| Field          | Type   | Required | Description                                                                                   | Example                     |
+| -------------- | ------ | -------- | --------------------------------------------------------------------------------------------- | --------------------------- |
+| vehicle_make   | String | Yes      | Name of Vehicle Make. Retrieve it from Supplementary API or shared link                       | Lexus                       |
+| vehicle_model  | String | Yes      | Name of Vehicle Model. Retrieve it from Supplementary API or shared link                      | RX 300                      |
+| distance_unit  | String | Yes      | Enter "km" for kilometers and "mi" for miles. Default is "mi". Allowed values: \["km", "mi"\] | km                          |
+| distance_value | Number | Yes      | Distance travelled. If an undefined value is passed, it will be set to 1.00                   | 850                         |
+| cluster_name   | String | No       | Identifier to log and aggregate these results under using the Cluster Data API                | KrugerBrent_ProjectTwo_2026 |
 
 ## Approach
 
@@ -41,7 +61,9 @@ res = conn.getresponse()
 data = res.read()
 print(data.decode("utf-8"))
 ```
+
 ### Response Payload
+
 ```
 {
   "data": {
@@ -59,7 +81,8 @@ print(data.decode("utf-8"))
   "status": 200
 }
 ```
+
 ## Notes
 
 1. If you do not know the make and model of vehicle, we suggest to use the API which calculates emissions by Vehicle Type.
-2. The use of two APIs to get Make and Model is optional, esp if you know the Model for which you are estimating the emissions. We have made the entire database available here, which is structured by an alphabetical list of Models for every Make used by the API.
+2. The use of two APIs to get Make and Model is optional, esp if you know the Model for which you are estimating the emissions. We have made the entire database available in this documentation, which is structured by an alphabetical list of Models for every Make used by the API.

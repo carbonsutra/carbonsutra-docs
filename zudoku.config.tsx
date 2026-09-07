@@ -1,18 +1,42 @@
 import type { ZudokuConfig } from "zudoku";
 import { LandingPage } from "zudoku/components";
 import ApiPlayground from "./src/components/ApiPlayground";
+import googleAnalyticsPlugin from "./src/plugins/googleAnalytics";
 
 const config: ZudokuConfig = {
+  plugins: [googleAnalyticsPlugin],
+
   mdx: {
     components: {
       ApiPlayground,
     },
   },
   metadata: {
-    title: "CarbonSutra | Carbon Footprint & Emissions API",
+    title: "Carbon Emission Estimation API and Calculators for Organizations",
     description:
-      "CarbonSutra provides APIs for calculating and estimating carbon emissions across business travel, flights, hotels, vehicles, fuel, electricity, freight, eCommerce, and other activities.",
+      "Carbon footprint estimation for business travel, global hotel stays, vehicles usage, freight, eCommerce, shipments, fuel and electricity with supplementary APIs on airports and clustering results.",
     favicon: "/favicon.jpeg",
+    applicationName: "CarbonSutra Carbon Emission Estimation API",
+    keywords: [
+      "api",
+      "climate",
+      "carbon",
+      "emission",
+      "footprint",
+      "estimation",
+      "accounting",
+      "SEFR",
+      "travel",
+      "hotel",
+      "electricity",
+      "vehicles",
+      "ecommerce",
+      "fuel",
+      "freight",
+      "shipment",
+      "airports",
+    ],
+    creator: "Manish Sharma",
   },
   site: {
     logo: {
@@ -52,8 +76,8 @@ const config: ZudokuConfig = {
           <LandingPage
             variant="split"
             eyebrow="Carbon Emissions API Platform"
-            title="Carbon Footprint Estimation APIs for Organizations"
-            description="CarbonSutra provides developer-friendly APIs to calculate carbon emissions for flights, hotels, vehicles, fuel, electricity, freight, eCommerce shipments, and other business activities. Estimate Scope 1, Scope 2, and Scope 3 emissions using transparent algorithms and up-to-date emission factors."
+            title="Simplified Carbon Footprint Estimation for Organizations"
+            description="Carbon footprint estimation for business travel, global hotel stays, vehicles usage, freight and shipments, eCommerce, fuel combustion and electricity consumption using transparent algorithms and emission factors of 2026 through APIs, Google Sheet functions and MCP servers."
             actions={[
               {
                 label: "Try Now",
@@ -289,12 +313,6 @@ const config: ZudokuConfig = {
         },
         {
           type: "doc",
-          file: "contact",
-          label: "Contact",
-        },
-
-        {
-          type: "doc",
           file: "about",
           label: "About",
         },
@@ -303,7 +321,7 @@ const config: ZudokuConfig = {
 
     {
       type: "link",
-      label: "Getting Started",
+      label: "Get Started",
       to: "https://rapidapi.com/carbonsutra/api/carbonsutra1",
     },
 
