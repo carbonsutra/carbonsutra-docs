@@ -41,8 +41,8 @@ const config: ZudokuConfig = {
   site: {
     logo: {
       src: {
-        light: "/images/logo_on_white_background.jpeg",
-        dark: "/images/logo_on_dark_background.jpeg",
+        light: "/images/logo.png",
+        dark: "/images/logo.png",
       },
       alt: "CarbonSutra",
       width: "120px",
