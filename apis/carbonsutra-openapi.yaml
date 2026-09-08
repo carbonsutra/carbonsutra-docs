@@ -1152,6 +1152,10 @@ paths:
                   type: number
                   format: double
                   example: 8
+                cluster_name:
+                  type: string
+                  description: Self-defined name of the emission cluster.
+                  example: Acme-Q2-Travel
       responses:
         "200":
           description: Estimated emissions using Singapore Emission Factors Registry factors.

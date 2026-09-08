@@ -30,20 +30,20 @@ const APIs: ApiDefinition[] = [
     requiresAuth: true,
     fields: [
       {
+        name: "category",
+        type: "text",
+        fieldType: "form",
+        required: true,
+      },
+      {
         name: "activity",
         type: "text",
         fieldType: "form",
         required: true,
       },
       {
-        name: "quantity",
+        name: "value",
         type: "number",
-        fieldType: "form",
-        required: true,
-      },
-      {
-        name: "unit",
-        type: "text",
         fieldType: "form",
         required: true,
       },
