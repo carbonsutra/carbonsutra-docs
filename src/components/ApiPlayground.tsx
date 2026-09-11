@@ -116,6 +116,8 @@ const APIs: ApiDefinition[] = [
         required: true,
         defaultValue: " ",
         options: ["Y", "N"],
+        description:
+          "Controls whether Well-to-Tank (WTT) upstream emissions are included. Use Y to include WTT factors or N to exclude them; the API documentation specifies Y as the default.",
       },
       {
         name: "cluster_name",
@@ -895,9 +897,7 @@ export default function ApiPlayground() {
             </div>
 
             <div className="hidden min-w-0 flex-1 md:block">
-              <p className="m-0 truncate text-xs opacity-60">
-                {api.description}
-              </p>
+              <p className="m-0 text-xs opacity-60">{api.description}</p>
             </div>
           </div>
         </div>
@@ -1226,6 +1226,12 @@ function ParameterRow({
 
         {field.required && (
           <span className="text-[9px] text-red-500">required</span>
+        )}
+
+        {field.description && (
+          <p className="mt-1 max-w-[34rem] text-[10px] leading-4 opacity-50">
+            {field.description}
+          </p>
         )}
       </div>
 
