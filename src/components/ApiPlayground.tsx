@@ -9,6 +9,7 @@ type ApiField = {
   fieldType?: "query" | "path" | "form";
   required?: boolean;
   defaultValue?: string;
+  description?: string;
   options?: string[];
 };
 
@@ -128,7 +129,7 @@ const APIs: ApiDefinition[] = [
     method: "POST",
     endpoint: "/api/v1/hotel_estimate",
     description:
-      "# Emissions from Hotel Stay\n\nReturns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) based on country of hotel, length of stay, room count, and hotel star rating.\n\nCarbonSutra's approach for calculating the carbon footprint of hotel stays is based on Cornell Hotel Sustainability Benchmark Index and UK government's GHG conversion factors published in 2026.\n\noperationId: calculate_emissions_from_hotel_stay",
+      "# Emissions from Hotel Stay\n\nReturns estimated greenhouse gas emissions (CO2e) in grams, kilograms, metric tons, and pounds for a hotel stay. The estimate is based on the hotel's country, city, Expedia star rating, number of nights, and number of rooms.\n\nCarbonSutra calculates hotel-stay emissions using the Cornell Hotel Sustainability Benchmark Index 2026 (CHSB2026) and UK government GHG conversion factors published in 2026. If city-specific regional data is unavailable, the API may apply country-level fallback or proxy data according to CarbonSutra's methodology.\n\noperationId: calculate_emissions_from_hotel_stay",
     requiresAuth: true,
     fields: [
       {
@@ -137,6 +138,8 @@ const APIs: ApiDefinition[] = [
         type: "text",
         required: true,
         defaultValue: " ",
+        description:
+          "Two-letter ISO 3166-1 alpha-2 country code where the hotel is located (for example, US, GB, JP).",
       },
       {
         name: "city_name",
@@ -144,6 +147,8 @@ const APIs: ApiDefinition[] = [
         type: "text",
         required: true,
         defaultValue: " ",
+        description:
+          "Name of the city where the hotel is located. Leave empty when city-specific data is not available and country-level estimation is appropriate.",
       },
       {
         name: "hotel_rating",
@@ -152,6 +157,8 @@ const APIs: ApiDefinition[] = [
         required: true,
         defaultValue: " ",
         options: ["2", "3", "4", "5"],
+        description:
+          "Expedia star classification of the hotel. Allowed values are 2, 3, 4, or 5 stars; the API documentation specifies 4 as the default.",
       },
       {
         name: "number_of_nights",
@@ -159,6 +166,8 @@ const APIs: ApiDefinition[] = [
         type: "text",
         required: true,
         defaultValue: " ",
+        description:
+          "Total length of the hotel stay measured in nights. The API documentation specifies 1 night as the default.",
       },
       {
         name: "number_of_rooms",
@@ -166,11 +175,15 @@ const APIs: ApiDefinition[] = [
         type: "text",
         required: true,
         defaultValue: " ",
+        description:
+          "Number of hotel rooms booked, regardless of how many people stay in each room. The API documentation specifies 1 room as the default.",
       },
       {
         name: "cluster_name",
         fieldType: "query",
         type: "text",
+        description:
+          "Optional identifier used to log and aggregate this hotel-emission result through the Cluster Data API.",
       },
     ],
   },
@@ -179,7 +192,7 @@ const APIs: ApiDefinition[] = [
     method: "POST",
     endpoint: "/api/v1/vehicle_estimate_by_type",
     description:
-      "# Emissions from Vehicle Usage based on its type\n\nReturns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for travel in vehicles based on its type.\n\noperationId: calculate_emissions_from_vehicle_usage_based_on_type",
+      "# Emissions from Vehicle Usage based on its type\n\nReturns estimated greenhouse gas emissions (CO2e) in grams, kilograms, metric tons, and pounds for travel using a specified vehicle type. The estimate is based on vehicle type, distance travelled, fuel type, and whether Well-to-Tank (WTT) emissions are included.\n\nUse this endpoint when the vehicle make and model are not required or are unknown. CarbonSutra provides vehicle-type-based factors and supports petrol, diesel, plug-in hybrid (PHEV), battery electric (BEV), and unknown fuel categories.\n\noperationId: calculate_emissions_from_vehicle_usage_based_on_type",
     requiresAuth: false,
     fields: [
       {
@@ -188,6 +201,8 @@ const APIs: ApiDefinition[] = [
         type: "text",
         required: true,
         defaultValue: " ",
+        description:
+          "Type or size category of the vehicle used for the journey (for example, Car-Type-Supermini).",
       },
       {
         name: "distance_unit",
@@ -196,6 +211,8 @@ const APIs: ApiDefinition[] = [
         required: true,
         defaultValue: " ",
         options: ["km", "mi"],
+        description:
+          "Unit used for the distance travelled. Use km for kilometers or mi for miles; the API documentation specifies km as the default.",
       },
       {
         name: "distance_value",
@@ -203,6 +220,8 @@ const APIs: ApiDefinition[] = [
         type: "text",
         required: true,
         defaultValue: " ",
+        description:
+          "Total distance travelled by the vehicle in the selected distance unit. If undefined, the API sets the value to 1.00.",
       },
       {
         name: "fuel_type",
@@ -211,6 +230,8 @@ const APIs: ApiDefinition[] = [
         required: true,
         defaultValue: " ",
         options: ["Diesel", "Petrol", "PHEV", "BEV", "Unknown"],
+        description:
+          "Fuel or powertrain used by the vehicle. Allowed values are Diesel, Petrol, PHEV, BEV, or Unknown; use Unknown when the fuel type is not known.",
       },
       {
         name: "include_wtt",
@@ -219,11 +240,15 @@ const APIs: ApiDefinition[] = [
         required: true,
         defaultValue: " ",
         options: ["Y", "N"],
+        description:
+          "Controls whether Well-to-Tank (WTT) upstream emissions are included in the estimate. Use Y to include WTT factors or N to exclude them; the API documentation specifies Y as the default.",
       },
       {
         name: "cluster_name",
         fieldType: "query",
         type: "text",
+        description:
+          "Optional identifier used to log and aggregate this vehicle-emission result through the Cluster Data API.",
       },
     ],
   },
