@@ -38,6 +38,11 @@ const config: ZudokuConfig = {
     ],
     creator: "Manish Sharma",
   },
+  canonicalUrlOrigin: "https://carbonsutra.com",
+
+  sitemap: {
+    siteUrl: "https://carbonsutra.com",
+  },
   site: {
     logo: {
       src: {
@@ -112,12 +117,12 @@ const config: ZudokuConfig = {
     {
       type: "category",
       label: "Documentation",
-      link: "/audience_and_intent",
+      link: "/audience-and-intent",
       collapsible: false,
       items: [
         {
           type: "doc",
-          file: "audience_and_intent",
+          file: "audience-and-intent",
           label: "Audience and Intent",
         },
 
@@ -129,17 +134,17 @@ const config: ZudokuConfig = {
           items: [
             {
               type: "doc",
-              file: "special_features/clustering",
+              file: "special-features/clustering",
               label: "Clustering",
             },
             {
               type: "doc",
-              file: "special_features/dynamic_explanations",
+              file: "special-features/dynamic-explanations",
               label: "Dynamic Explanations",
             },
             {
               type: "doc",
-              file: "special_features/smart_match",
+              file: "special-features/smart-match",
               label: "Smart Match",
             },
           ],
@@ -153,13 +158,13 @@ const config: ZudokuConfig = {
           items: [
             {
               type: "doc",
-              file: "estimation_apis/flights",
+              file: "estimation-apis/flights",
               label: "Flights",
             },
 
             {
               type: "doc",
-              file: "estimation_apis/hotels",
+              file: "estimation-apis/hotels",
               label: "Hotels",
             },
 
@@ -171,12 +176,12 @@ const config: ZudokuConfig = {
               items: [
                 {
                   type: "doc",
-                  file: "estimation_apis/vehicle/vehicle_by_type",
+                  file: "estimation-apis/vehicle/vehicle-by-type",
                   label: "By Type",
                 },
                 {
                   type: "doc",
-                  file: "estimation_apis/vehicle/vehicles_by_model",
+                  file: "estimation-apis/vehicle/vehicles-by-model",
                   label: "By Model",
                 },
               ],
@@ -184,25 +189,25 @@ const config: ZudokuConfig = {
 
             {
               type: "doc",
-              file: "estimation_apis/freight_and_shipments",
+              file: "estimation-apis/freight-and-shipments",
               label: "Freight & Shipments",
             },
 
             {
               type: "doc",
-              file: "estimation_apis/ecommerce",
+              file: "estimation-apis/ecommerce",
               label: "eCommerce",
             },
 
             {
               type: "doc",
-              file: "estimation_apis/fuel",
+              file: "estimation-apis/fuel",
               label: "Fuel",
             },
 
             {
               type: "doc",
-              file: "estimation_apis/electricity",
+              file: "estimation-apis/electricity",
               label: "Electricity",
             },
           ],
@@ -222,22 +227,22 @@ const config: ZudokuConfig = {
               items: [
                 {
                   type: "doc",
-                  file: "supplementary_apis/Airports/airport_search_by_keyword",
+                  file: "supplementary-apis/Airports/airport-search-by-keyword",
                   label: "Airport Search by Keyword",
                 },
                 {
                   type: "doc",
-                  file: "supplementary_apis/Airports/distance_between_two_airports",
+                  file: "supplementary-apis/Airports/distance-between-two-airports",
                   label: "Distance Between Two Airports",
                 },
                 {
                   type: "doc",
-                  file: "supplementary_apis/Airports/nearest_airport_from_another_airport",
+                  file: "supplementary-apis/Airports/nearest-airport-from-another-airport",
                   label: "Nearest Airport from Another Airport",
                 },
                 {
                   type: "doc",
-                  file: "supplementary_apis/Airports/nearest_airport_from_postal_code",
+                  file: "supplementary-apis/Airports/nearest-airport-from-postal-code",
                   label: "Nearest Airport from Postal Code",
                 },
               ],
@@ -251,12 +256,12 @@ const config: ZudokuConfig = {
               items: [
                 {
                   type: "doc",
-                  file: "supplementary_apis/Vehicles/list_of_models_of_vehicle_maker",
+                  file: "supplementary-apis/Vehicles/list-of-models-of-vehicle-maker",
                   label: "List of Models by Vehicle Maker",
                 },
                 {
                   type: "doc",
-                  file: "supplementary_apis/Vehicles/list_of_vehicle_makers",
+                  file: "supplementary-apis/Vehicles/list-of-vehicle-makers",
                   label: "List of Vehicle Makers",
                 },
               ],
@@ -272,17 +277,17 @@ const config: ZudokuConfig = {
           items: [
             {
               type: "doc",
-              file: "special_apis/singapore_emission_factor_registry",
+              file: "special-apis/singapore-emission-factor-registry",
               label: "Singapore Emission Factors Registry",
             },
             {
               type: "doc",
-              file: "special_apis/ghg_equivalencies.mdx",
+              file: "special-apis/ghg-equivalencies.mdx",
               label: "GHG Equivalencies",
             },
             {
               type: "doc",
-              file: "special_apis/estimated_flight_time.mdx",
+              file: "special-apis/estimated-flight-time.mdx",
               label: "Estimated Flight Time Between Airports",
             },
           ],
@@ -290,13 +295,13 @@ const config: ZudokuConfig = {
 
         {
           type: "doc",
-          file: "google_sheet_functions",
+          file: "google-sheet-functions",
           label: "Google Sheet Functions",
         },
 
         {
           type: "doc",
-          file: "mcp_server",
+          file: "mcp-server",
           label: "MCP Server",
         },
 
@@ -308,7 +313,7 @@ const config: ZudokuConfig = {
 
         {
           type: "doc",
-          file: "updates_and_roadmap",
+          file: "updates-and-roadmap",
           label: "Updates & Roadmap",
         },
         {
@@ -333,7 +338,7 @@ const config: ZudokuConfig = {
     {
       type: "link",
       label: "Playground",
-      to: "/api_playground",
+      to: "/api-playground",
     },
   ],
 
