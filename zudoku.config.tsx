@@ -2,6 +2,7 @@ import type { ZudokuConfig } from "zudoku";
 import { LandingPage } from "zudoku/components";
 import ApiPlayground from "./src/components/ApiPlayground";
 import googleAnalyticsPlugin from "./src/plugins/googleAnalytics";
+import Onboarding from "./src/components/Onboarding";
 
 const config: ZudokuConfig = {
   plugins: [googleAnalyticsPlugin],
@@ -9,6 +10,7 @@ const config: ZudokuConfig = {
   mdx: {
     components: {
       ApiPlayground,
+      Onboarding,
     },
   },
   metadata: {
@@ -125,7 +127,6 @@ const config: ZudokuConfig = {
           file: "audience-and-intent",
           label: "Audience and Intent",
         },
-
         {
           type: "category",
           label: "Special Features",
@@ -309,6 +310,12 @@ const config: ZudokuConfig = {
           type: "doc",
           file: "pricing",
           label: "Pricing",
+        },
+
+        {
+          type: "doc",
+          file: "create-account",
+          label: "Start API Trial →",
         },
 
         {
