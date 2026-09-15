@@ -314,7 +314,7 @@ const config: ZudokuConfig = {
 
         {
           type: "doc",
-          file: "create-account",
+          file: "onboard",
           label: "Start API Trial →",
         },
 
