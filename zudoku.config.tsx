@@ -3,6 +3,7 @@ import { LandingPage } from "zudoku/components";
 import ApiPlayground from "./src/components/ApiPlayground";
 import googleAnalyticsPlugin from "./src/plugins/googleAnalytics";
 import Onboarding from "./src/components/Onboarding";
+import Footer from "./src/components/Footer";
 
 const config: ZudokuConfig = {
   plugins: [googleAnalyticsPlugin],
@@ -11,6 +12,7 @@ const config: ZudokuConfig = {
     components: {
       ApiPlayground,
       Onboarding,
+      Footer,
     },
   },
   metadata: {
@@ -112,6 +114,8 @@ const config: ZudokuConfig = {
               </div>
             }
           />
+
+          <Footer />
         </>
       ),
     },
