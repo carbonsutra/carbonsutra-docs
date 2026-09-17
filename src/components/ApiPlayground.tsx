@@ -1038,41 +1038,42 @@ export default function ApiPlayground() {
               <h3 className="m-0 text-xs font-semibold">Authorization</h3>
 
               <p className="mt-1 text-[11px] opacity-50">
-                Configure credentials for this request.
+                Authorization is optional. If provided, the token will be sent
+                with the request.
               </p>
 
-              {!api.requiresAuth ? (
-                <div className="mt-4 rounded-md border p-4 text-xs opacity-60">
-                  This endpoint does not require authentication.
+              <div className="mt-4 rounded-md border">
+                <div className="flex items-center justify-between border-b bg-muted/20 px-3 py-2">
+                  <span className="text-xs font-medium">Bearer Token</span>
+
+                  {token && (
+                    <span className="text-[10px] text-green-600">
+                      Configured
+                    </span>
+                  )}
                 </div>
-              ) : (
-                <div className="mt-4 rounded-md border">
-                  <div className="flex items-center border-b bg-muted/20 px-3 py-2">
-                    <span className="text-xs font-medium">Bearer Token</span>
-                  </div>
 
-                  <div className="p-3">
-                    <label className="mb-1.5 block text-[11px] font-medium opacity-70">
-                      Token
-                    </label>
+                <div className="p-3">
+                  <label className="mb-1.5 block text-[11px] font-medium opacity-70">
+                    Token
+                  </label>
 
-                    <input
-                      type="password"
-                      value={token}
-                      onChange={(e) => setToken(e.target.value)}
-                      placeholder="Enter API key"
-                      className="h-9 w-full rounded-md border bg-background px-3 font-mono text-xs outline-none focus:ring-1"
-                    />
+                  <input
+                    type="password"
+                    value={token}
+                    onChange={(e) => setToken(e.target.value)}
+                    placeholder="Enter API token (optional)"
+                    className="h-9 w-full rounded-md border bg-background px-3 font-mono text-xs outline-none focus:ring-1"
+                  />
 
-                    <p className="mt-2 text-[10px] opacity-50">
-                      The token will be sent as:
-                      <span className="ml-1 font-mono">
-                        Authorization: Bearer &lt;token&gt;
-                      </span>
-                    </p>
-                  </div>
+                  <p className="mt-2 text-[10px] opacity-50">
+                    Sent as:
+                    <span className="ml-1 font-mono">
+                      Authorization: Bearer &lt;token&gt;
+                    </span>
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
           )}
 
