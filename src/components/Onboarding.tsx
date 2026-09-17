@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 
-const API_URL = `${import.meta.env.ZUDOKU_PUBLIC_API_URL}/api/v1/register_user`;
+const API_URL = `${import.meta.env.ZUDOKU_PUBLIC_API_URL}api/v1/register_user`;
 
 export default function Onboarding() {
   const [email, setEmail] = useState("");
@@ -94,7 +94,7 @@ export default function Onboarding() {
                 {error && (
                   <div
                     role="alert"
-                    className="!m-0 rounded-lg border border-destructive/20 bg-destructive/5 px-3.5 py-3 text-sm leading-5 text-destructive"
+                    className="!my-2 rounded-lg border border-destructive/20 bg-destructive/5 px-3.5 py-3 text-sm leading-5 text-destructive"
                   >
                     {error}
                   </div>
