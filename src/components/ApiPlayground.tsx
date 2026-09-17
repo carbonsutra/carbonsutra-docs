@@ -696,6 +696,9 @@ export default function ApiPlayground() {
   );
 
   const [token, setToken] = useState("");
+  const [headers, setHeaders] = useState<Record<string, string>>({
+    Accept: "application/json",
+  });
   const [activeTab, setActiveTab] = useState<Tab>("params");
 
   const [response, setResponse] = useState("");
@@ -731,6 +734,10 @@ export default function ApiPlayground() {
     setStatus("");
     setResponseTime("");
     setActiveTab("params");
+
+    setHeaders({
+      Accept: "application/json",
+    });
   };
 
   const updateValue = (name: string, value: string) => {
@@ -789,10 +796,13 @@ export default function ApiPlayground() {
     try {
       const url = buildUrl();
 
-      const headers: Record<string, string> = {};
+      const requestHeaders: Record<string, string> = {
+        Accept: "application/json",
+        ...headers,
+      };
 
-      if (api.requiresAuth && token.trim()) {
-        headers.Authorization = token.startsWith("Bearer ")
+      if (token.trim()) {
+        requestHeaders.Authorization = token.startsWith("Bearer ")
           ? token
           : `Bearer ${token}`;
       }
@@ -811,6 +821,7 @@ export default function ApiPlayground() {
         });
 
         requestBody = formData;
+        delete requestHeaders["Content-Type"];
       }
 
       const res = await fetch(url, {
@@ -1110,37 +1121,99 @@ export default function ApiPlayground() {
 
           {activeTab === "headers" && (
             <div>
-              <h3 className="m-0 text-xs font-semibold">Request Headers</h3>
+              <div className="mb-3 flex items-center justify-between">
+                <div>
+                  <h3 className="m-0 text-xs font-semibold">Request Headers</h3>
 
-              <p className="mt-1 text-[11px] opacity-50">
-                Headers generated automatically for this request.
-              </p>
+                  <p className="mt-1 text-[11px] opacity-50">
+                    Headers will be sent with every request.
+                  </p>
+                </div>
 
-              <div className="mt-4 overflow-hidden rounded-md border">
-                {api.requiresAuth && (
-                  <div className="grid grid-cols-2 border-b px-3 py-2.5 font-mono text-xs">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setHeaders((previous) => ({
+                      ...previous,
+                      "": "",
+                    }))
+                  }
+                  className="rounded-md border px-2.5 py-1.5 text-[10px] font-medium transition hover:bg-muted"
+                >
+                  + Add Header
+                </button>
+              </div>
+
+              <div className="overflow-hidden rounded-md border">
+                {Object.entries(headers).map(([key, value], index) => (
+                  <div
+                    key={`${key}-${index}`}
+                    className="grid grid-cols-[1fr_1fr_32px] border-b last:border-b-0"
+                  >
+                    <input
+                      value={key}
+                      onChange={(e) => {
+                        const newKey = e.target.value;
+
+                        setHeaders((previous) => {
+                          const updated: Record<string, string> = {};
+
+                          Object.entries(previous).forEach(
+                            ([oldKey, oldValue]) => {
+                              if (oldKey === key) {
+                                updated[newKey] = oldValue;
+                              } else {
+                                updated[oldKey] = oldValue;
+                              }
+                            },
+                          );
+
+                          return updated;
+                        });
+                      }}
+                      placeholder="Header name"
+                      className="h-9 border-r bg-transparent px-3 font-mono text-xs outline-none"
+                    />
+
+                    <input
+                      value={value}
+                      onChange={(e) => {
+                        setHeaders((previous) => ({
+                          ...previous,
+                          [key]: e.target.value,
+                        }));
+                      }}
+                      placeholder="Header value"
+                      className="h-9 bg-transparent px-3 font-mono text-xs outline-none"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setHeaders((previous) => {
+                          const updated = { ...previous };
+                          delete updated[key];
+                          return updated;
+                        });
+                      }}
+                      className="flex items-center justify-center text-xs opacity-40 transition hover:text-red-500 hover:opacity-100"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {token.trim() && (
+                <div className="mt-3 rounded-md border bg-muted/20 px-3 py-2">
+                  <div className="grid grid-cols-2 font-mono text-xs">
                     <span className="opacity-60">Authorization</span>
-
                     <span className="truncate opacity-60">
-                      {token ? "Bearer •••••••••" : "Not configured"}
+                      Bearer •••••••••
                     </span>
                   </div>
-                )}
-
-                {formFields.length > 0 && (
-                  <div className="grid grid-cols-2 px-3 py-2.5 font-mono text-xs">
-                    <span className="opacity-60">Content-Type</span>
-
-                    <span className="opacity-60">multipart/form-data</span>
-                  </div>
-                )}
-
-                {!api.requiresAuth && formFields.length === 0 && (
-                  <div className="px-3 py-4 text-xs opacity-50">
-                    No additional headers are required.
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           )}
         </div>
