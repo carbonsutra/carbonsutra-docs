@@ -826,7 +826,7 @@ export default function ApiPlayground() {
 
       const res = await fetch(url, {
         method: api.method,
-        headers,
+        headers: requestHeaders,
         body: requestBody,
       });
 
