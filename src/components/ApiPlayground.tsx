@@ -1059,7 +1059,7 @@ export default function ApiPlayground() {
                   </label>
 
                   <input
-                    type="password"
+                    type="input"
                     value={token}
                     onChange={(e) => setToken(e.target.value)}
                     placeholder="Enter API token (optional)"
