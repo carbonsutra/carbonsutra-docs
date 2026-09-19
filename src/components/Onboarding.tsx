@@ -15,8 +15,15 @@ export default function Onboarding() {
 
     const trimmedEmail = email.trim();
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!trimmedEmail) {
       setError("Please enter your email address.");
+      return;
+    }
+
+    if (!emailRegex.test(trimmedEmail)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -179,7 +186,8 @@ export default function Onboarding() {
                   <div className="flex gap-3 text-sm">
                     <span className="shrink-0 text-muted-foreground">1.</span>
                     <span className="text-muted-foreground">
-                      Check your inbox for the CarbonSutra email.
+                      Check your inbox for the CarbonSutra email (or your Spam
+                      folder).
                     </span>
                   </div>
 
@@ -193,7 +201,8 @@ export default function Onboarding() {
                   <div className="flex gap-3 text-sm">
                     <span className="shrink-0 text-muted-foreground">3.</span>
                     <span className="text-muted-foreground">
-                      Open the Playground and start testing.
+                      Open the Playground and start testing, with the token in
+                      the Authorization tab.
                     </span>
                   </div>
                 </div>

@@ -5,7 +5,7 @@ type Tab = "params" | "authorization" | "body" | "headers";
 
 type ApiField = {
   name: string;
-  type?: "text" | "number" | "select";
+  type?: "text" | "number" | "email" | "select";
   fieldType?: "query" | "path" | "form";
   required?: boolean;
   defaultValue?: string;
@@ -791,6 +791,15 @@ export default function ApiPlayground() {
     setStatus("");
     setResponseTime("");
 
+    if (!token.trim()) {
+      setStatus("Authorization Required");
+      setResponse(
+        "An API token in the Authorization header is required to test this endpoint.",
+      );
+      setLoading(false);
+      return;
+    }
+
     const start = performance.now();
 
     try {
@@ -1038,8 +1047,8 @@ export default function ApiPlayground() {
               <h3 className="m-0 text-xs font-semibold">Authorization</h3>
 
               <p className="mt-1 text-[11px] opacity-50">
-                Authorization is optional. If provided, the token will be sent
-                with the request.
+                An API token in the Authorization header is required to test
+                this endpoint.
               </p>
 
               <div className="mt-4 rounded-md border">
@@ -1055,14 +1064,14 @@ export default function ApiPlayground() {
 
                 <div className="p-3">
                   <label className="mb-1.5 block text-[11px] font-medium opacity-70">
-                    Token
+                    Bearer Token
                   </label>
 
                   <input
                     type="input"
                     value={token}
                     onChange={(e) => setToken(e.target.value)}
-                    placeholder="Enter API token (optional)"
+                    placeholder="Enter your Bearer token"
                     className="h-9 w-full rounded-md border bg-background px-3 font-mono text-xs outline-none focus:ring-1"
                   />
 
