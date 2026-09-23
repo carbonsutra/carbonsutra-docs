@@ -51,22 +51,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-border bg-background">
       <div className="mx-auto w-full">
-        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-4 lg:gap-20 m-4 my-4">
-          <div>
-            <a href="/" className="inline-flex items-center no-underline">
-              <img
-                src="/images/logo.png"
-                alt="CarbonSutra"
-                className="h-10 w-auto object-contain"
-              />
-            </a>
-
-            <p className="mt-5 max-w-xs text-sm leading-6 text-muted-foreground">
-              Carbon emission estimation APIs for travel, freight, vehicles,
-              electricity, fuel, eCommerce and more.
-            </p>
-          </div>
-
+        <div className="flex justify-between flex-wrap gap-12  m-4 my-4">
           <div>
             <h3 className="text-sm font-semibold text-foreground">Product</h3>
 

@@ -24,39 +24,6 @@ type ApiDefinition = {
 
 const APIs: ApiDefinition[] = [
   {
-    name: "Singapore Emission Factor Registry",
-    method: "POST",
-    endpoint: "/api/v1/sefr_estimation",
-    description: "Estimate emissions using Singapore emission factors.",
-    requiresAuth: true,
-    fields: [
-      {
-        name: "category",
-        type: "text",
-        fieldType: "form",
-        required: true,
-      },
-      {
-        name: "activity",
-        type: "text",
-        fieldType: "form",
-        required: true,
-      },
-      {
-        name: "value",
-        type: "number",
-        fieldType: "form",
-        required: true,
-      },
-      {
-        name: "cluster_name",
-        type: "text",
-        fieldType: "form",
-        required: false,
-      },
-    ],
-  },
-  {
     name: "Flight Estimation",
     method: "POST",
     endpoint: "/api/v1/flight_estimate",
@@ -589,6 +556,39 @@ const APIs: ApiDefinition[] = [
         name: "iata_airport_to",
         fieldType: "query",
         type: "text",
+      },
+    ],
+  },
+  {
+    name: "Singapore Emission Factor Registry",
+    method: "POST",
+    endpoint: "/api/v1/sefr_estimation",
+    description: "Estimate emissions using Singapore emission factors.",
+    requiresAuth: true,
+    fields: [
+      {
+        name: "category",
+        type: "text",
+        fieldType: "form",
+        required: true,
+      },
+      {
+        name: "activity",
+        type: "text",
+        fieldType: "form",
+        required: true,
+      },
+      {
+        name: "value",
+        type: "number",
+        fieldType: "form",
+        required: true,
+      },
+      {
+        name: "cluster_name",
+        type: "text",
+        fieldType: "form",
+        required: false,
       },
     ],
   },

@@ -316,11 +316,11 @@ const config: ZudokuConfig = {
           label: "Pricing",
         },
 
-        {
-          type: "doc",
-          file: "onboard",
-          label: "Start API Trial →",
-        },
+        // {
+        //   type: "doc",
+        //   file: "onboard",
+        //   label: "Start API Trial →",
+        // },
 
         {
           type: "doc",
