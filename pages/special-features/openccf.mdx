@@ -33,38 +33,41 @@ For software developers and tech teams, CarbonSutra becomes a simple, plug-and-p
 Internally, the API for OepnCCF uses the [clustering](https://www.carbonsutra.com/clustering.html) functionality in which the developer eliminates the need to store emission calculation results by assigning a self-declared tag to it. These tags are called cluster names and they can be added to any calculation within CarbonSutra. The endpoint: /cluster-data accepts the name of this tag and gives the output of all calculations in granular format in JSON. OpenCCF's API invokes the same API internally.
 
 Hence, we need two inputs for OpenCCF:
+
 1. Cluster Name - which is used to group all emission calculations in the report
-2. Report Configuration - An option field of data in JSON format which will be used in OpenCCF outut. 
+2. Report Configuration - An option field of data in JSON format which will be used in OpenCCF outut.
 
-Both these are passed to /openccf endpoint to get the result in a YAML format, in compliance to the specification of data model. 
+Both these are passed to /openccf endpoint to get the result in a YAML format, in compliance to the specification of data model.
 
-The report configuration has following fields: 
+The report configuration has following fields:
 
-- report_id: <report identifier>,
-- company_name: <legal or trading name of reporting company>,
-- region: <Location of the reporting entity, as an ISO 3166-1 country code, like "GB" or "US">
-- period_start: <Reporting period start date in YYYY-MM-DD>
-- period_end: <Reporting period ending date in YYYY-MM-DD>
-- horizon: <Specify methodology used to calculate CO2 equivalencies. Values: GWP20, GWP100 (default) or GWP500>
-- report_status:<Incomplete, Self-completed, Third-party completed or Third-party audited>
+- `report_id`: `<report identifier>`
+- `company_name`: `<legal or trading name of reporting company>`
+- `region`: `<Location of the reporting entity, as an ISO 3166-1 country code, like "GB" or "US">`
+- `period_start`: `<Reporting period start date in YYYY-MM-DD>`
+- `period_end`: `<Reporting period ending date in YYYY-MM-DD>`
+- `horizon`: `<Specify methodology used to calculate CO2 equivalencies. Values: GWP20, GWP100 (default) or GWP500>`
+- `report_status`: `<Incomplete, Self-completed, Third-party completed or Third-party audited>`
 
 An example of this field in JSON is:
+
+```json
+{
+  "report_id": "KB-Asia25",
+  "company_name": "Kruger-Brent Manufacturing Asia-Pacific",
+  "region": "AU",
+  "period_start": "2025-01-01",
+  "period_end": "2025-12-31",
+  "horizon": "GWP100",
+  "report_status": "Self-completed"
+}
 ```
-{	
-	report_id: KB-Asia25
-	company_name: Kruger-Brent Manufacturing Asia-Pacific
-	region: AU
-	period_start: 2025-01-01
-	period_end: 2025-12-31
-	horizon: GWP100
-	report_status: Self-completed
-}	
-```
+
 The data in report configuration serves as the information in header fields of OpenCCF. The internal smart matching algorithms work here too. For example, the report status of 'completed by third party' will result in expected "THIRD-PARTY COMPLETED' and horizon value of ' = 100' will output the correct GWP100.
 
-## Complete example of OpenCCF 
+## Complete example of OpenCCF
 
-Assume that the above report configuration is passed along with the cluster name of "KrugerBrent-Paints-Q1" which has 3 emission calculations as follows:  
+Assume that the above report configuration is passed along with the cluster name of "KrugerBrent-Paints-Q1" which has 3 emission calculations as follows:
 
 ```
 {
@@ -135,6 +138,6 @@ Assume that the above report configuration is passed along with the cluster name
 
 Combining the entered report configuration and the fetched details by cluster name of "KrugerBrent-Paints-Q1", the final output in YAML format will be:
 
-```
+```yaml
 <here goes the final YAML output>
 ```
