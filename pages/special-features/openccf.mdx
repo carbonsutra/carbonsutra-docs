@@ -1,0 +1,140 @@
+import { Head } from "zudoku/components";
+
+<Head>
+
+<meta
+  name="keywords"
+  content="openccf, carbon footprint api, emission clustering api, scope 1 2 3 emissions engine, rest api clustering, carbon accounting automation, carbonsutra api"
+/>
+<meta
+  property="og:title"
+  content="Data Interoperatbility - OpenCCF through CarbonSutra"
+/>
+<meta
+  property="og:description"
+  content="Group, log, and retrieve carbon emission calculations in OpenCCF format"
+/>
+<meta property="og:type" content="website" />
+
+</Head>
+
+# OpenCCF - Open Corporate Carbon Footprint
+
+[OpenCCF](https://openccf.org/) is a common, machine-readable structure for exchanging GHG Protocol-aligned carbon footprints between systems: open, CC0, and framework-agnostic.
+
+CarbonSutra provides native OpenCCF outputs, letting you turn raw transaction data into this sophisticated and globally recognized reporting standards with a single API call. Instead of dealing with custom formatting programs, messy spreadsheets or locked-in datasets across Scope 1, 2, and 3 emissions, your calculations are mapped automatically. This removes manual data entry and lets you easily move your carbon inventory across enterprise tools.
+
+This update makes audits much faster for sustainability managers, accountants, and auditors. CarbonSutra already provides clear, step-by-step math explanations for every calculation. Formatting this transparent data into the OpenCCF standard allows you to send verified carbon totals straight into ESG, registries, and compliance reports like CSRD or GHG Protocol without losing context.
+
+For software developers and tech teams, CarbonSutra becomes a simple, plug-and-play carbon engine. You can keep using our zero-storage clustering feature to group transaction batches under custom tags without building extra database structures. Your software can now deliver standard-compliant ESG outputs instantly, saving backend development time and simplifying supply chain tracking.
+
+## Getting output in OpenCCF format
+
+Internally, the API for OepnCCF uses the [clustering](https://www.carbonsutra.com/clustering.html) functionality in which the developer eliminates the need to store emission calculation results by assigning a self-declared tag to it. These tags are called cluster names and they can be added to any calculation within CarbonSutra. The endpoint: /cluster-data accepts the name of this tag and gives the output of all calculations in granular format in JSON. OpenCCF's API invokes the same API internally.
+
+Hence, we need two inputs for OpenCCF:
+1. Cluster Name - which is used to group all emission calculations in the report
+2. Report Configuration - An option field of data in JSON format which will be used in OpenCCF outut. 
+
+Both these are passed to /openccf endpoint to get the result in a YAML format, in compliance to the specification of data model. 
+
+The report configuration has following fields: 
+
+- report_id: <report identifier>,
+- company_name: <legal or trading name of reporting company>,
+- region: <Location of the reporting entity, as an ISO 3166-1 country code, like "GB" or "US">
+- period_start: <Reporting period start date in YYYY-MM-DD>
+- period_end: <Reporting period ending date in YYYY-MM-DD>
+- horizon: <Specify methodology used to calculate CO2 equivalencies. Values: GWP20, GWP100 (default) or GWP500>
+- report_status:<Incomplete, Self-completed, Third-party completed or Third-party audited>
+
+An example of this field in JSON is:
+```
+{	
+	report_id: KB-Asia25
+	company_name: Kruger-Brent Manufacturing Asia-Pacific
+	region: AU
+	period_start: 2025-01-01
+	period_end: 2025-12-31
+	horizon: GWP100
+	report_status: Self-completed
+}	
+```
+The data in report configuration serves as the information in header fields of OpenCCF. The internal smart matching algorithms work here too. For example, the report status of 'completed by third party' will result in expected "THIRD-PARTY COMPLETED' and horizon value of ' = 100' will output the correct GWP100.
+
+## Complete example of OpenCCF 
+
+Assume that the above report configuration is passed along with the cluster name of "KrugerBrent-Paints-Q1" which has 3 emission calculations as follows:  
+
+```
+{
+  "data": [
+    {
+      "id": "949c6f9e-d675-7d08-ad3c-9229c7b83ea6",
+      "type": "estimate-travel-flight",
+      "cluster_name": "KrugerBrent-Paints-Q1",
+      "attributes": {
+        "type": "estimate-travel-flight",
+        "add_rf": "Y",
+        "co2e_gm": 8560440,
+        "co2e_kg": 8560.44,
+        "co2e_lb": 18872.52,
+        "co2e_mt": 8.56,
+        "airport_to": "Ninoy Aquino International Airport",
+        "round_trip": "Y",
+        "include_wtt": "Y",
+        "airport_from": "Los Angeles International Airport",
+        "flight_class": "Business",
+        "iata_airport_to": "MNL",
+        "iata_airport_from": "LAX",
+        "number_of_passengers": 1
+      },
+      "estimated_at": "2026-09-24 09:41:48"
+    },
+    {
+      "id": "8715bcc5-a4df-0bb9-c621-24fc749436eb",
+      "type": "estimate-hotel-stay",
+      "cluster_name": "KrugerBrent-Paints-Q1",
+      "attributes": {
+        "type": "estimate-hotel-stay",
+        "co2e_gm": 66950,
+        "co2e_kg": 66.95,
+        "co2e_lb": 147.6,
+        "co2e_mt": 0.07,
+        "country": "United Kingdom",
+        "city_name": "",
+        "hotel_rating": 4,
+        "number_of_rooms": 1,
+        "number_of_nights": 5
+      },
+      "estimated_at": "2026-09-25 01:57:32"
+    },
+    {
+      "id": "53594086-db27-4cc3-ab2a-8f9e55e63a08",
+      "type": "estimate-vehicle-usage",
+      "cluster_name": "KrugerBrent-Paints-Q1",
+      "attributes": {
+        "type": "estimate-vehicle-usage",
+        "co2e_gm": 456544,
+        "co2e_kg": 456.54,
+        "co2e_lb": 1006.5,
+        "co2e_mt": 0.46,
+        "fuel_type": "Unknown",
+        "include_wtt": "Y",
+        "vehicle_type": "Car-Size-Large",
+        "distance_unit": "km",
+        "distance_value": 1600
+      },
+      "estimated_at": "2026-09-25 02:11:40"
+    }
+  ],
+  "success": true,
+  "status": 200
+}
+```
+
+Combining the entered report configuration and the fetched details by cluster name of "KrugerBrent-Paints-Q1", the final output in YAML format will be:
+
+```
+<here goes the final YAML output>
+```

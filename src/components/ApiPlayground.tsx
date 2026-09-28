@@ -20,6 +20,8 @@ type ApiDefinition = {
   description?: string;
   requiresAuth?: boolean;
   fields?: ApiField[];
+  jsonBody?: boolean;
+  bodyExample?: string;
 };
 
 const APIs: ApiDefinition[] = [
@@ -686,6 +688,32 @@ const APIs: ApiDefinition[] = [
       },
     ],
   },
+  {
+    name: "OpenCCF Report",
+    method: "POST",
+    endpoint: "/api/v1/openccf",
+    description:
+      "Generates an OpenCCF-compliant emissions report in YAML format using estimates stored under the specified cluster.",
+    requiresAuth: true,
+    jsonBody: true,
+    bodyExample: JSON.stringify(
+      {
+        cluster_name: "Example",
+        report_config: {
+          report_id: "Example",
+          company_name: "Example Manufacturing Asia-Pacific",
+          region: "AU",
+          period_start: "2025-01-01",
+          period_end: "2025-12-31",
+          horizon: "GWP100",
+          report_status: "Self-completed",
+        },
+      },
+      null,
+      2,
+    ),
+    fields: [],
+  },
 ];
 
 export default function ApiPlayground() {
@@ -694,6 +722,7 @@ export default function ApiPlayground() {
   const [values, setValues] = useState<Record<string, string>>(
     getInitialValues(APIs[0]),
   );
+  const [jsonBody, setJsonBody] = useState(APIs[0].bodyExample ?? "");
 
   const [token, setToken] = useState("");
   const [headers, setHeaders] = useState<Record<string, string>>({
@@ -730,6 +759,7 @@ export default function ApiPlayground() {
     setSelectedApi(index);
     setEndpoint(APIs[index].endpoint);
     setValues(getInitialValues(APIs[index]));
+    setJsonBody(APIs[index].bodyExample ?? "");
     setResponse("");
     setStatus("");
     setResponseTime("");
@@ -818,7 +848,10 @@ export default function ApiPlayground() {
 
       let requestBody: BodyInit | undefined;
 
-      if (formFields.length > 0) {
+      if (api.jsonBody) {
+        requestBody = jsonBody;
+        requestHeaders["Content-Type"] = "application/json";
+      } else if (formFields.length > 0) {
         const formData = new FormData();
 
         formFields.forEach((field) => {
@@ -1092,15 +1125,26 @@ export default function ApiPlayground() {
                 <h3 className="m-0 text-xs font-semibold">Request Body</h3>
 
                 <p className="m-0 mt-1 text-[11px] opacity-50">
-                  {formFields.length
-                    ? "multipart/form-data"
-                    : api.method === "GET"
-                      ? "This request does not use a body."
-                      : "No request body parameters are defined."}
+                  {api.jsonBody
+                    ? "application/json"
+                    : formFields.length
+                      ? "multipart/form-data"
+                      : api.method === "GET"
+                        ? "This request does not use a body."
+                        : "No request body parameters are defined."}
                 </p>
               </div>
 
-              {formFields.length === 0 ? (
+              {api.jsonBody ? (
+                <div className="overflow-hidden rounded-md border">
+                  <textarea
+                    value={jsonBody}
+                    onChange={(e) => setJsonBody(e.target.value)}
+                    className="min-h-[280px] w-full resize-y bg-background p-4 font-mono text-xs leading-relaxed outline-none"
+                    spellCheck={false}
+                  />
+                </div>
+              ) : formFields.length === 0 ? (
                 <EmptyState
                   text={
                     api.method === "GET"

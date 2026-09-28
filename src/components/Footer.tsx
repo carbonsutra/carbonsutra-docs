@@ -13,6 +13,17 @@ const productLinks = [
   },
 ];
 
+const legalLinks = [
+  {
+    label: "Privacy Policy",
+    href: "/privacy-policy",
+  },
+  {
+    label: "Terms of Service",
+    href: "/terms-of-service",
+  },
+];
+
 const connectLinks = [
   {
     label: "LinkedIn",
@@ -51,7 +62,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-border bg-background">
       <div className="mx-auto w-full">
-        <div className="flex justify-between flex-wrap gap-12  m-4 my-4">
+        <div className="flex justify-between flex-wrap gap-4 m-4 my-4">
           <div>
             <h3 className="text-sm font-semibold text-foreground">Product</h3>
 
@@ -104,6 +115,23 @@ export default function Footer() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Legal</h3>
+
+            <ul className="mt-5 space-y-2">
+              {legalLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
                     className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
                   >
                     {link.label}

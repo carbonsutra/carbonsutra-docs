@@ -8,7 +8,7 @@ import { Head } from "zudoku/components";
 />
 <meta
   property="og:title"
-  content="Carbon Footprint API & Emission Clustering | CarbonSutra"
+  content="Data Interoperatbility - Fast Emission Clustering | CarbonSutra"
 />
 <meta
   property="og:description"
@@ -18,46 +18,86 @@ import { Head } from "zudoku/components";
 
 </Head>
 
-# Clustering
+# Rapid Clustering
 
-Clustering the results of APIs within CarbonSutra eliminates the need to store the emission calculation results on developer's side. Let's say, a company calculates emissions for business travel (air and land), electricity consumption, hotel stays and their vehicle fleet, once every quarter, Using only a self-defined label as a input parameter, these calculations can be clustered into sets and retrieved in future. This feature is heavily used by programmers who use clusters to monitor emission trends, compare data across periods and offset.
+Developers can eliminate the need to store emission calculation results by assigning a self-declared tag to it. These tags are called cluster names and they can be added to any calculation within CarbonSutra. The endpoint: /cluster-data accepts the name of this tag and gives the output of all calculations in granular format in JSON.
 
-## Clustering Emissions.
+For example, say a company calculates emissions for business travel (air and land), electricity consumption, hotel stays and their vehicle fleet, once every quarter. Using this self-defined label as an additional input parameter, these calculations can be clustered into sets and retrieved.
 
-This API is designed to help developers to eliminate the need to store emission calculations. Emissions can be grouped using self-defined labels and retrieved in clusters. A key will need to be generated which is then passed as a Bearer Token in all calculations, along with a label or cluster name.
+## Example of clustering
 
-## The Advantage
+Say a user has assigned a cluster name of "KrugerBrent-Paints-Q1" with each of the 3 emission calculations. Entering the same tag in /cluster-data endpoint will result in data as:
 
-This is an optional but highly useful feature of CarbonSutra, essentially designed to help developers and simplify their programs. It eliminates the need to store the results of any emission API and developers can retrieve the collated results later. The following two parameters need to be used:
+```
+{
+  "data": [
+    {
+      "id": "949c6f9e-d675-7d08-ad3c-9229c7b83ea6",
+      "type": "estimate-travel-flight",
+      "cluster_name": "KrugerBrent-Paints-Q1",
+      "attributes": {
+        "type": "estimate-travel-flight",
+        "add_rf": "Y",
+        "co2e_gm": 8560440,
+        "co2e_kg": 8560.44,
+        "co2e_lb": 18872.52,
+        "co2e_mt": 8.56,
+        "airport_to": "Ninoy Aquino International Airport",
+        "round_trip": "Y",
+        "explanation": "This emission profile is computed using the UK Government's 2026 conversion factors for greenhouse gas (GHG) reporting. The calculation is for a single passenger travelling in Business class between Los Angeles International Airport(LAX) and Ninoy Aquino International Airport(MNL). The distance between these airports is estimated at 11,740 km, utilizing the Haversine equation for Great-Circle Distance (GCD). Since it is a round trip, the distance is doubled to 23,480 km. Radiative forcing uplift is included and indirect/WTT factors are added, as per inputs. Based on these operational parameters, the total footprint evaluates to 8,560,440 grams of CO2e. Standardized metric conversions render this as 8560.44 kg (rounded to two decimal places) or 8.56 metric tons. Scaled against imperial baselines using the conversion factor of 2.20462 (source: GHG conversion factors, 2026), the final metric is expressed as 18872.52 lbs.",
+        "include_wtt": "Y",
+        "airport_from": "Los Angeles International Airport",
+        "flight_class": "Business",
+        "iata_airport_to": "MNL",
+        "iata_airport_from": "LAX",
+        "number_of_passengers": 1
+      },
+      "estimated_at": "2026-09-24 09:41:48"
+    },
+    {
+      "id": "8715bcc5-a4df-0bb9-c621-24fc749436eb",
+      "type": "estimate-hotel-stay",
+      "cluster_name": "KrugerBrent-Paints-Q1",
+      "attributes": {
+        "type": "estimate-hotel-stay",
+        "co2e_gm": 66950,
+        "co2e_kg": 66.95,
+        "co2e_lb": 147.6,
+        "co2e_mt": 0.07,
+        "country": "United Kingdom",
+        "city_name": "",
+        "explanation": "CarbonSutra uses the Cornell Hotel Sustainability Benchmarking Index 2026 (CHSB2026) for this calculation, specifically leveraging the mean value from the CHSB validity test for Measure 1 - HCMI Room Night Emission (Carbon Category). For this itinerary of one room and 5 nights, country-level emission factors for United Kingdom have been applied. This methodology relies on the Expedia Star Rating classification system. Where regional data gaps exist, proxy assignments are made according to the transparent governance rules published on carbonsutra.com. For the hotel rating of four stars, an emission factor of 13.39 kgCO2e per room night is used. This footprint evaluates to 66,950 grams of CO2e. Standardized unit conversions render this as 66.95 kg (rounded to two decimal places) or 0.07 metric tons. Scaled against imperial baselines using the conversion factor of 2.20462 (source: GHG conversion factors, 2026), the final metric is expressed as 147.6 lbs.",
+        "hotel_rating": 4,
+        "number_of_rooms": 1,
+        "number_of_nights": 5
+      },
+      "estimated_at": "2026-09-25 01:57:32"
+    },
+    {
+      "id": "53594086-db27-4cc3-ab2a-8f9e55e63a08",
+      "type": "estimate-vehicle-usage",
+      "cluster_name": "KrugerBrent-Paints-Q1",
+      "attributes": {
+        "type": "estimate-vehicle-usage",
+        "co2e_gm": 456544,
+        "co2e_kg": 456.54,
+        "co2e_lb": 1006.5,
+        "co2e_mt": 0.46,
+        "fuel_type": "Unknown",
+        "explanation": "CarbonSutra computed this emission profile using the UK Government's 2026 conversion factors for greenhouse gas (GHG) reporting. This is large size car, the fuel type of which is not known. For a transit distance of 1,600 kilometers and with indirect/WTT factors added, the total footprint evaluates to 456,544 grams of CO2e. Standardized metric conversions render this as 456.54 kg (rounded to two decimal places) or 0.46 metric tons. Scaled against imperial baselines using the conversion factor of 2.20462 (source: GHG conversion factors, 2026), the final metric is expressed as 1006.5 lbs.",
+        "include_wtt": "Y",
+        "vehicle_type": "Car-Size-Large",
+        "distance_unit": "km",
+        "distance_value": 1600
+      },
+      "estimated_at": "2026-09-25 02:11:40"
+    }
+  ],
+  "success": true,
+  "status": 200
+}
+```
 
-**BEARER TOKEN** : The API below will help you to generate a token unique to your email address and passphrase. No registration is required. This token will need to be passed under Authorization section for ever API call, the results of which need to be clustered. 
+## Retrieval Logic
 
-**CLUSTER NAME** : The self-defined label is passed as a API parameter. Examples are strings like "IBM-UK-Apr25" and "KrugerBrent-MFG-Plant7-2026". This is an optional field and clustering is activated only when a non-NULL value is passed in the emissions API call. The entire cluster results for a specific label can retrieved using the API below. 
-
-## API: Register Key
-
-**INGESTED FIELDS:**
-
-**EMAIL**: Mandatory. Your email address.
-
-**PASSWORD**: Mandatory. The passphrase used to create the token for the above email address
-
-**COMPANY**: Optional. Your organization's name.
-
-## API: Retrieve Key
-
-**INGESTED FIELDS:**
-
-**PASSWORD**: Mandatory. The same passphrase used earlier to create the token.
-
-## API: Cluster Data
-
-**INGESTED FIELD:**
-
-**CLUSTER_NAME**: Mandatory.
-
-## Quick Trial: Steps
-
-1. Get your unique token using Register Key API. You can get it directly from the free trial site.
-2. Using this as a "BEARER TOKEN" under Authorization parameters of API and using a unique label for CLUSTER NAME parameter, call other emission APIs of business travel, hotel stays, electricity consumption and others .
-3. Call the Cluster Data API to get all the records for a specific CLUSTER NAME value, using your token.
+The JSON data for cluster name is retrieved for the request which has the same API key or Bearer Token as the ones which performed the calculation. The same API is being used for the interoperability format of OpenCCF. 
