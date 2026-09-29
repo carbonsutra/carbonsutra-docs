@@ -15,6 +15,10 @@ const productLinks = [
 
 const legalLinks = [
   {
+    label: "About",
+    href: "/about",
+  },
+  {
     label: "Privacy Policy",
     href: "/privacy-policy",
   },
@@ -61,12 +65,12 @@ const accessLinks = [
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-background">
-      <div className="mx-auto w-full">
-        <div className="flex justify-between flex-wrap gap-4 m-4 my-4">
+      <div className="mx-auto max-w-5xl">
+        <div className="flex justify-between flex-wrap gap-2 m-4 my-4">
           <div>
             <h3 className="text-sm font-semibold text-foreground">Product</h3>
 
-            <ul className="mt-5 space-y-2">
+            <ul className="mt-2 space-y-1">
               {productLinks.map((link) => (
                 <li key={link.label}>
                   <a
@@ -81,9 +85,28 @@ export default function Footer() {
           </div>
 
           <div>
+            <h3 className="text-sm font-semibold text-foreground">Access</h3>
+
+            <ul className="mt-2 space-y-1">
+              {accessLinks?.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
             <h3 className="text-sm font-semibold text-foreground">Connect</h3>
 
-            <ul className="mt-5 space-y-2">
+            <ul className="mt-2 space-y-1">
               {connectLinks?.map((link) => (
                 <li key={link.label}>
                   <a
@@ -106,28 +129,9 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Access</h3>
+            <h3 className="text-sm font-semibold text-foreground">Company</h3>
 
-            <ul className="mt-5 space-y-2">
-              {accessLinks?.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-foreground">Legal</h3>
-
-            <ul className="mt-5 space-y-2">
+            <ul className="mt-2 space-y-1">
               {legalLinks.map((link) => (
                 <li key={link.label}>
                   <a
@@ -141,15 +145,11 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-
-        <div className="border-t border-border" />
-
-        <div className="flex justify-center">
-          <p className=" text-sm text-muted-foreground py-3">
-            © {new Date().getFullYear()} Contactous Pte Ltd. All rights
-            reserved.
-          </p>
-        </div>
+      </div>
+      <div className="flex justify-center border-t border-border">
+        <p className="text-xs sm:text-sm text-muted-foreground py-3">
+          © {new Date().getFullYear()} Contactous Pte Ltd. All rights reserved.
+        </p>
       </div>
     </footer>
   );

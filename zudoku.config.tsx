@@ -97,10 +97,10 @@ const config: ZudokuConfig = {
                 href: "/api",
                 variant: "outline",
               },
-              {
-                label: "Get started",
-                href: "https://rapidapi.com/carbonsutra/api/carbonsutra1",
-              },
+              // {
+              //   label: "Get started",
+              //   href: "https://rapidapi.com/carbonsutra/api/carbonsutra1",
+              // },
             ]}
             aside={
               <div className="overflow-hidden rounded-xl border bg-card aspect-video">
@@ -138,9 +138,22 @@ const config: ZudokuConfig = {
           collapsed: false,
           items: [
             {
-              type: "doc",
-              file: "special-features/clustering",
-              label: "Clustering",
+              type: "category",
+              label: "Data Interoperability",
+              collapsible: true,
+              collapsed: false,
+              items: [
+                {
+                  type: "doc",
+                  file: "special-features/clustering",
+                  label: "Rapid Clustering",
+                },
+                {
+                  type: "doc",
+                  file: "special-features/openccf",
+                  label: "OpenCCF",
+                },
+              ],
             },
             {
               type: "doc",
@@ -335,11 +348,11 @@ const config: ZudokuConfig = {
       ],
     },
 
-    {
-      type: "link",
-      label: "Get Started",
-      to: "https://rapidapi.com/carbonsutra/api/carbonsutra1",
-    },
+    // {
+    //   type: "link",
+    //   label: "Get Started",
+    //   to: "https://rapidapi.com/carbonsutra/api/carbonsutra1",
+    // },
 
     {
       type: "link",
