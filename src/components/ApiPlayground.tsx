@@ -1,641 +1,28 @@
 import { useMemo, useState } from "react";
 import "../styles.css";
 
+import {
+  APIs,
+  FUEL_NAMES_BY_USAGE,
+  VEHICLE_MODELS_BY_MAKE,
+  SEFR_ACTIVITIES_BY_CATEGORY,
+} from "../libs/api-playground-data";
+
+import type {
+  ApiDefinition,
+  ApiField,
+  FieldDependency,
+} from "../libs/api-playground-data";
+
 type Tab = "params" | "authorization" | "body" | "headers";
 
-type ApiField = {
-  name: string;
-  type?: "text" | "number" | "email" | "select";
-  fieldType?: "query" | "path" | "form";
-  required?: boolean;
-  defaultValue?: string;
-  description?: string;
-  options?: string[];
-};
+type FuelUsage = keyof typeof FUEL_NAMES_BY_USAGE;
+type VehicleMake = keyof typeof VEHICLE_MODELS_BY_MAKE;
+type SefrCategory = keyof typeof SEFR_ACTIVITIES_BY_CATEGORY;
 
-type ApiDefinition = {
-  name: string;
-  method: string;
-  endpoint: string;
-  description?: string;
-  requiresAuth?: boolean;
-  fields?: ApiField[];
-  jsonBody?: boolean;
-  bodyExample?: string;
+const isFuelUsage = (value: string): value is FuelUsage => {
+  return value in FUEL_NAMES_BY_USAGE;
 };
-
-const APIs: ApiDefinition[] = [
-  {
-    name: "Flight Estimation",
-    method: "POST",
-    endpoint: "/api/v1/flight_estimate",
-    description:
-      "Emissions from Business Flight Travel\n\nReturns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for business travel through flights/air, based on airport codes of arrival and departure, class of flight and number of passengers.",
-    requiresAuth: true,
-    fields: [
-      {
-        name: "iata_airport_from",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "iata_airport_to",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "flight_class",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: " ",
-        options: ["Economy", "Premium", "Business", "First"],
-      },
-      {
-        name: "round_trip",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: "Y",
-        options: ["Y", "N"],
-      },
-      {
-        name: "number_of_passengers",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: "1",
-      },
-      {
-        name: "add_rf",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: "Y",
-        options: ["Y", "N"],
-      },
-      {
-        name: "include_wtt",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: "Y",
-        options: ["Y", "N"],
-        description:
-          "Controls whether Well-to-Tank (WTT) upstream emissions are included. Use Y to include WTT factors or N to exclude them; the API documentation specifies Y as the default.",
-      },
-      {
-        name: "cluster_name",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Hotel Estimation",
-    method: "POST",
-    endpoint: "/api/v1/hotel_estimate",
-    description:
-      "Emissions from Hotel Stay\n\nReturns estimated greenhouse gas emissions (CO2e) in grams, kilograms, metric tons, and pounds for a hotel stay. The estimate is based on the hotel's country, city, Expedia star rating, number of nights, and number of rooms.\n\nCarbonSutra calculates hotel-stay emissions using the Cornell Hotel Sustainability Benchmark Index 2026 (CHSB2026) and UK government GHG conversion factors published in 2026.",
-    requiresAuth: true,
-    fields: [
-      {
-        name: "country_code",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-        description:
-          "Two-letter ISO 3166-1 alpha-2 country code where the hotel is located (for example, US, GB, JP).",
-      },
-      {
-        name: "city_name",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-        description:
-          "Name of the city where the hotel is located. Leave empty when city-specific data is not available and country-level estimation is appropriate.",
-      },
-      {
-        name: "hotel_rating",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: "4",
-        options: ["2", "3", "4", "5"],
-        description:
-          "Expedia star classification of the hotel. Allowed values are 2, 3, 4, or 5 stars; the API documentation specifies 4 as the default.",
-      },
-      {
-        name: "number_of_nights",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: "1",
-        description:
-          "Total length of the hotel stay measured in nights. The API documentation specifies 1 night as the default.",
-      },
-      {
-        name: "number_of_rooms",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: "1",
-        description:
-          "Number of hotel rooms booked, regardless of how many people stay in each room. The API documentation specifies 1 room as the default.",
-      },
-      {
-        name: "cluster_name",
-        fieldType: "query",
-        type: "text",
-        description:
-          "Optional identifier used to log and aggregate this hotel-emission result through the Cluster Data API.",
-      },
-    ],
-  },
-  {
-    name: "Vehicle Estimation by Type",
-    method: "POST",
-    endpoint: "/api/v1/vehicle_estimate_by_type",
-    description:
-      "Emissions from Vehicle Usage based on its type\n\nReturns estimated greenhouse gas emissions (CO2e) in grams, kilograms, metric tons, and pounds for travel using a specified vehicle type. The estimate is based on vehicle type, distance travelled, fuel type, and whether Well-to-Tank (WTT) emissions are included.\n\nUse this endpoint when the vehicle make and model are not required or are unknown. CarbonSutra provides vehicle-type-based factors and supports petrol, diesel, plug-in hybrid (PHEV), battery electric (BEV), and unknown fuel categories.",
-    requiresAuth: false,
-    fields: [
-      {
-        name: "vehicle_type",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-        description:
-          "Type or size category of the vehicle used for the journey (for example, Car-Type-Supermini).",
-      },
-      {
-        name: "distance_unit",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: " ",
-        options: ["km", "mi"],
-        description:
-          "Unit used for the distance travelled. Use km for kilometers or mi for miles; the API documentation specifies km as the default.",
-      },
-      {
-        name: "distance_value",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-        description:
-          "Total distance travelled by the vehicle in the selected distance unit. If undefined, the API sets the value to 1.00.",
-      },
-      {
-        name: "fuel_type",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: " ",
-        options: ["Diesel", "Petrol", "PHEV", "BEV", "Unknown"],
-        description:
-          "Fuel or powertrain used by the vehicle. Allowed values are Diesel, Petrol, PHEV, BEV, or Unknown; use Unknown when the fuel type is not known.",
-      },
-      {
-        name: "include_wtt",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: "Y",
-        options: ["Y", "N"],
-        description:
-          "Controls whether Well-to-Tank (WTT) upstream emissions are included in the estimate. Use Y to include WTT factors or N to exclude them; the API documentation specifies Y as the default.",
-      },
-      {
-        name: "cluster_name",
-        fieldType: "query",
-        type: "text",
-        description:
-          "Optional identifier used to log and aggregate this vehicle-emission result through the Cluster Data API.",
-      },
-    ],
-  },
-  {
-    name: "Vehicle Estimation by Model",
-    method: "POST",
-    endpoint: "/api/v1/vehicle_estimate_by_model",
-    description:
-      "# Emissions from Vehicle Usage based on its Make/Model\n\nReturns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for travel in vehicles based on its make and model.\n\n145 Makes and 5,000 models are covered.",
-    requiresAuth: true,
-    fields: [
-      {
-        name: "vehicle_make",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "vehicle_model",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "distance_unit",
-        fieldType: "query",
-        type: "select",
-        options: ["km", "mi"],
-      },
-      {
-        name: "distance_value",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "cluster_name",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Electricity Estimation",
-    method: "POST",
-    endpoint: "/api/v1/electricity_estimate",
-    description:
-      "Emissions from Electricity Usage\n\nReturns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) from electricity usage based on coutnry name and units of electricity consumed.\n\nData from nearly 90 countries for years 2020, 2024 and 2026, from multiple sources has been compiled.",
-    requiresAuth: true,
-    fields: [
-      {
-        name: "country_name",
-        fieldType: "query",
-        type: "text",
-      },
-      {
-        name: "electricity_unit",
-        fieldType: "query",
-        type: "select",
-        options: ["KWh", "MWh"],
-      },
-      {
-        name: "electricity_value",
-        fieldType: "query",
-        type: "text",
-      },
-      {
-        name: "cluster_name",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Fuel Estimation",
-    method: "POST",
-    endpoint: "/api/v1/fuel_estimate",
-    description:
-      "Emissions from Fuel Consumption\n\nReturns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) based on usage, fuel name and its value in tonnes.\n\nCarbonSutra computes the emissions from stationary combustion fuels which are burnt in a fixed unit or asset owned or controlled by the reporting organization, and usually reported as a Scope 1 direct emission.",
-    requiresAuth: true,
-    fields: [
-      {
-        name: "fuel_usage",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: " ",
-        options: ["gas", "liquid", "solid"],
-      },
-      {
-        name: "fuel_name",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "fuel_value",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "cluster_name",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Freight Estimation",
-    method: "POST",
-    endpoint: "/api/v1/freight_estimate",
-    description:
-      "Emissions from Freight Shipping\n\nReturns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for freight shipments through Road, Rail, Air and Sea (categorized into Short Sea and Deep Sea).\n\nTwo additional calculations for Intermodal shipping are available: 1) Road with Rail and 2) Road with Short Sea.",
-    requiresAuth: false,
-    fields: [
-      {
-        name: "transport_mode",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "freight_weight",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "distance_value",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "cluster_name",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "eCommerce Estimation",
-    method: "POST",
-    endpoint: "/api/v1/ecommerce_estimate",
-    description:
-      "Emissions from eCommerce Shipments\n\nReturns estimated greenhouse gas emissions (CO2e) in multiple units (grams, kilograms, metric tons, pounds) for eCommerce shipments.",
-    requiresAuth: false,
-    fields: [
-      {
-        name: "origin_country_code",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "origin_postal_code",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "destination_country_code",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "destination_postal_code",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "package_weight",
-        fieldType: "query",
-        type: "text",
-        required: true,
-        defaultValue: " ",
-      },
-      {
-        name: "add_rf",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: " ",
-        options: ["Y", "N"],
-      },
-      {
-        name: "include_wtt",
-        fieldType: "query",
-        type: "select",
-        required: true,
-        defaultValue: " ",
-        options: ["Y", "N"],
-      },
-      {
-        name: "cluster_name",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Nearest Airport from Airport",
-    method: "GET",
-    endpoint: "/api/v1/nearest-airport-from-another-airport",
-    description:
-      "# Airport to Nearest Airport\n\nReturns the distance in kilometers of the closest airport from a given airport code, along with name and IATA code, using Haversine function.",
-    requiresAuth: false,
-    fields: [
-      {
-        name: "iata_airport_code",
-        fieldType: "query",
-        type: "text",
-      },
-      {
-        name: "same_country",
-        fieldType: "query",
-        type: "select",
-        options: ["Y", "N"],
-      },
-    ],
-  },
-  {
-    name: "Nearest Airport",
-    method: "GET",
-    endpoint: "/api/v1/nearest-airport",
-    description:
-      "# Postal Code to Nearest Airport\n\nReturns the distance in kilometers bewteen a postal code and the nearlest airport to it, using Haversine function.\n\nThis is an advanced algorithm which takes a postal code and country code as input and returns the nearest airport its latitude/longitude value.",
-    requiresAuth: false,
-    fields: [
-      {
-        name: "country_code",
-        fieldType: "query",
-        type: "text",
-      },
-      {
-        name: "postal_code",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Distance Between Airports",
-    method: "GET",
-    endpoint: "/api/v1/distance-between-airports",
-    description:
-      "# Distance between Two Airports\n\nReturns the distance between two IATA airport codes in kilometers, using Haversine function.",
-    requiresAuth: false,
-    fields: [
-      {
-        name: "iata_airport_from",
-        fieldType: "query",
-        type: "text",
-      },
-      {
-        name: "iata_airport_to",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Airports by Keyword",
-    method: "GET",
-    endpoint: "/api/v1/airports-by-keyword",
-    description:
-      "# Airports Keywords Search\n\nReturns the lists of airport names and Airport IATA code which matches the keyword.",
-    requiresAuth: false,
-    fields: [
-      {
-        name: "keyword",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Vehicle Makes",
-    method: "GET",
-    endpoint: "/api/v1/vehicle_makes",
-    description:
-      "List of all Vehicle Makes\n\nReturns a list of all vehicle makers and their number of models, which can be used in getting list of models and then estimating footprints.\n\nThis API is primarily used by application developers.",
-    requiresAuth: true,
-    fields: [],
-  },
-  {
-    name: "Vehicle Models",
-    method: "GET",
-    endpoint: "/api/v1/vehicle_makes/{vehicle_make}/vehicle_models",
-    description:
-      "List of all Models for a specific Vehicle Make\n\nReturns a list of all models for a specific vehicle maker's name.",
-    requiresAuth: false,
-    fields: [
-      {
-        name: "vehicle_make",
-        fieldType: "query",
-        type: "text",
-      },
-      {
-        name: "vehicle_make",
-        fieldType: "path",
-        type: "text",
-        required: true,
-      },
-    ],
-  },
-  {
-    name: "Estimated Flight Time",
-    method: "GET",
-    endpoint: "/api/v1/estimated-flight-time",
-    description:
-      "Estimated Flight Times between Airports\n\nReturns the estimated travel time through flight between two airports.",
-    requiresAuth: false,
-    fields: [
-      {
-        name: "iata_airport_from",
-        fieldType: "query",
-        type: "text",
-      },
-      {
-        name: "iata_airport_to",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Singapore Emission Factor Registry",
-    method: "POST",
-    endpoint: "/api/v1/sefr_estimation",
-    description: "Estimate footprint using Singapore Emission Factors Registry (SEFR).",
-    requiresAuth: true,
-    fields: [
-      {
-        name: "category",
-        type: "text",
-        fieldType: "form",
-        required: true,
-      },
-      {
-        name: "activity",
-        type: "text",
-        fieldType: "form",
-        required: true,
-      },
-      {
-        name: "value",
-        type: "number",
-        fieldType: "form",
-        required: true,
-      },
-      {
-        name: "cluster_name",
-        type: "text",
-        fieldType: "form",
-        required: false,
-      },
-    ],
-  },
-  {
-    name: "Get Cluster Data",
-    method: "GET",
-    endpoint: "/api/v1/cluster_data",
-    description:
-      "Retrieve a batch of emission calculations from self-defined labels or cluster names.",
-    requiresAuth: true,
-    fields: [
-      {
-        name: "cluster_name",
-        fieldType: "query",
-        type: "text",
-      },
-    ],
-  },
-  {
-    name: "Emissions in OpenCCF",
-    method: "POST",
-    endpoint: "/api/v1/openccf",
-    description:
-      "Generate an OpenCCF-compliant emissions report in YAML format using estimates tagged with a cluster name.",
-    requiresAuth: true,
-    jsonBody: true,
-    bodyExample: JSON.stringify(
-      {
-        cluster_name: "Example-Tag",
-        report_config: {
-          report_id: "FY2025-APAC",
-          company_name: "Example Manufacturing Asia-Pacific",
-          region: "AU",
-          period_start: "2025-01-01",
-          period_end: "2025-12-31",
-          horizon: "GWP100",
-          report_status: "Self-completed",
-        },
-      },
-      null,
-      2,
-    ),
-    fields: [],
-  },
-];
 
 export default function ApiPlayground() {
   const [selectedApi, setSelectedApi] = useState(0);
@@ -963,6 +350,7 @@ export default function ApiPlayground() {
                       key={field.name}
                       field={field}
                       value={values[field.name] ?? ""}
+                      values={values}
                       onChange={(value) => updateValue(field.name, value)}
                     />
                   ))}
@@ -987,6 +375,7 @@ export default function ApiPlayground() {
                         key={field.name}
                         field={field}
                         value={values[field.name] ?? ""}
+                        values={values}
                         onChange={(value) => updateValue(field.name, value)}
                       />
                     ))}
@@ -1086,6 +475,7 @@ export default function ApiPlayground() {
                       key={field.name}
                       field={field}
                       value={values[field.name] ?? ""}
+                      values={values}
                       onChange={(value) => updateValue(field.name, value)}
                     />
                   ))}
@@ -1257,12 +647,55 @@ export default function ApiPlayground() {
 function ParameterRow({
   field,
   value,
+  values,
   onChange,
 }: {
   field: ApiField;
   value: string;
+  values: Record<string, string>;
   onChange: (value: string) => void;
 }) {
+  const getDependentOptions = (
+    dependency: FieldDependency,
+    values: Record<string, string>,
+  ): readonly string[] => {
+    switch (dependency) {
+      case "fuel_usage": {
+        const fuelUsage = values.fuel_usage;
+
+        if (!fuelUsage || !isFuelUsage(fuelUsage)) {
+          return [];
+        }
+
+        return FUEL_NAMES_BY_USAGE[fuelUsage];
+      }
+
+      case "vehicle_make": {
+        const vehicleMake = values.vehicle_make;
+
+        if (!vehicleMake || !(vehicleMake in VEHICLE_MODELS_BY_MAKE)) {
+          return [];
+        }
+
+        return VEHICLE_MODELS_BY_MAKE[vehicleMake as VehicleMake];
+      }
+
+      case "category": {
+        const category = values.category;
+
+        if (!category || !(category in SEFR_ACTIVITIES_BY_CATEGORY)) {
+          return [];
+        }
+
+        return SEFR_ACTIVITIES_BY_CATEGORY[category as SefrCategory];
+      }
+    }
+  };
+
+  const options = field.dependsOn
+    ? getDependentOptions(field.dependsOn, values)
+    : (field.options ?? []);
+
   return (
     <div className="grid grid-cols-[24px_1fr_1fr] border-b last:border-b-0">
       <div className="flex items-center justify-center">
@@ -1290,7 +723,7 @@ function ParameterRow({
             onChange={(e) => onChange(e.target.value)}
             className="h-8 w-full rounded border-0 bg-transparent px-1 text-xs outline-none"
           >
-            {field.options?.map((option) => (
+            {options?.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
