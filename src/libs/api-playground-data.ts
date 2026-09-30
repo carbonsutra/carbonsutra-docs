@@ -5873,18 +5873,25 @@ export const APIs: ApiDefinition[] = [
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "Departing airport IATA 3-character code.",
       },
       {
         name: "iata_airport_to",
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "Arrival airport IATA 3-character code.",
       },
       {
         name: "flight_class",
         fieldType: "query",
         type: "select",
         options: [...FLIGHT_CLASSES],
+
+        description:
+          "Flight class. Allowed values are Economy, Premium, Business, or First. If omitted, the API uses the average emission factor.",
       },
       {
         name: "round_trip",
@@ -5892,12 +5899,18 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         defaultValue: "Y",
         options: [...YES_NO],
+
+        description:
+          "Whether the flight is round trip. Use Y for a return flight or N for one way; the API default is Y.",
       },
       {
         name: "number_of_passengers",
         fieldType: "query",
         type: "number",
         defaultValue: "1",
+
+        description:
+          "Number of passengers. If omitted or less than 1, the API uses 1 passenger.",
       },
       {
         name: "add_rf",
@@ -5905,6 +5918,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         defaultValue: "Y",
         options: [...YES_NO],
+
+        description:
+          "Controls whether radiative forcing (RF) is included. Use Y to include RF or N to bypass it; the API default is Y.",
       },
       {
         name: "include_wtt",
@@ -5912,6 +5928,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         defaultValue: "Y",
         options: [...YES_NO],
+
+        description:
+          "Controls whether Well-to-Tank (WTT) upstream emissions are included. Use Y to include WTT or N to exclude it; the API default is Y.",
       },
       { name: "cluster_name", fieldType: "query", type: "text" },
     ],
@@ -5929,6 +5948,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         options: [...HOTEL_COUNTRY_CODES],
+
+        description:
+          "Two-letter ISO 3166-1 alpha-2 country code for the hotel location.",
       },
       { name: "city_name", fieldType: "query", type: "text" },
       {
@@ -5937,18 +5959,26 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         defaultValue: "4",
         options: ["2", "3", "4", "5"],
+
+        description:
+          "Hotel star rating. Allowed values are 2, 3, 4, or 5; the API default is 4.",
       },
       {
         name: "number_of_nights",
         fieldType: "query",
         type: "number",
         defaultValue: "1",
+
+        description:
+          "Number of nights for the hotel stay. The API default is 1 night.",
       },
       {
         name: "number_of_rooms",
         fieldType: "query",
         type: "number",
         defaultValue: "1",
+
+        description: "Number of hotel rooms. The API default is 1 room.",
       },
       { name: "cluster_name", fieldType: "query", type: "text" },
     ],
@@ -5966,6 +5996,8 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         options: [...VEHICLE_TYPES],
+
+        description: "Vehicle type or size category used for the journey.",
       },
       {
         name: "fuel_type",
@@ -5973,6 +6005,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         defaultValue: "Unknown",
         options: [...VEHICLE_FUEL_TYPES],
+
+        description:
+          "Vehicle fuel or powertrain type. Allowed values are Diesel, Petrol, PHEV, BEV, or Unknown; the API default is Unknown.",
       },
       {
         name: "distance_unit",
@@ -5981,12 +6016,18 @@ export const APIs: ApiDefinition[] = [
         required: true,
         defaultValue: "km",
         options: [...DISTANCE_UNITS],
+
+        description:
+          "Unit used for the distance travelled. Allowed values are km or mi.",
       },
       {
         name: "distance_value",
         fieldType: "query",
         type: "number",
         required: true,
+
+        description:
+          "Total distance travelled in the selected distance unit. If undefined, the API uses 1.00.",
       },
       {
         name: "include_wtt",
@@ -5994,6 +6035,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         defaultValue: "Y",
         options: [...YES_NO],
+
+        description:
+          "Controls whether Well-to-Tank (WTT) upstream emissions are included. Use Y to include WTT or N to exclude it; the API default is Y.",
       },
       { name: "cluster_name", fieldType: "query", type: "text" },
     ],
@@ -6011,6 +6055,8 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         options: Object.keys(VEHICLE_MODELS_BY_MAKE),
+
+        description: "Vehicle manufacturer/make.",
       },
       {
         name: "vehicle_model",
@@ -6018,6 +6064,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         dependsOn: "vehicle_make",
+
+        description:
+          "Vehicle model. Available models depend on the selected vehicle make.",
       },
       {
         name: "distance_unit",
@@ -6026,12 +6075,18 @@ export const APIs: ApiDefinition[] = [
         required: true,
         defaultValue: "mi",
         options: [...DISTANCE_UNITS],
+
+        description:
+          "Unit used for the distance travelled. Allowed values are km or mi.",
       },
       {
         name: "distance_value",
         fieldType: "query",
         type: "number",
         required: true,
+
+        description:
+          "Total distance travelled in the selected distance unit. If undefined, the API uses 1.00.",
       },
       { name: "cluster_name", fieldType: "query", type: "text" },
     ],
@@ -6049,6 +6104,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         options: [...ELECTRICITY_COUNTRIES],
+
+        description:
+          "Country used to determine the electricity emission factor.",
       },
       {
         name: "electricity_unit",
@@ -6056,6 +6114,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         defaultValue: "MWh",
         options: ["KWh", "MWh"],
+
+        description:
+          "Unit of electricity consumption. Allowed values are KWh or MWh; the API default is MWh.",
       },
       { name: "electricity_value", fieldType: "query", type: "number" },
       { name: "cluster_name", fieldType: "query", type: "text" },
@@ -6074,6 +6135,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         options: ["gas", "liquid", "solid"],
+
+        description:
+          "Fuel usage category. Allowed values are gas, liquid, or solid.",
       },
       {
         name: "fuel_name",
@@ -6081,12 +6145,17 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         dependsOn: "fuel_usage",
+
+        description:
+          "Fuel name. Available options depend on the selected fuel usage category.",
       },
       {
         name: "fuel_value",
         fieldType: "query",
         type: "number",
         required: true,
+
+        description: "Amount of fuel consumed, measured in tonnes.",
       },
       { name: "cluster_name", fieldType: "query", type: "text" },
     ],
@@ -6104,18 +6173,27 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         options: [...TRANSPORT_MODES],
+
+        description:
+          "Freight transport mode. Allowed values are Air, Rail, Road, ShortSea, DeepSea, Road-Rail, or Road-ShortSea.",
       },
       {
         name: "freight_weight",
         fieldType: "query",
         type: "number",
         required: true,
+
+        description:
+          "Freight weight in kilograms. If null or less than 1, the API uses 1.00 kg.",
       },
       {
         name: "distance_value",
         fieldType: "query",
         type: "number",
         required: true,
+
+        description:
+          "Total distance travelled in the selected distance unit. If undefined, the API uses 1.00.",
       },
       { name: "cluster_name", fieldType: "query", type: "text" },
     ],
@@ -6133,12 +6211,16 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         options: [...ECOMMERCE_COUNTRY_CODES],
+
+        description: "Two-letter ISO country code for the shipment origin.",
       },
       {
         name: "origin_postal_code",
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "Postal code of the shipment origin.",
       },
       {
         name: "destination_country_code",
@@ -6146,18 +6228,26 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         options: [...ECOMMERCE_COUNTRY_CODES],
+
+        description:
+          "Two-letter ISO country code for the shipment destination.",
       },
       {
         name: "destination_postal_code",
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "Postal code of the shipment destination.",
       },
       {
         name: "package_weight",
         fieldType: "query",
         type: "number",
         required: true,
+
+        description:
+          "Package weight in kilograms. If null or less than 1, the API uses 1.00 kg.",
       },
       {
         name: "add_rf",
@@ -6165,6 +6255,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         defaultValue: "Y",
         options: [...YES_NO],
+
+        description:
+          "Controls whether radiative forcing (RF) is included. Use Y to include RF or N to bypass it; the API default is Y.",
       },
       {
         name: "include_wtt",
@@ -6172,6 +6265,9 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         defaultValue: "Y",
         options: [...YES_NO],
+
+        description:
+          "Controls whether Well-to-Tank (WTT) upstream emissions are included. Use Y to include WTT or N to exclude it; the API default is Y.",
       },
       { name: "cluster_name", fieldType: "query", type: "text" },
     ],
@@ -6188,6 +6284,8 @@ export const APIs: ApiDefinition[] = [
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "IATA airport code used to find the nearest airport.",
       },
       { name: "SAME_COUNTRY", fieldType: "query", type: "text" },
     ],
@@ -6204,6 +6302,8 @@ export const APIs: ApiDefinition[] = [
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "Two-letter country code for the postal code location.",
       },
       { name: "POSTAL_CODE", fieldType: "query", type: "text", required: true },
     ],
@@ -6220,12 +6320,16 @@ export const APIs: ApiDefinition[] = [
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "IATA code of the departure airport.",
       },
       {
         name: "IATA_AIRPORT_TO",
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "IATA code of the arrival airport.",
       },
     ],
   },
@@ -6260,6 +6364,8 @@ export const APIs: ApiDefinition[] = [
         type: "select",
         required: true,
         options: Object.keys(VEHICLE_MODELS_BY_MAKE),
+
+        description: "Vehicle manufacturer/make.",
       },
     ],
   },
@@ -6275,12 +6381,16 @@ export const APIs: ApiDefinition[] = [
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "IATA code of the departure airport.",
       },
       {
         name: "IATA_AIRPORT_TO",
         fieldType: "query",
         type: "text",
         required: true,
+
+        description: "IATA code of the arrival airport.",
       },
     ],
   },
@@ -6297,6 +6407,8 @@ export const APIs: ApiDefinition[] = [
         fieldType: "form",
         required: true,
         options: SEFR_CATEGORIES,
+
+        description: "SEFR emission-factor category.",
       },
       {
         name: "activity",
@@ -6304,6 +6416,9 @@ export const APIs: ApiDefinition[] = [
         fieldType: "form",
         required: true,
         dependsOn: "category",
+
+        description:
+          "SEFR activity. Available activities depend on the selected category.",
       },
       { name: "value", type: "number", fieldType: "form", required: true },
       { name: "cluster_name", type: "text", fieldType: "form" },
@@ -6321,6 +6436,9 @@ export const APIs: ApiDefinition[] = [
         fieldType: "query",
         type: "text",
         required: true,
+
+        description:
+          "Optional identifier used to group and retrieve related emission calculations through the Cluster Data API.",
       },
     ],
   },
