@@ -6132,6 +6132,7 @@ export const APIs: ApiDefinition[] = [
       {
         name: "fuel_usage",
         fieldType: "query",
+        defaultValue: "gas",
         type: "select",
         required: true,
         options: ["gas", "liquid", "solid"],

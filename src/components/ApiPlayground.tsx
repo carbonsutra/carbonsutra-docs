@@ -24,6 +24,48 @@ const isFuelUsage = (value: string): value is FuelUsage => {
   return value in FUEL_NAMES_BY_USAGE;
 };
 
+const getDependentOptions = (
+  dependency: FieldDependency,
+  values: Record<string, string>,
+): readonly string[] => {
+  switch (dependency) {
+    case "fuel_usage": {
+      const fuelUsage = values.fuel_usage;
+
+      if (!fuelUsage || !isFuelUsage(fuelUsage)) {
+        return [];
+      }
+
+      return FUEL_NAMES_BY_USAGE[fuelUsage];
+    }
+
+    case "vehicle_make": {
+      const vehicleMake = values.vehicle_make;
+
+      if (!vehicleMake || !(vehicleMake in VEHICLE_MODELS_BY_MAKE)) {
+        return [];
+      }
+
+      return VEHICLE_MODELS_BY_MAKE[vehicleMake];
+    }
+
+    case "category": {
+      const category = values.category;
+
+      if (!category || !(category in SEFR_ACTIVITIES_BY_CATEGORY)) {
+        return [];
+      }
+
+      return SEFR_ACTIVITIES_BY_CATEGORY[
+        category as keyof typeof SEFR_ACTIVITIES_BY_CATEGORY
+      ];
+    }
+
+    default:
+      return [];
+  }
+};
+
 export default function ApiPlayground() {
   const [selectedApi, setSelectedApi] = useState(0);
   const [endpoint, setEndpoint] = useState(APIs[0].endpoint);
@@ -85,30 +127,17 @@ export default function ApiPlayground() {
         [name]: value,
       };
 
-      // Reset dependent field when its parent changes
-      if (name === "fuel_usage") {
-        const fuelOptions = isFuelUsage(value)
-          ? FUEL_NAMES_BY_USAGE[value]
-          : [];
+      const fields = api.fields ?? [];
 
-        updated.fuel_name = fuelOptions[0] ?? "";
-      }
+      fields.forEach((field) => {
+        if (field.dependsOn !== name) {
+          return;
+        }
 
-      if (name === "vehicle_make") {
-        const vehicleOptions = VEHICLE_MODELS_BY_MAKE[value] ?? [];
-        updated.vehicle_model = vehicleOptions[0] ?? "";
-      }
+        const options = getDependentOptions(field.dependsOn, updated);
 
-      if (name === "category") {
-        const categoryOptions =
-          value in SEFR_ACTIVITIES_BY_CATEGORY
-            ? SEFR_ACTIVITIES_BY_CATEGORY[
-                value as keyof typeof SEFR_ACTIVITIES_BY_CATEGORY
-              ]
-            : [];
-
-        updated.activity = categoryOptions[0] ?? "";
-      }
+        updated[field.name] = options[0] ?? "";
+      });
 
       return updated;
     });
@@ -684,43 +713,6 @@ function ParameterRow({
   values: Record<string, string>;
   onChange: (value: string) => void;
 }) {
-  const getDependentOptions = (
-    dependency: FieldDependency,
-    values: Record<string, string>,
-  ): readonly string[] => {
-    switch (dependency) {
-      case "fuel_usage": {
-        const fuelUsage = values.fuel_usage;
-
-        if (!fuelUsage || !isFuelUsage(fuelUsage)) {
-          return [];
-        }
-
-        return FUEL_NAMES_BY_USAGE[fuelUsage];
-      }
-
-      case "vehicle_make": {
-        const vehicleMake = values.vehicle_make;
-
-        if (!vehicleMake || !(vehicleMake in VEHICLE_MODELS_BY_MAKE)) {
-          return [];
-        }
-
-        return VEHICLE_MODELS_BY_MAKE[vehicleMake as VehicleMake];
-      }
-
-      case "category": {
-        const category = values.category;
-
-        if (!category || !(category in SEFR_ACTIVITIES_BY_CATEGORY)) {
-          return [];
-        }
-
-        return SEFR_ACTIVITIES_BY_CATEGORY[category as SefrCategory];
-      }
-    }
-  };
-
   const options = field.dependsOn
     ? getDependentOptions(field.dependsOn, values)
     : (field.options ?? []);
@@ -748,19 +740,34 @@ function ParameterRow({
       <div className="px-3 py-1.5">
         {field.type === "select" ? (
           <select
-            value={value}
+            value={value ?? ""}
             onChange={(e) => onChange(e.target.value)}
-            className="h-8 w-full rounded border-0 bg-transparent px-1 text-xs outline-none"
+            disabled={Boolean(field.dependsOn && options.length === 0)}
+            className="h-8 w-full rounded border-0 bg-transparent px-1 text-xs outline-none disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {options?.map((option) => (
-              <option key={option} value={option}>
-                {option}
+            {options.length === 0 ? (
+              <option value="">
+                {field.dependsOn
+                  ? "Select a dependency first"
+                  : "No options available"}
               </option>
-            ))}
+            ) : (
+              options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))
+            )}
           </select>
         ) : (
           <input
-            type={field.type ?? "text"}
+            type={
+              field.type === "number"
+                ? "number"
+                : field.type === "email"
+                  ? "email"
+                  : "text"
+            }
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Enter value"
@@ -783,8 +790,48 @@ function EmptyState({ text }: { text: string }) {
 function getInitialValues(api: ApiDefinition) {
   const values: Record<string, string> = {};
 
-  api.fields?.forEach((field) => {
+  const fields = api.fields ?? [];
+
+  fields.forEach((field) => {
     values[field.name] = field.defaultValue ?? "";
+  });
+
+  fields.forEach((field) => {
+    if (field.type !== "select") {
+      return;
+    }
+
+    if (field.dependsOn) {
+      const options = getDependentOptions(field.dependsOn, values);
+
+      if (options.length > 0) {
+        const currentValue = values[field.name];
+
+        if (currentValue && options.includes(currentValue)) {
+          return;
+        }
+
+        values[field.name] = options[0];
+      }
+
+      return;
+    }
+
+    const options = field.options ?? [];
+
+    if (options.length === 0) {
+      return;
+    }
+
+    const currentValue = values[field.name];
+
+    if (currentValue && options.includes(currentValue)) {
+      return;
+    }
+
+    if (field.required) {
+      values[field.name] = options[0];
+    }
   });
 
   return values;
