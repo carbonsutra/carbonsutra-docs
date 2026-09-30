@@ -79,10 +79,39 @@ export default function ApiPlayground() {
   };
 
   const updateValue = (name: string, value: string) => {
-    setValues((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setValues((previous) => {
+      const updated = {
+        ...previous,
+        [name]: value,
+      };
+
+      // Reset dependent field when its parent changes
+      if (name === "fuel_usage") {
+        const fuelOptions = isFuelUsage(value)
+          ? FUEL_NAMES_BY_USAGE[value]
+          : [];
+
+        updated.fuel_name = fuelOptions[0] ?? "";
+      }
+
+      if (name === "vehicle_make") {
+        const vehicleOptions = VEHICLE_MODELS_BY_MAKE[value] ?? [];
+        updated.vehicle_model = vehicleOptions[0] ?? "";
+      }
+
+      if (name === "category") {
+        const categoryOptions =
+          value in SEFR_ACTIVITIES_BY_CATEGORY
+            ? SEFR_ACTIVITIES_BY_CATEGORY[
+                value as keyof typeof SEFR_ACTIVITIES_BY_CATEGORY
+              ]
+            : [];
+
+        updated.activity = categoryOptions[0] ?? "";
+      }
+
+      return updated;
+    });
   };
 
   const buildEndpoint = () => {
