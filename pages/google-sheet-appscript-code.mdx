@@ -1,0 +1,413 @@
+```javascript
+/**************************\*\*\*\***************************\*\*\***************************\*\*\*\***************************
+
+-
+- CARBONSUTRA - CARBON EMISSION ESTIMATION FUNCTIONS FOR GOOGLE SHEETS
+-
+- CarbonSutra estimates the Scope 1, 2, and 3 greenhouse gas emission footprints for organizations.
+- The rich set of APIs can be accessed directly through this Google Sheets script, translating
+- complex carbon accounting algorithms into easy-to-use spreadsheet functions.
+-
+- This script focuses on calculating the CO2 equivalent (CO2e) in grams for various business activities.
+-
+- USAGE INSTRUCTIONS:
+- If you are evaluating the APIs using a free account (through Playground) or if you are a direct
+- customer of CarbonSutra, this script will work for you immediately once you insert your API Key.
+- However, if you want the script to be used through an external gateway like RapidAPI, the base
+- URL and authorization headers will need to be modified.
+-
+- NEED HELP?
+- If you need help integrating these functions, or would like us to create specialized algorithms
+- for your organization's specific ESG needs, please contact us at support@carbonsutra.com
+- **************************\*\*\*\***************************\*\*\***************************\*\*\*\***************************/
+
+// =================================================================================================================
+// SETUP ACCESS KEY
+// =================================================================================================================
+// This is your unique key to access the CarbonSutra API. It is the ONLY field you need to edit here.
+// The custom functions will not work without a valid key.
+//
+// You can get a trial key from the 'Playground' section of www.carbonsutra.com.
+// Replace the placeholder key below with your trial key or commercial API key from CarbonSutra.
+//
+var authKey = 'wFY2ZLy7W7Hl19p5LvEHkeNgTqYHzose2xwORnGxKGxYdgrsh1iELD3ubKJI';
+// =================================================================================================================
+
+// This base URL should not be changed unless a different gateway (e.g., RapidAPI) is being used.
+var baseurl = 'https://api.carbonsutra.com/api/v1';
+
+// Format the authentication key to ensure it correctly excludes the 'Bearer ' prefix for the API payload if present.
+if (authKey && authKey.startsWith('Bearer ')) {
+authKey = authKey.substring(7);
+}
+
+/\*\*
+
+- Calculates greenhouse gas emissions (CO2e) for business flight travel.
+- Uses distance between airports, flight class, and optional Well-To-Tank (WTT) / Radiative Forcing (RF) multipliers.
+-
+- @param {String} iata_airport_from The 3-letter IATA code of the departure airport (e.g., "LHR").
+- @param {String} iata_airport_to The 3-letter IATA code of the arrival airport (e.g., "JFK").
+- @param {String} flight_class The travel class. Allowed values: "Economy", "Premium", "Business", "First". (Optional)
+- @param {String} round_trip Specify "Y" for round trip or "N" for one-way. (Optional, Default: "Y")
+- @param {String} add_rf Add Radiative Forcing (RF) factor to account for high-altitude climate impacts. "Y" or "N". (Optional, Default: "Y")
+- @param {String} include_wtt Include Well-To-Tank (WTT) upstream fuel emissions. "Y" or "N". (Optional, Default: "Y")
+- @param {Number} number_of_passengers The number of passengers traveling. (Optional, Default: 1)
+- @return The CO2 equivalent emissions in grams.
+- @customfunction
+  \*/
+  function CO2FLIGHT(iata_airport_from,iata_airport_to,flight_class,round_trip="Y",add_rf="Y",include_wtt="Y",number_of_passengers=1)
+  {
+  var url = baseurl + '/flight_estimate';
+
+// Construct the JSON payload for the flight estimation endpoint.
+var data = {
+"cluster_name":"",
+"iata_airport_from":iata_airport_from,
+"iata_airport_to":iata_airport_to,
+"flight_class":flight_class,
+"round_trip":round_trip,
+"add_rf":add_rf,
+"include_wtt":include_wtt,
+"number_of_passengers":number_of_passengers
+};
+var options = {
+'method' : 'post',
+'contentType': 'application/json',
+'Authorization':"Bearer "+authKey,
+'payload' : JSON.stringify(data),
+'muteHttpExceptions':false
+};
+var response = UrlFetchApp.fetch(url, options);
+var result = JSON.parse(response)
+
+if(result.data){
+return result.data.co2e_gm;
+}else{
+return result;
+}
+}
+
+/\*\*
+
+- Calculates greenhouse gas emissions (CO2e) from hotel stays.
+- Based on the Cornell Hotel Sustainability Benchmark Index and UK GHG conversion factors.
+-
+- @param {String} country_code The 2-letter ISO 3166-1 alpha-2 country code (e.g., "US", "GB", "JP").
+- @param {String} city_name The name of the city for granular local data. (Optional)
+- @param {String} hotel_rating The star rating of the hotel. Allowed values: "2", "3", "4", "5". (Optional, Default: "4")
+- @param {Number} number_of_nights The length of the stay in nights. (Optional, Default: 1)
+- @param {Number} number_of_rooms The number of rooms booked. (Optional, Default: 1)
+- @return The CO2 equivalent emissions in grams.
+- @customfunction
+  \*/
+  function CO2HOTEL(country_code,city_name,hotel_rating,number_of_nights,number_of_rooms)
+  {
+  var url = baseurl+'/hotel_estimate'
+
+// Construct the JSON payload for the hotel estimation endpoint.
+var data = {
+"cluster_name":"",
+"country_code":country_code,
+"city_name":city_name,
+"hotel_rating":hotel_rating,
+"number_of_nights":number_of_nights,
+"number_of_rooms":number_of_rooms
+};
+var options = {
+'method' : 'post',
+'contentType': 'application/json',
+'Authorization':"Bearer "+authKey,
+'payload' : JSON.stringify(data),
+'muteHttpExceptions':false
+};
+var response = UrlFetchApp.fetch(url, options);
+var result = JSON.parse(response)
+
+return result.data.co2e_gm;
+}
+
+/\*\*
+
+- Calculates greenhouse gas emissions (CO2e) from electricity usage.
+- Utilizes data from over 90 countries to estimate Scope 2 indirect emissions.
+-
+- @param {String} country_name The full name of the country (e.g., "Germany", "USA", "Singapore").
+- @param {Number} electricity_value The amount of electricity units consumed. (Optional, Default: 1)
+- @param {String} electricity_unit The unit of measure for electricity. Allowed values: "KWh" or "MWh". (Optional, Default: "MWh")
+- @return The CO2 equivalent emissions in grams.
+- @customfunction
+  \*\*/
+  function CO2ELECTRICITY(country_name,electricity_value,electricity_unit)
+  {
+  var url = baseurl+'/electricity_estimate'
+
+// Construct the JSON payload for the electricity estimation endpoint.
+var data = {
+"cluster_name":"",
+"electricity_unit":electricity_unit,
+"electricity_value":electricity_value,
+"country_name":country_name
+};
+
+var options = {
+'method' : 'post',
+'contentType': 'application/json',
+'Authorization':"Bearer "+authKey,
+'payload' : JSON.stringify(data),
+'muteHttpExceptions':false
+};
+
+var response = UrlFetchApp.fetch(url, options);
+var result = JSON.parse(response)
+if (result.status != 200){
+return result.data;
+}else{
+return result.data.co2e_gm;
+}
+}
+
+/\*\*
+
+- Calculates greenhouse gas emissions (CO2e) from stationary fuel combustion.
+- Typically used for Scope 1 direct emissions for industrial, commercial, or residential fixed assets.
+-
+- @param {String} fuel_usage The category of fuel state. Allowed values: "gas", "liquid", "solid". (Mandatory)
+- @param {String} fuel_name The specific name of the fuel (e.g., "Natural gas", "Diesel", "Coal (industrial)"). (Mandatory)
+- @param {Number} fuel_value The amount of fuel consumed, measured in tonnes. (Mandatory)
+- @return The CO2 equivalent emissions in grams.
+- @customfunction
+  \*/
+  function CO2FUEL(fuel_usage,fuel_name,fuel_value)
+  {
+  var url = baseurl+'/fuel_estimate'
+
+// Construct the JSON payload for the stationary fuel estimation endpoint.
+var data = {
+"cluster_name":"",
+"fuel_usage":fuel_usage,
+"fuel_name":fuel_name,
+"fuel_value":fuel_value
+};
+var options = {
+'method' : 'post',
+'contentType': 'application/json',
+'Authorization':"Bearer "+authKey,
+'payload' : JSON.stringify(data),
+'muteHttpExceptions':false
+};
+
+var response = UrlFetchApp.fetch(url, options);
+var result = JSON.parse(response)
+
+return result.data.co2e_gm;
+}
+
+/\*\*
+
+- Calculates greenhouse gas emissions (CO2e) for commercial freight shipping.
+- Includes capabilities for Road, Rail, Air, Sea, and Intermodal combinations.
+-
+- @param {String} transport_mode The mode of transport (e.g., "Air", "Rail", "Road", "ShortSea", "DeepSea", "Road-Rail").
+- @param {Number} distance_value The total distance of the journey in kilometers (km).
+- @param {Number} freight_weight The weight of the freight shipment in kilograms (kg).
+- @return The CO2 equivalent emissions in grams.
+- @customfunction
+  \*/
+  function CO2FREIGHT(transport_mode,distance_value,freight_weight)
+  {
+  var url = baseurl+'/freight_estimate'
+
+// Construct the JSON payload for the freight estimation endpoint.
+var data = {
+"cluster_name":"",
+"transport_mode":transport_mode,
+"distance_value":distance_value,
+"freight_weight":freight_weight
+};
+
+var options = {
+'method' : 'post',
+'contentType': 'application/json',
+'Authorization':"Bearer "+authKey,
+'content-type': 'application/x-www-form-urlencoded',
+'payload' : JSON.stringify(data),
+'muteHttpExceptions':false
+};
+console.log(options)
+var response = UrlFetchApp.fetch(url, options);
+var result = JSON.parse(response)
+
+return result.data.co2e_gm;
+}
+
+/\*\*
+
+- Calculates greenhouse gas emissions (CO2e) for end-to-end eCommerce package shipments.
+- Uses advanced logistics algorithms covering 1.5 million postal codes and 9,000+ airports to route land-to-air travel accurately.
+-
+- @param {String} origin_country_code 2-letter ISO country code where the package originates.
+- @param {String} origin_postal_code The postal/zip code of the origin location.
+- @param {String} destination_country_code 2-letter ISO country code of the final destination.
+- @param {String} destination_postal_code The postal/zip code of the destination location.
+- @param {Number} package_weight The weight of the package in kilograms (kg).
+- @param {String} add_rf Add Radiative Forcing (RF) factor for any air-travel segments. "Y" or "N".
+- @param {String} include_wtt Include Well-To-Tank (WTT) upstream fuel emissions. "Y" or "N".
+- @return The CO2 equivalent emissions in grams.
+- @customfunction
+  \*/
+  function CO2ECOMMERCE(origin_country_code,origin_postal_code,destination_country_code,destination_postal_code,package_weight,add_rf,include_wtt)
+  {
+  var url = baseurl+'/ecommerce_estimate'
+
+// Construct the JSON payload for the eCommerce shipment estimation endpoint.
+var data = {
+"cluster_name":"",
+"origin_country_code":origin_country_code,
+"origin_postal_code":origin_postal_code,
+"destination_country_code":destination_country_code,
+"destination_postal_code":destination_postal_code,
+"package_weight":package_weight,
+"add_rf":add_rf,
+"include_wtt":include_wtt
+};
+var options = {
+'method' : 'post',
+'contentType': 'application/json',
+'Authorization':"Bearer "+authKey,
+'payload' : JSON.stringify(data),
+'muteHttpExceptions':false
+};
+var response = UrlFetchApp.fetch(url, options);
+var result = JSON.parse(response)
+
+return result.data.co2e_gm;
+}
+
+/\*\*
+
+- Calculates greenhouse gas emissions (CO2e) for travel in specific passenger vehicles.
+- Checks against a database of 140+ makes and 4,500+ specific vehicle models.
+-
+- @param {String} vehicle_make The manufacturer of the vehicle (e.g., "Toyota", "Tesla").
+- @param {String} vehicle_model The specific model of the vehicle (e.g., "Camry", "Model 3").
+- @param {Number} distance_value The total distance traveled.
+- @param {String} distance_unit The unit of distance. Allowed values: "km" or "mi".
+- @return The CO2 equivalent emissions in grams.
+- @customfunction
+  \*/
+  function CO2VEHICLEMODEL(vehicle_make,vehicle_model,distance_value,distance_unit)
+  {
+  var url = baseurl+'/vehicle_estimate_by_model'
+
+// Construct the JSON payload for the vehicle by model estimation endpoint.
+var data = {
+"cluster_name":"",
+"vehicle_make":vehicle_make,
+"vehicle_model":vehicle_model,
+"distance_value":distance_value,
+"distance_unit":distance_unit
+};
+var options = {
+'method' : 'post',
+'contentType': 'application/json',
+'Authorization':"Bearer "+authKey,
+'payload' : JSON.stringify(data),
+'muteHttpExceptions':false
+};
+var response = UrlFetchApp.fetch(url, options);
+var result = JSON.parse(response)
+
+return result.data.co2e_gm;
+}
+
+/\*\*
+
+- Calculates greenhouse gas emissions (CO2e) for travel based on generic vehicle types.
+- Useful for employee commuting (bus, train, taxi) or fleet averages.
+-
+- @param {String} vehicle_type The category/type of vehicle (e.g., "Car-Type-Supermini", "Bus-LocalAverage", "Train-National").
+- @param {Number} distance_value The total distance traveled.
+- @param {String} distance_unit The unit of distance. Allowed values: "km" or "mi".
+- @param {String} fuel_type The fuel type (e.g., "Diesel", "Petrol", "PHEV", "BEV", "Unknown"). (Optional, Default: "Unknown")
+- @return The CO2 equivalent emissions in grams.
+- @customfunction
+  \*/
+  function CO2VEHICLETYPE(vehicle_type,distance_value,distance_unit,fuel_type)
+  {
+  var url = baseurl+'/vehicle_estimate_by_type'
+
+// Construct the JSON payload for the vehicle by type estimation endpoint.
+var data = {
+"cluster_name":"",
+"vehicle_type":vehicle_type,
+"distance_value":distance_value,
+"distance_unit":distance_unit,
+"fuel_type":fuel_type
+};
+var options = {
+'method' : 'post',
+'contentType': 'application/json',
+'Authorization':"Bearer "+authKey,
+'payload' : JSON.stringify(data),
+'muteHttpExceptions':false
+};
+var response = UrlFetchApp.fetch(url, options);
+var result = JSON.parse(response)
+
+return result.data.co2e_gm;
+}
+
+/\*\*
+
+- Calculates greenhouse gas emissions (CO2e) based on the Singapore Emission Factors Registry (SEFR) database.
+- The full list of applicable values can be found at https://carbonsutra.com/special-apis/singapore-emission-factor-registry
+-
+- @param {String} category The category of emission (e.g., "Stationary Combustion").
+- @param {String} activity The specific activity within the chosen category.
+- @param {Number} value The measured amount of the activity. (If a NULL or <0 is entered, it defaults to 1.00)
+- @return The CO2 equivalent emissions in grams.
+- @customfunction
+  \*\*/
+  function CO2SEFR(category, activity, value)
+  {
+  var url = baseurl+'/sefr_estimation'
+
+// Construct the JSON payload for the SEFR estimation endpoint.
+var data = {
+"category":category,
+"activity":activity,
+"value":value
+};
+
+var options = {
+'method' : 'post',
+'contentType': 'application/json',
+'Authorization':"Bearer "+authKey,
+'payload' : JSON.stringify(data),
+'muteHttpExceptions':false
+};
+var response = UrlFetchApp.fetch(url, options);
+var result = JSON.parse(response)
+if (result.status != 200){
+return result.data;
+}else{
+return result.data.co2e_gm;
+}
+}
+
+/\*\*
+
+- Helper function to process asynchronous API requests.
+- Note: This function is not exposed as a custom Google Sheets function.
+-
+- @param {String} url The endpoint URL to fetch.
+- @param {Object} options The payload and header options for the HTTP request.
+- @returns {Object} The parsed JSON response.
+  \*/
+  const apiRequest = async function (url,options){
+  var response = UrlFetchApp.fetch(url, options);
+  var result = JSON.parse(response)
+  return result;
+  }
+```

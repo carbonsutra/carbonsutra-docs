@@ -1,81 +1,92 @@
+import { Head } from "zudoku/components";
+
+<Head>
+
+<meta
+  name="keywords"
+  content="google sheet functions, carbon footprint api, scope 1 2 3 emissions engine, rest api clustering, carbon accounting automation, sefr, carbonsutra api"
+/>
+<meta
+  property="og:title"
+  content="Calculating Carbon Emission Footprint within Google Sheets"
+/>
+<meta
+  property="og:description"
+  content="Calculating Carbon Emission Footprint within Google Sheets"
+/>
+<meta property="og:type" content="website" />
+
+</Head>
+
+
+
 # Emission Calculation on Google Sheets.
 
-Eight easy to use functions to calculate emission factors within Google Sheets. They use the same logic of API and always return CO2 equivalent in grams. These functions are designed for non-technical users who are calculating their footprint using their own spreadsheets. 
+Nine easy to use functions to calculate emission factors within Google Sheets. They use the same logic of API and always return CO2 equivalent in grams. These functions are designed for non-technical users who are calculating their footprint using their own spreadsheets. 
 
-## Function: CO2ELECTRICITY
+If you need us to share the Google Sheet with the script, please write to us at support@carbonsutra.com
 
-**Calculate emissions from electricity usage in grams of CO2 equivalent**
+### CO2ELECTRICITY - Calculate emissions from electricity usage in grams of CO2 equivalent
 
-**Syntax**: CO2ELECTRICITY(country_name, electricity_value, electricity_unit)
+- **Syntax**: CO2ELECTRICITY(country_name, electricity_value, electricity_unit)
+- **Example**: CO2ELECTRICITY("indonesia","8230","MWH")
 
-**Example**: CO2ELECTRICITY("indonesia","8230","MWH")
+### CO2FUEL - Calculate emissions from fuel consumption in grams of CO2 equivalent
 
-## Function: CO2FUEL
+- **Syntax**: CO2FUEL(fuel_usage, fuel_name, fuel_value)
+- **Example**: CO2FUEL("industrial", "Coal - Bituminous", "2800")
 
-**Calculate emissions from fuel consumption in grams of CO2 equivalent**
+### CO2HOTEL - Calculate emissions from a hotel stay in grams of CO2 equivalent
+
+- **Syntax**: CO2HOTEL(country_code, [city_name], [hotel_rating], [number_of_nights], [number_of_rooms])
+- **Example**: CO2HOTEL("IN","MUMBAI","4","2","1")
+
+### CO2FLIGHT - Calculate emissions from flight travel in grams of CO2 equivalent
+
+- **Syntax**: CO2FLIGHT(iata_airport_from, iata_airport_to, [flight_class], [round_trip], [add_rf], [include_wtt], [number_of_passengers])
+- **Example**: CO2FLIGHT("LAX","SIN","economy","Y","N","N","1")
+
+### CO2FREIGHT - Calculate emissions from freight or shipping in grams of CO2 equivalent
+
+- **Syntax**: CO2FREIGHT(transport_mode, freight_weight, distance_value)
+- **Example**: CO2FREIGHT("ShortSea","50000","1200")
+
+### CO2ECOMMERCE - Calculate emissions from eCommerce Shipments in grams of CO2 equivalent
+
+- **Syntax**: CO2ECOMMERCE(origin_country_code, origin_postal_code, destination_country_code, destination_postal_code, package_weight, [add_rf], [include_wtt])
+- **Example**: CO2ECOMMERCE("IN","248001","IN","603104","3","N","N")
+
+### CO2VEHICLEMODEL - Calculate emissions from vehicles by their model in grams of CO2 equivalent
+
+- **Syntax**: CO2VEHICLEMODEL(vehicle_make, vehicle_model, distance_value, distance_unit)
+- **Example**: CO2VEHICLEMODEL("Lexus","RX 300","19000","km")
+
+### CO2VEHICLETYPE - Calculate emissions from vehicles by their type in grams of CO2 equivalent
+
+- **Syntax**: CO2VEHICLETYPE(vehicle_type, distance_value, distance_unit, [fuel_type], [include_wtt])
+- **Example**: CO2VEHICLETYPE("Car-Type-Executive","11250","km","Unknown","Y")
+
+### CO2SEFR - Calculate emissions using SEFR (Singapore Emission Factors Registry) data in grams of CO2 equivalent
+
+- **Syntax**: CO2SEFR(category, activity, value)
+- **Example**: CO2SEFR("Fuel", "Bitumen", "2500") 
 
 
-**Syntax**: CO2FUEL(fuel_usage, fuel_name, fuel_value)
+## Creating your own Emission Calculation function
 
-**Example**: CO2FUEL("industrial", "Coal - Bituminous", "2800")
+The carbonSutra APIs can be easily called by a spreadsheet by creating and calling the function within it. While you (or your AI tool) can easily write one, we have provided the (AppScript Source Code)[https://carbonsutra.com/google-sheet-appscript-code] with instructions to get you started. 
 
-## Function: CO2HOTEL
+Note that you will need an authorization key to run the APIs (or call the functions). 
 
-**Calculate emissions from a hotel stay in grams of CO2 equivalent**
+## Frequently Asked Questions (for Non-technical users).
 
-**Syntax**: CO2HOTEL(country_code, [city_name], [hotel_rating], [number_of_nights], [number_of_rooms])
+**How can I write my own Google Sheet function?**
 
-**Example**: CO2HOTEL("IN","MUMBAI","4","2","1")
-
-## Function: CO2FLIGHT
-
-**Calculate emissions from flight travel in grams of CO2 equivalent**
-
-**Syntax**: CO2FLIGHT(iata_airport_from, iata_airport_to, [flight_class], [round_trip], [add_rf], [include_wtt], [number_of_passengers])
-
-**Example**: CO2FLIGHT("LAX","SIN","economy","Y","N","N","1")
-
-## Function: CO2FREIGHT
-
-**Calculate emissions from freight or shipping in grams of CO2 equivalent**
-
-**Syntax**: CO2FREIGHT(transport_mode, freight_weight, distance_value)
-
-**Example**: CO2FREIGHT("ShortSea","50000","1200")
-
-## Function: CO2ECOMMERCE
-
-**Calculate emissions from eCommerce Shipments in grams of CO2 equivalent**
-
-**Syntax**: CO2ECOMMERCE(origin_country_code, origin_postal_code, destination_country_code, destination_postal_code, package_weight, [add_rf], [include_wtt])
-
-**Example**: CO2ECOMMERCE("IN","248001","IN","603104","3","N","N")
-
-## Function: CO2VEHICLEMODEL
-
-**Calculate emissions from vehicles by their model in grams of CO2 equivalent**
-
-**Syntax**: CO2VEHICLEMODEL(vehicle_make, vehicle_model, distance_value, distance_unit)
-
-**Example**: CO2VEHICLEMODEL("Lexus","RX 300","19000","km")
-
-## Function: CO2VEHICLETYPE
-
-**Calculate emissions from vehicles by their type in grams of CO2 equivalent**
-
-**Syntax**: CO2VEHICLETYPE(vehicle_type, distance_value, distance_unit, [fuel_type], [include_wtt])
-
-**Example**: CO2VEHICLETYPE("Car-Type-Executive","11250","km","Unknown","Y")
-
-## Frequently Asked Questions.
-
-**Which spreadsheets are currently supported?**
-
-> Currently, only Google Sheets are supported. During a poll, majority of our users voted for Google Sheets and we created the functions on it. If Microsoft Excel is of interest to you then let us know.
+> Show this page to your technical colleagues - It is really easy for them. 
 
 **Is clustering feature available on spreadsheet functions?**
 
-> Clustering is only available in API. Due to nature of spreadsheets, it is actually easy for the user to incorporate clustering by oneself.
+> In the above script, Clustering (and OpenCCF) are not included. Due to nature of spreadsheets, it is actually easier for the user to incorporate clustering.
 
 **How do I pass values in spreadsheet functions?**
 
@@ -83,7 +94,7 @@ Eight easy to use functions to calculate emission factors within Google Sheets. 
 
 **Your output is always in grammes but I want in metric tonnes. How can I get that?**
 
-> Yes, for consistency, the output of all functions is in grammes of CO2 equivalent. To convert to other units, you can use the conversion formulas like:
+> Yes, for consistency, the output of all functions is in grammes of CO2 equivalent. To convert to other units, you can use the conversion formulas with the following values:
 
 - 1 kg = 0.001 mt
 - 1 kg = 1000 gm

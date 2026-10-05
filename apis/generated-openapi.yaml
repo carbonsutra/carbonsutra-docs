@@ -1174,6 +1174,60 @@ paths:
 
         Calculates estimated greenhouse gas emissions using the Singapore Emission Factors Registry based on the supplied
         category, activity and value."
+  /api/v1/openccf:
+    post:
+      tags:
+        - Emission Clusters
+      summary: Generate OpenCCF Emissions Report
+      operationId: generate_openccf_report
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenCCFRequest"
+            example:
+              cluster_name: KrugerBrent-H1-2026
+              report_config:
+                report_id: KB-Asia26-Part-1
+                company_name: Kruger-Brent Manufacturing Asia-Pacific
+                region: AU
+                period_start: "2026-01-01"
+                period_end: "2026-06-30"
+                horizon: GWP100
+                report_status: Self-Completed
+
+      responses:
+        "200":
+          description: OpenCCF-compliant emissions report generated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenCCFResponse"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+      description: |
+        Generates an OpenCCF-compliant emissions report using emission
+        calculations associated with the supplied cluster name and report
+        configuration.
+
+      externalDocs:
+        description: CarbonSutra OpenCCF and cluster data documentation
+        url: https://www.carbonsutra.com
 components:
   securitySchemes:
     bearerAuth:
@@ -1345,6 +1399,67 @@ components:
         status:
           type: integer
           format: int32
+      additionalProperties: true
+    OpenCCFRequest:
+      type: object
+      description: Request payload used to generate an OpenCCF-compliant emissions report.
+      required:
+        - cluster_name
+      properties:
+        cluster_name:
+          type: string
+          minLength: 1
+          description: Name of the emission cluster containing the calculations.
+          example: KrugerBrent-H1-2026
+
+        report_config:
+          $ref: "#/components/schemas/OpenCCFReportConfig"
+
+    OpenCCFReportConfig:
+      type: object
+      description: Configuration metadata for the OpenCCF emissions report.
+      required:
+        - report_id
+        - company_name
+        - region
+        - period_start
+        - period_end
+        - horizon
+        - report_status
+      properties:
+        report_id:
+          type: string
+          example: KB-Asia26-Part-1
+
+        company_name:
+          type: string
+          example: Kruger-Brent Manufacturing Asia-Pacific
+
+        region:
+          type: string
+          example: AU
+
+        period_start:
+          type: string
+          format: date
+          example: "2026-01-01"
+
+        period_end:
+          type: string
+          format: date
+          example: "2026-06-30"
+
+        horizon:
+          type: string
+          example: GWP100
+
+        report_status:
+          type: string
+          example: Self-Completed
+
+    OpenCCFResponse:
+      type: object
+      description: Response containing the generated OpenCCF emissions report.
       additionalProperties: true
     ClusterRecord:
       type: object
