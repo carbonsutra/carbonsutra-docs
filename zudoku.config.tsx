@@ -97,10 +97,10 @@ const config: ZudokuConfig = {
                 href: "/api",
                 variant: "outline",
               },
-              // {
-              //   label: "Get started",
-              //   href: "https://rapidapi.com/carbonsutra/api/carbonsutra1",
-              // },
+              {
+                label: "Get started",
+                href: "/getting_started",
+              },
             ]}
             aside={
               <div className="overflow-hidden rounded-xl border bg-card aspect-video">
@@ -146,11 +146,13 @@ const config: ZudokuConfig = {
                 {
                   type: "doc",
                   file: "special-features/clustering",
+                  path: "/clustering",
                   label: "Rapid Clustering",
                 },
                 {
                   type: "doc",
                   file: "special-features/openccf",
+                  path: "/openccf",
                   label: "OpenCCF",
                 },
               ],
@@ -348,11 +350,11 @@ const config: ZudokuConfig = {
       ],
     },
 
-    // {
-    //   type: "link",
-    //   label: "Get Started",
-    //   to: "https://rapidapi.com/carbonsutra/api/carbonsutra1",
-    // },
+    {
+      type: "link",
+      label: "Get Started",
+      to: "/getting_started",
+    },
 
     {
       type: "link",

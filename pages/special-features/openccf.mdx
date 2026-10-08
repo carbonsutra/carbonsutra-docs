@@ -30,7 +30,7 @@ For software developers and tech teams, CarbonSutra becomes a simple, plug-and-p
 
 ## Getting output in OpenCCF format
 
-Internally, the API for OpenCCF uses the [clustering](https://carbonsutra.com/special-features/clustering) functionality in which the developer eliminates the need to store emission calculation results by assigning a self-declared tag to it. These tags are called cluster names and they can be added to any calculation within CarbonSutra. The endpoint: /cluster-data accepts this tag and gives the output of all calculations in granular format in JSON. OpenCCF's API invokes the same API internally.
+Internally, the API for OpenCCF uses the [clustering](https://carbonsutra.com/clustering) functionality in which the developer eliminates the need to store emission calculation results by assigning a self-declared tag to it. These tags are called cluster names and they can be added to any calculation within CarbonSutra. The endpoint: /cluster-data accepts this tag and gives the output of all calculations in granular format in JSON. OpenCCF's API invokes the same API internally.
 
 Hence, there are two inputs for OpenCCF:
 
@@ -153,7 +153,7 @@ Assume that the above report configuration is passed along with the cluster name
 }
 ```
 
-Combining the entered report configuration and the fetched details by cluster name of "KrugerBrent-Paints-Q1", the final output in YAML format is:  
+Combining the entered report configuration and the fetched details by cluster name of "KrugerBrent-Paints-Q1", the final output in YAML format is:
 
 ```
 reportID: KB-ASIA26-PART-1
