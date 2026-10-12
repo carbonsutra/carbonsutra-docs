@@ -19,6 +19,10 @@ const legalLinks = [
     href: "/about",
   },
   {
+    label: "Blog",
+    href: "https://blog.contactous.com/tag/carbonsutra",
+  },
+  {
     label: "Privacy Policy",
     href: "/privacy-policy",
   },
