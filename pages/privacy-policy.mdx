@@ -1,110 +1,146 @@
 # Privacy Policy
 
 **Effective Date:** October 29, 2026  
-**Last Updated:** October 29, 2026  
+**Last Updated:** October 30, 2026
 
 ## 1. Introduction
 
-Welcome to **CarbonSutra** (accessible at [https://carbonsutra.com](https://carbonsutra.com)), an enterprise-grade carbon emission estimation engine operated by **Contactous** ("Company", "we", "our", or "us"), a registered entity in Singapore. 
+Welcome to **CarbonSutra** (https://carbonsutra.com), a carbon emission estimation platform operated by **Contactous** ("Company", "we", "our", or "us"), a registered entity in Singapore.
 
-We respect your privacy and are committed to protecting any personal data you share with us. This Privacy Policy explains how CarbonSutra collects, uses, stores, and protects your information when you interact with our APIs, tools, and services.
+We respect your privacy and are committed to protecting your personal information. This Privacy Policy explains what information we collect, how we use it, how it is shared, and how it is retained when you use CarbonSutra APIs, tools, website, and Google Workspace Add-on.
 
----
+## 2. Information We Collect
 
-## 2. Scope & Methods of Access
+CarbonSutra provides services through three access channels.
 
-CarbonSutra provides carbon emission calculations exclusively through three distinct access channels. The personal data collected is minimal and strictly limited to what is necessary to deliver our services.
+### 2.1 Third-Party API Marketplaces and External Portals
 
-### Access Channel 1: Third-Party API Marketplaces & External Portals
-When developers or users access CarbonSutra APIs via third-party marketplaces (e.g., RapidAPI, Postman Public Workspace, API.Market, ZYLA) or external developer portals:
-* **Data Collected:** Information collected during signup on third-party platforms is governed by the respective marketplace's privacy policy. CarbonSutra only processes authentication headers (API keys or tokens) and operational calculation parameters required to execute API requests.
+When you access CarbonSutra APIs through third-party marketplaces or developer platforms, such as RapidAPI, Postman Public Workspace, API.Market, or ZYLA:
 
-### Access Channel 2: CarbonSutra Google Workspace Add-on
-When users install and authorize the CarbonSutra Google Sheets Add-on via the Google Workspace Marketplace:
-* **Data Collected:** We collect only your **Google email address** and **full name**.
-* **Purpose:** This information is used exclusively to generate and transmit your unique CarbonSutra API key and facilitate service authorization.
-* **Data Protection & Non-Disclosure:** We do **not** sell, share, transfer, or disclose your Google email address, name, or any associated profile data to any third party, advertiser, or external service.
+- **Authentication information:** We process API keys, authorization tokens, and authentication headers required to validate API requests.
+- **Calculation information:** We process the operational parameters submitted with API requests to perform carbon emission calculations.
+- **Third-party account information:** Account registration and profile information collected by these platforms are governed by their respective privacy policies.
 
-### Access Channel 3: CarbonSutra API Playground
-When users test endpoints interactively on our website ([https://carbonsutra.com/api-playground](https://carbonsutra.com/api-playground)):
-* **Data Collected:** We collect your **email address**.
-* **Purpose:** This email address is used solely to generate and send you an immediate Authorization Code / API key to run live API test calls.
+### 2.2 CarbonSutra Google Workspace Add-on
 
----
+When you install and authorize the CarbonSutra Google Sheets Add-on, we may access and process the following information, depending on the features you use:
+
+- **Google account information:** Your Google email address and profile information, where requested and made available by the authorization process, for account identification and API key management.
+- **Spreadsheet information:** Values from spreadsheet cells that you select or that are required by the emission estimation workflow.
+- **Calculation inputs:** Data entered or stored in your spreadsheet that is necessary to perform the requested carbon emission calculations.
+- **API configuration:** Your CarbonSutra API key and related user-specific configuration used to authenticate requests.
+
+**Purpose of access:** Spreadsheet information is accessed to process your requested emission estimation calculations and return calculated results, including CO₂-equivalent values and explanatory information, to your spreadsheet.
+
+**API transmission:** The calculation inputs required for the requested operation are transmitted to the CarbonSutra API at:
+
+https://api.carbonsutra.com/api/v1/sefr_estimation
+
+The API processes those inputs and returns calculation results to the add-on. Your spreadsheet data is not used for advertising or unrelated purposes.
+
+### 2.3 CarbonSutra API Playground
+
+When you use the API Playground at https://carbonsutra.com/api-playground:
+
+- **Information collected:** Your email address and the API request parameters you submit.
+- **Purpose:** Your email address is used to generate and deliver an authorization code or API key. Request parameters are processed to execute the API operations you initiate.
 
 ## 3. How We Use Your Information
 
-We use the minimal personal data collected strictly for the following operational purposes:
-1. To generate, deliver, and manage your API authentication keys and tokens.
-2. To authenticate your identity across our services and measure usage limits (e.g., free tier allowances).
-3. To communicate critical service updates, technical notices, or security alerts.
-4. To respond to customer support inquiries and technical issues.
+We use collected information only for legitimate service operations, including:
 
-We do **not** use your personal information for marketing profiling, automated decision-making, advertising targeting, or unsolicited promotional outreach.
+1. Generating, delivering, validating, and managing API keys and authentication tokens.
+2. Identifying and authenticating users across CarbonSutra services.
+3. Processing carbon emission estimation requests and returning calculation results.
+4. Applying service usage limits and managing API access.
+5. Maintaining service reliability, security, and operational performance.
+6. Responding to support requests and communicating important technical or security notices.
 
----
+We do not use Google user data or spreadsheet contents for advertising, advertising profiling, or unrelated marketing purposes.
 
-## 4. Google API Services User Data & Limited Use Policy
+## 4. Google API Services User Data and Limited Use
 
-CarbonSutra's use and transfer of information received from Google APIs to any other app will adhere to the **[Google API Services User Data Policy](https://developers.google.com/terms/api-services/user-data-policy)**, including the **Limited Use requirements**.
+CarbonSutra's use and transfer of information received from Google APIs complies with the Google API Services User Data Policy, including its Limited Use requirements:
 
-Specifically regarding Google Add-on Users:
-* **No Third-Party Transfer:** We do not share, disclose, or transfer any Google user data (including names and email addresses) to third parties.
-* **No Advertising Use:** Human or automated reading of Google user data for advertising purposes is strictly prohibited. Your Google user data is never used to serve targeted or general advertisements.
-* **No AI Training:** Google user data is never used to train, retrain, or improve generalized Artificial Intelligence (AI) or Machine Learning (ML) models.
-* **Minimal Scope Request:** The Google Add-on requests only the minimum OAuth permissions required to run spreadsheet functions (`spreadsheets.currentonly`) and identify your account email for API key delivery.
+https://developers.google.com/terms/api-services/user-data-policy
 
----
+Specifically:
+
+- **Limited purpose:** Google user data is accessed and used only to provide the Google Workspace Add-on features that you request, including spreadsheet-based emission calculations and API key management.
+- **Calculation processing:** Spreadsheet values required for a calculation are transmitted to the CarbonSutra API operated by Contactous to process your request and return results.
+- **No advertising:** Google user data is not used for advertising, advertising profiling, or targeted advertising.
+- **No AI model training:** Google user data is not used to train, retrain, or improve generalized artificial intelligence or machine learning models.
+- **No unauthorized disclosure:** Google user data is not sold or disclosed to third parties except as necessary to provide the requested service, comply with applicable law, or as otherwise permitted by the Google API Services User Data Policy.
+- **Human access:** Access to Google user data is restricted to authorized personnel when necessary for security, support, troubleshooting, or compliance purposes.
 
 ## 5. Information Sharing and Disclosure
 
-We maintain a strict zero-sale policy. We do **not** sell, rent, trade, or share your personal data with any external commercial third parties. 
+We do not sell or rent personal information or Google user data.
 
-We will only disclose information if required to do so by applicable law, legal process, court order, or governmental request from Singapore or relevant international jurisdictions.
+Information may be processed or disclosed in the following limited circumstances:
 
----
+1. **CarbonSutra API processing:** Spreadsheet calculation inputs and required authentication information are sent to the CarbonSutra API operated by Contactous to perform the calculations requested by the user.
+2. **Service providers:** Infrastructure, hosting, and operational service providers may process information on our behalf where necessary to operate and secure CarbonSutra services.
+3. **Legal requirements:** Information may be disclosed where required by applicable law, legal process, court order, or valid governmental request.
+4. **Security:** Information may be processed when necessary to investigate or prevent fraud, abuse, security incidents, or unauthorized access.
 
-## 6. Data Security & Encryption
+We do not permit service providers to use Google user data for advertising or unrelated purposes.
 
-We take data security very seriously. All communications to and from CarbonSutra—including API calls, website traffic, API Playground submissions, and Google Add-on interactions—are strictly encrypted in transit using **SSL/TLS (Secure Sockets Layer / Transport Layer Security)** over HTTPS.
+## 6. Data Security
 
-We enforce administrative, technical, and physical safeguards designed to protect your personal information against unauthorized access, loss, misuse, or alteration.
+We implement administrative and technical safeguards designed to protect information against unauthorized access, loss, misuse, alteration, or disclosure.
 
----
+These measures include:
 
-## 7. Data Retention and Inactivity Purge
+- HTTPS and TLS encryption for data transmitted between users, CarbonSutra services, and the API.
+- Authentication controls for API access.
+- Restricted access to systems and information based on operational requirements.
+- User-specific storage for API configuration within the Google Apps Script environment.
+- Security monitoring and measures intended to identify unauthorized access or misuse.
 
-We retain your personal data (name and email address tied to API keys) only as long as you remain an active user of CarbonSutra services.
+No method of transmission or electronic storage is completely secure. We continuously review our safeguards to maintain appropriate protection for the information we process.
 
-* **6-Month Inactivity Rule:** If an account or user remains inactive and stops using CarbonSutra services for a continuous period of **6 months**, your personal data and associated API keys are automatically purged and removed from our active systems.
-* **Transactional Anonymity:** Calculation logs, request payloads, and aggregated emission benchmarks are retained in anonymized, non-personally-identifiable formats for operational stability and auditing metrics.
+## 7. Data Retention and Deletion
 
----
+We retain information only for as long as necessary to provide our services, meet operational requirements, resolve disputes, and comply with applicable legal obligations.
 
-## 8. Your Rights & Data Deletion Requests
+- **Spreadsheet information:** Calculation inputs are processed to fulfil the requested operation. The calculation results are returned to your spreadsheet. Spreadsheet contents remain subject to your Google account and spreadsheet retention settings.
+- **API keys and account information:** Account information and API keys are retained while needed to provide the service, subject to applicable inactivity and account deletion policies.
+- **Calculation records and logs:** Operational logs and request records may be retained for service reliability, security, troubleshooting, and auditing. Where possible, these records are minimized or anonymized.
+- **Deletion requests:** You may request deletion of personal information and associated API account records by contacting us. We aim to process eligible deletion requests within 30 days, subject to legal and legitimate operational retention requirements.
 
-Depending on your location (including rights under EU GDPR, UK GDPR, and Singapore PDPA), you have rights regarding your personal data:
-* **Right to Access:** You may request details on the personal information we hold about you.
-* **Right to Erasure / Deletion:** You have the right to request immediate deletion of your personal data and API keys at any time.
+Deleting information held by CarbonSutra does not automatically delete information stored in your Google Sheets. You remain responsible for deleting spreadsheet contents from your Google account.
 
-To exercise your privacy rights or request manual account and data deletion, please contact our privacy lead at:  
-📧 **Email:** `support@carbonsutra.com`
+## 8. Your Privacy Rights
 
-Upon receiving your request, we will delete your record within 30 days and confirm completion.
+Depending on your location and applicable privacy laws, including the EU GDPR, UK GDPR, and Singapore PDPA, you may have the right to:
 
----
+- **Access:** Request information about the personal data we hold about you.
+- **Correction:** Request correction of inaccurate or incomplete personal information.
+- **Deletion:** Request deletion of your personal information and associated API account records.
+- **Withdrawal:** Stop using the Google Workspace Add-on and revoke its Google account permissions through your Google Account settings.
 
-## 9. Changes to This Privacy Policy
+To exercise these rights, contact us at:
 
-We may update this Privacy Policy periodically to reflect technological updates, regulatory changes, or requirements imposed by platform providers (such as Google). Any changes will be posted on this page with an updated "Effective Date." We encourage users to review this policy periodically.
+**Email:** support@carbonsutra.com
 
----
+We will review and respond to your request in accordance with applicable legal requirements.
 
-## 10. Contact Us
+## 9. Children's Privacy
 
-If you have any questions, concerns, or requests regarding this Privacy Policy or CarbonSutra's data practices, please contact us:
+CarbonSutra is not intended for children under the age required to independently consent to data processing under applicable law. We do not knowingly collect personal information from children in violation of applicable privacy requirements.
+
+## 10. Changes to This Privacy Policy
+
+We may update this Privacy Policy to reflect changes to our services, data practices, or legal and platform requirements.
+
+Any updates will be published on this page with a revised "Last Updated" date. We encourage users to review this page periodically.
+
+## 11. Contact Us
+
+If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, contact us:
 
 **CarbonSutra (a division of Contactous)**  
-**Website:** [https://carbonsutra.com](https://carbonsutra.com)  
-**Email:** `support@carbonsutra.com`  
+**Website:** https://carbonsutra.com  
+**Email:** support@carbonsutra.com  
 **Location:** Singapore
