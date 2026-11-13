@@ -2,11 +2,38 @@ import type { ZudokuConfig } from "zudoku";
 import { LandingPage } from "zudoku/components";
 import ApiPlayground from "./src/components/ApiPlayground";
 import googleAnalyticsPlugin from "./src/plugins/googleAnalytics";
+import { blogPlugin } from "zudoku/plugins/blog";
 import Onboarding from "./src/components/Onboarding";
 import Footer from "./src/components/Footer";
 
 const config: ZudokuConfig = {
-  plugins: [googleAnalyticsPlugin],
+  plugins: [
+    googleAnalyticsPlugin,
+
+    blogPlugin({
+      files: "/blog/**/*.{md,mdx}",
+      path: "/blog",
+      title: "CarbonSutra Blog",
+      description:
+        "Explore the latest updates, insights, tutorials, and developments in carbon intelligence, sustainability, and environmental data APIs.",
+      postsPerPage: 10,
+      showReadingTime: true,
+
+      authors: {
+        carbonsutra: {
+          name: "CarbonSutra Team",
+          title: "Engineering & Research Team",
+        },
+      },
+
+      sidebar: {
+        title: "Recent Posts",
+        count: 5,
+      },
+
+      feed: true,
+    }),
+  ],
 
   mdx: {
     components: {
@@ -365,6 +392,12 @@ const config: ZudokuConfig = {
       type: "link",
       label: "Playground",
       to: "/api-playground",
+    },
+    {
+      type: "link",
+      to: "/blog",
+      label: "Blog",
+      icon: "newspaper",
     },
   ],
 
