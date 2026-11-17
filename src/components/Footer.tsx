@@ -20,7 +20,7 @@ const legalLinks = [
   },
   {
     label: "Blog",
-    href: "https://blog.contactous.com/tag/carbonsutra",
+    href: "/blog",
   },
   {
     label: "Privacy Policy",
@@ -44,6 +44,10 @@ const connectLinks = [
   {
     label: "Contact",
     href: "mailto:support@carbonsutra.com?subject=Message%20for%20CarbonSutra",
+  },
+  {
+    label: "Contact",
+    href: "/contact",
   },
 ];
 
